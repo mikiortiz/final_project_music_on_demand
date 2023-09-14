@@ -1,13 +1,14 @@
+import { BrowserRouter as Router } from "react-router-dom";
+import ButtonSelector from "./componentes/UserSupplierRegistration";
 
 function App() {
-
   return (
-    <>
-      <p className="read-the-docs">
-        Limpio y Renderizando
-      </p>
-    </>
-  )
+    <Router>
+      <div>
+        <ButtonSelector />
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;

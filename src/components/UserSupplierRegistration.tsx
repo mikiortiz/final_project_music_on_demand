@@ -19,7 +19,7 @@ import logomusic from "../assets/images/logomusic1.png";
 import { useDispatch } from "react-redux";
 import { addSupplier } from "../redux/reducers/SupplierFormSlice";
 import Avatar from "@mui/material/Avatar";
-import { fetchRandomUserData } from "../services/Api";
+import { fetchRandomUserData } from "../services/ApiUsers";
 
 function UserSupplierRegistration() {
   const [showCard, setShowCard] = useState(false);

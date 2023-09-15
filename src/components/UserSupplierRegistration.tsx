@@ -1,9 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import fondo from "../assets/images/fondo1.png";
-import { Button, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  InputLabel,
+  MenuItem,
+  Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CardImage from "../assets/images/CardImage.png";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import { Box } from "@mui/system";
 import logomusic from "../assets/images/logomusic1.png";
 import { useDispatch } from "react-redux";
@@ -18,14 +28,17 @@ function UserSupplierRegistration() {
   const [userLastName, setUserLastName] = useState("");
   const [userAge, setUserAge] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState("");
+  const [genderPreference, setGenderPreference] = useState("");
   const [customAvatarUrl, setCustomAvatarUrl] = useState("");
   const [userContactNumber, setUserContactNumber] = useState("");
-  const [cardText, setCardText] = useState("Regístrate como Proveedor");
+  const [cardText, setCardText] = useState("");
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
 
   const dispatch = useDispatch();
 
-  const musicalGenress = [
+  const musicalGenres = [
     "Pop",
     "Rock",
     "Electrónica",
@@ -39,12 +52,15 @@ function UserSupplierRegistration() {
     "cumbia",
   ];
 
+  const isAdult = () => {
+    return parseInt(userAge) >= 18;
+  };
+
   const handleProveedorClick = async () => {
     setShowCard(true);
 
     const userData = await fetchRandomUserData();
     if (userData) {
-      console.log("Datos del usuario:", userData);
       setUserEmail(userData.email);
       setUserFirstName(userData.name.first);
       setUserLastName(userData.name.last);
@@ -64,19 +80,61 @@ function UserSupplierRegistration() {
   const handleSubmit = () => {
     if (
       userEmail &&
-      userFirstName &&
-      userLastName &&
       userAge &&
       userPassword &&
-      selectedGenre
+      genderPreference &&
+      customAvatarUrl
     ) {
+      // validaciones
+      if (!isAdult()) {
+        setDialogTitle("Error de Registro");
+        setCardText("Debes ser Mayor de 18 Años para Registrarte.");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (userFirstName === "") {
+        setDialogTitle("Error de Registro");
+        setCardText("Nombre por Favor");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (userLastName === "") {
+        setDialogTitle("Error de Registro");
+        setCardText("Apellido por Favor");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (userContactNumber === "" || userContactNumber.length < 6 ) {
+        setDialogTitle("Error de Registro");
+        setCardText("Numero de Contacto Valido por Favor");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (userPassword.length < 4) {
+        setDialogTitle("Error de Registro");
+        setCardText("La Contraseña Debe Tener al Menos 4 Caracteres");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (!userEmail.includes("@")) {
+        setDialogTitle("Error de Registro");
+        setCardText("Dirección de Correo Electrónico Invalido.");
+        setOpenDialog(true);
+        return;
+      }
+
       const newUser = {
         userEmail,
         userFirstName,
         userLastName,
         userAge,
         userPassword,
-        selectedGenre,
+        genderPreference,
         customAvatarUrl,
         userContactNumber,
       };
@@ -88,20 +146,20 @@ function UserSupplierRegistration() {
       setUserLastName("");
       setUserAge("");
       setUserPassword("");
-      setSelectedGenre("");
+      setGenderPreference("");
       setCustomAvatarUrl("");
       setUserContactNumber("");
       setCardText("Registrado éxitosamente");
+
+      setDialogTitle("Éxito");
+      setCardText("Registrado éxitosamente");
+      setOpenDialog(true);
     } else {
-      setCardText("Faltan datos de proveedor");
+      setDialogTitle("Error");
+      setCardText("Por favor, completa todos los campos obligatorios.");
+      setOpenDialog(true);
     }
   };
-
-  useEffect(() => {
-    if (!showCard) {
-      setCardText("Regístrate como Proveedor");
-    }
-  }, [showCard]);
 
   return (
     <div
@@ -176,26 +234,6 @@ function UserSupplierRegistration() {
             boxShadow: "0px 0px 100px rgba(0, 0, 0, 1 )",
           }}
         >
-          {" "}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              borderBottomLeftRadius: "5px",
-              borderTopLeftRadius: "5px",
-              height: "25%",
-            }}
-          >
-            <Typography
-              variant="h5"
-              align="center"
-              color="whit"
-              sx={{ marginTop: "40px" }}
-            >
-              {cardText}
-            </Typography>
-          </Box>
           <Box
             sx={{
               backgroundImage: `url(${CardImage})`,
@@ -217,7 +255,7 @@ function UserSupplierRegistration() {
               style={{
                 position: "absolute",
                 top: "10px",
-                right: "5px",
+                right: "35px",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
@@ -241,7 +279,7 @@ function UserSupplierRegistration() {
                 autoComplete="off"
               />
 
-              <InputLabel sx={{ color: "white" }}>Apellído</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Apellido</InputLabel>
               <TextField
                 placeholder="Apellido"
                 fullWidth
@@ -324,7 +362,9 @@ function UserSupplierRegistration() {
                 value={userEmail}
                 onChange={(e) => setUserEmail(e.target.value)}
                 autoComplete="off"
+                type="email"
               />
+
               <InputLabel sx={{ color: "white" }}>
                 Ingresa una URL para tu Avatar de Presentación
               </InputLabel>
@@ -333,6 +373,7 @@ function UserSupplierRegistration() {
                 fullWidth
                 variant="outlined"
                 size="small"
+                required
                 sx={{ bgcolor: "Window" }}
                 value={customAvatarUrl}
                 onChange={(e) => setCustomAvatarUrl(e.target.value)}
@@ -360,12 +401,12 @@ function UserSupplierRegistration() {
               </InputLabel>
               <Select
                 sx={{ bgcolor: "white" }}
-                value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
+                value={genderPreference}
+                onChange={(e) => setGenderPreference(e.target.value)}
                 fullWidth
               >
                 <MenuItem value="">Seleccionar Género</MenuItem>
-                {musicalGenress.map((genre, index) => (
+                {musicalGenres.map((genre, index) => (
                   <MenuItem key={index} value={genre}>
                     {genre}
                   </MenuItem>
@@ -384,6 +425,18 @@ function UserSupplierRegistration() {
           </Box>
         </div>
       )}
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{cardText}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

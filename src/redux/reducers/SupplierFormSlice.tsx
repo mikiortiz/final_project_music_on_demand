@@ -6,7 +6,7 @@ interface SupplierData {
   userLastName: string;
   userAge: string;
   userPassword: string;
-  selectedGenre: string;
+  genderPreference: string;
   customAvatarUrl: string;
   userContactNumber: string;
 }

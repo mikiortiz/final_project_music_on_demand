@@ -1,11 +1,11 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import ButtonSelector from "./componentes/UserSupplierRegistration";
+import UserSupplierRegistration from "./components/UserSupplierRegistration";
 
 function App() {
   return (
     <Router>
       <div>
-        <ButtonSelector />
+        <UserSupplierRegistration />
       </div>
     </Router>
   );

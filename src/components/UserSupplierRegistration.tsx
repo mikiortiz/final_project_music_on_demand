@@ -35,6 +35,8 @@ function UserSupplierRegistration() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
+  const [dialogTextColor, setDialogTextColor] = useState("black");
 
   const dispatch = useDispatch();
 
@@ -55,6 +57,10 @@ function UserSupplierRegistration() {
   const isAdult = () => {
     return parseInt(userAge) >= 18;
   };
+  const isValidURL = (url: string) => {
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlPattern.test(url);
+  };
 
   const handleProveedorClick = async () => {
     setShowCard(true);
@@ -66,6 +72,7 @@ function UserSupplierRegistration() {
       setUserLastName(userData.name.last);
       setUserAge(userData.dob.age);
       setUserContactNumber(userData.cell);
+      setCustomAvatarUrl(userData.picture.large); // Establece la URL del avatar automáticamente
     }
   };
 
@@ -107,7 +114,7 @@ function UserSupplierRegistration() {
         return;
       }
 
-      if (userContactNumber === "" || userContactNumber.length < 6 ) {
+      if (userContactNumber === "" || userContactNumber.length < 6) {
         setDialogTitle("Error de Registro");
         setCardText("Numero de Contacto Valido por Favor");
         setOpenDialog(true);
@@ -124,6 +131,15 @@ function UserSupplierRegistration() {
       if (!userEmail.includes("@")) {
         setDialogTitle("Error de Registro");
         setCardText("Dirección de Correo Electrónico Invalido.");
+        setOpenDialog(true);
+        return;
+      }
+
+      if (!isValidURL(customAvatarUrl)) {
+        setDialogTitle("Error de Registro");
+        setCardText(
+          "La URL de la imagen de avatar no tiene un formato válido."
+        );
         setOpenDialog(true);
         return;
       }
@@ -152,7 +168,8 @@ function UserSupplierRegistration() {
       setCardText("Registrado éxitosamente");
 
       setDialogTitle("Éxito");
-      setCardText("Registrado éxitosamente");
+      setDialogBackgroundColor("green"); // Cambia el fondo de la ventana de diálogo a verde
+      setDialogTextColor("white"); // Cambia el color del texto de la ventana de diálogo a blanco
       setOpenDialog(true);
     } else {
       setDialogTitle("Error");
@@ -179,6 +196,7 @@ function UserSupplierRegistration() {
         src={logomusic}
         alt="Logomusic"
         style={{
+          borderRadius: "10px",
           position: "absolute",
           top: "20px",
           width: "200px",
@@ -186,37 +204,69 @@ function UserSupplierRegistration() {
       />
       <Box
         sx={{
+          borderRadius: "10px",
           backgroundColor: "rgba(0, 0, 0, 0.7)",
-          marginTop: "250px",
-          width: "30%",
+          width: "90%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: "20px",
+          padding: "5%",
+          maxWidth: "500px",
+          margin: "0 auto",
+          position: "absolute",
+          top: "65%",
+          transform: "translateY(-50%)",
         }}
       >
         <Typography variant="h4" color="white">
-          Regístrate como
+          Te Regístraras como
         </Typography>
-        <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            marginTop: "20px",
+          }}
+        >
           <Button
-            sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.5)",
+              color: "white",
+              borderColor: "black",
+              minWidth: "300px",
+              width: "auto",
+              height: "60px",
+              whiteSpace: "nowrap",
+            }}
             variant="outlined"
-            color="primary"
             onClick={handleProveedorClick}
           >
-            Proveedor
+            Music-DJ-World
           </Button>
+
           <Button
-            sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.5)",
+              color: "white",
+              borderColor: "black",
+              minWidth: "300px",
+              width: "auto",
+              height: "60px",
+              whiteSpace: "nowrap",
+            }}
             variant="outlined"
-            color="primary"
             onClick={handleUsuarioClick}
           >
-            Usuario
+            Music-Usuario-World
           </Button>
         </div>
+        <Typography variant="caption" color="white" style={{ width: "auto" }}>
+          En World Music, nuestro "Music-DJ-World" es tu maestro de ceremonias
+          musical, y nuestros "Music-Usuario-World" son los oyentes más exigentes. Escucha
+          la diferencia con nosotros.
+        </Typography>
       </Box>
 
       {showCard && (
@@ -266,7 +316,7 @@ function UserSupplierRegistration() {
               &#x2716;
             </Button>
             <div style={{ flex: 1, marginRight: "1rem", marginTop: 10 }}>
-              <InputLabel sx={{ color: "white" }}>Nombre</InputLabel>
+              <InputLabel sx={{ color: "white", mt: 2 }}>Nombre</InputLabel>
               <TextField
                 placeholder="Nombre"
                 fullWidth
@@ -279,7 +329,7 @@ function UserSupplierRegistration() {
                 autoComplete="off"
               />
 
-              <InputLabel sx={{ color: "white" }}>Apellido</InputLabel>
+              <InputLabel sx={{ color: "white", mt: 1 }}>Apellido</InputLabel>
               <TextField
                 placeholder="Apellido"
                 fullWidth
@@ -292,7 +342,7 @@ function UserSupplierRegistration() {
                 autoComplete="off"
               />
 
-              <InputLabel sx={{ color: "white" }}>Edad</InputLabel>
+              <InputLabel sx={{ color: "white", mt: 1 }}>Edad</InputLabel>
               <TextField
                 placeholder="Edad"
                 fullWidth
@@ -304,8 +354,7 @@ function UserSupplierRegistration() {
                 onChange={(e) => setUserAge(e.target.value)}
                 autoComplete="off"
               />
-
-              <InputLabel sx={{ color: "white" }}>
+              <InputLabel sx={{ color: "white", mt: 1 }}>
                 Numero de Contacto
               </InputLabel>
               <TextField
@@ -350,89 +399,120 @@ function UserSupplierRegistration() {
                 />
               </Box>
             </div>
-            <div style={{ flex: 1, marginTop: 10 }}>
-              <InputLabel sx={{ color: "white" }}>Email</InputLabel>
-              <TextField
-                placeholder="Email"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userEmail}
-                onChange={(e) => setUserEmail(e.target.value)}
-                autoComplete="off"
-                type="email"
-              />
+            <div style={{ flex: 1, marginTop: 10, overflowX: "auto" }}>
+              {/* Contenedor para permitir el desplazamiento horizontal */}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <InputLabel sx={{ color: "white", mt: 2 }}>Email</InputLabel>
+                <TextField
+                  placeholder="Email"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  autoComplete="off"
+                  type="email"
+                />
 
-              <InputLabel sx={{ color: "white" }}>
-                Ingresa una URL para tu Avatar de Presentación
-              </InputLabel>
-              <TextField
-                placeholder="URL de la Imagen de Avatar"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={customAvatarUrl}
-                onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                autoComplete="off"
-              />
+                <InputLabel sx={{ color: "white", mt: 1 }}>
+                  Ingrese una URL para tu Avatar de Presentación
+                </InputLabel>
+                <TextField
+                  placeholder="URL de la Imagen de Avatar"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={customAvatarUrl}
+                  onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                  autoComplete="off"
+                />
 
-              <InputLabel sx={{ color: "white" }}>
-                Ingrese una Contraseña
-              </InputLabel>
-              <TextField
-                placeholder="Contraseña"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userPassword}
-                onChange={(e) => setUserPassword(e.target.value)}
-                type="password"
-                autoComplete="off"
-              />
+                <InputLabel sx={{ color: "white", mt: 1 }}>
+                  Ingrese una Contraseña
+                </InputLabel>
+                <TextField
+                  placeholder="Contraseña"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userPassword}
+                  onChange={(e) => setUserPassword(e.target.value)}
+                  type="password"
+                  autoComplete="off"
+                />
 
-              <InputLabel sx={{ color: "white" }}>
-                Género Musical de Referencia
-              </InputLabel>
-              <Select
-                sx={{ bgcolor: "white" }}
-                value={genderPreference}
-                onChange={(e) => setGenderPreference(e.target.value)}
-                fullWidth
-              >
-                <MenuItem value="">Seleccionar Género</MenuItem>
-                {musicalGenres.map((genre, index) => (
-                  <MenuItem key={index} value={genre}>
-                    {genre}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 5, ml: 20 }}
-                onClick={handleSubmit}
-              >
-                Regístrarte
-              </Button>
+                <InputLabel sx={{ color: "white", mt: 1 }}>
+                  Género Musical de Referencia
+                </InputLabel>
+                <Select
+                  sx={{ bgcolor: "white" }}
+                  value={genderPreference}
+                  onChange={(e) => setGenderPreference(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="">Seleccionar Género</MenuItem>
+                  {musicalGenres.map((genre, index) => (
+                    <MenuItem key={index} value={genre}>
+                      {genre}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    minWidth: "300px",
+                    width: "auto",
+                    height: "60px",
+                    whiteSpace: "nowrap",
+                    ml: 12,
+                    mb: -7,
+                    position: "absolute",
+                    bottom: "170px",
+                  }}
+                  onClick={handleSubmit}
+                >
+                  Regístrarte
+                </Button>
+              </div>
             </div>
           </Box>
         </div>
       )}
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: dialogBackgroundColor, // Cambia el color de fondo de la ventana de diálogo
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: dialogTextColor }}>{dialogTitle}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{cardText}</DialogContentText>
+          <DialogContentText
+            sx={{
+              fontSize: "1.5rem", // Tamaño de fuente más grande
+              fontWeight: "bold", // Letras en negrita
+            }}
+          >
+            {cardText}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button
+            onClick={() => setOpenDialog(false)}
+            color="primary"
+            sx={{ color: "white" }}
+          >
             Cerrar
           </Button>
         </DialogActions>

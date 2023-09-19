@@ -13,15 +13,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import CardImage from "../assets/images/CardImage.png";
+import CardImage from "../assets/images/CardImagesupplier.png";
 import { Box } from "@mui/system";
 import logomusic from "../assets/images/logomusic1.png";
-import { useDispatch } from "react-redux";
-import { addSupplier } from "../redux/reducers/SupplierFormSlice";
+import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
+import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
+import UserRegistrationForm from "./UserRegistrationForm";
 
 function UserSupplierRegistration() {
+  const [showUserForm, setShowUserForm] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
@@ -54,6 +56,9 @@ function UserSupplierRegistration() {
     "cumbia",
   ];
 
+  const registeredSuppliers = useSelector((state: RootStateOrAny) => state.registered.Suppliers);
+  const registeredUsers = useSelector((state: RootStateOrAny) => state.registered.MusicUser);  
+
   const isAdult = () => {
     return parseInt(userAge) >= 18;
   };
@@ -72,19 +77,33 @@ function UserSupplierRegistration() {
       setUserLastName(userData.name.last);
       setUserAge(userData.dob.age);
       setUserContactNumber(userData.cell);
-      setCustomAvatarUrl(userData.picture.large); // Establece la URL del avatar automáticamente
+      setCustomAvatarUrl(userData.picture.large);
     }
   };
 
   const handleUsuarioClick = () => {
     setShowCard(false);
+    setShowUserForm(true);
   };
 
   const handleCloseClick = () => {
     setShowCard(false);
+    setShowUserForm(false);
   };
 
   const handleSubmit = () => {
+
+    const isPasswordUsed =
+      registeredSuppliers.some((supplier: { userPassword: string; }) => supplier.userPassword === userPassword) ||
+      registeredUsers.some((user: { userPassword: string; }) => user.userPassword === userPassword);
+
+    if (isPasswordUsed) {
+      setDialogTitle("Error de Registro");
+      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
+      setOpenDialog(true);
+      return;
+    }
+
     if (
       userEmail &&
       userAge &&
@@ -92,7 +111,6 @@ function UserSupplierRegistration() {
       genderPreference &&
       customAvatarUrl
     ) {
-      // validaciones
       if (!isAdult()) {
         setDialogTitle("Error de Registro");
         setCardText("Debes ser Mayor de 18 Años para Registrarte.");
@@ -168,8 +186,8 @@ function UserSupplierRegistration() {
       setCardText("Registrado éxitosamente");
 
       setDialogTitle("Éxito");
-      setDialogBackgroundColor("green"); // Cambia el fondo de la ventana de diálogo a verde
-      setDialogTextColor("white"); // Cambia el color del texto de la ventana de diálogo a blanco
+      setDialogBackgroundColor("green");
+      setDialogTextColor("white");
       setOpenDialog(true);
     } else {
       setDialogTitle("Error");
@@ -264,11 +282,10 @@ function UserSupplierRegistration() {
         </div>
         <Typography variant="caption" color="white" style={{ width: "auto" }}>
           En World Music, nuestro "Music-DJ-World" es tu maestro de ceremonias
-          musical, y nuestros "Music-Usuario-World" son los oyentes más exigentes. Escucha
-          la diferencia con nosotros.
+          musical, y nuestros "Music-Usuario-World" son los oyentes más
+          exigentes. Escucha la diferencia con nosotros.
         </Typography>
       </Box>
-
       {showCard && (
         <div
           style={{
@@ -400,7 +417,6 @@ function UserSupplierRegistration() {
               </Box>
             </div>
             <div style={{ flex: 1, marginTop: 10, overflowX: "auto" }}>
-              {/* Contenedor para permitir el desplazamiento horizontal */}
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <InputLabel sx={{ color: "white", mt: 2 }}>Email</InputLabel>
                 <TextField
@@ -431,6 +447,26 @@ function UserSupplierRegistration() {
                   autoComplete="off"
                 />
 
+                
+
+                <InputLabel sx={{ color: "white", mt: 1 }}>
+                  Género Musical de Referencia
+                </InputLabel>
+                <Select
+                  sx={{ bgcolor: "white", paddingY: "4px", // Ajusta el padding vertical según tus preferencias
+                  height: "40px",}}
+                  value={genderPreference}
+                  onChange={(e) => setGenderPreference(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="">Seleccionar Género</MenuItem>
+                  {musicalGenres.map((genre, index) => (
+                    <MenuItem key={index} value={genre}>
+                      {genre}
+                    </MenuItem>
+                  ))}
+                </Select>
+
                 <InputLabel sx={{ color: "white", mt: 1 }}>
                   Ingrese una Contraseña
                 </InputLabel>
@@ -447,22 +483,6 @@ function UserSupplierRegistration() {
                   autoComplete="off"
                 />
 
-                <InputLabel sx={{ color: "white", mt: 1 }}>
-                  Género Musical de Referencia
-                </InputLabel>
-                <Select
-                  sx={{ bgcolor: "white" }}
-                  value={genderPreference}
-                  onChange={(e) => setGenderPreference(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value="">Seleccionar Género</MenuItem>
-                  {musicalGenres.map((genre, index) => (
-                    <MenuItem key={index} value={genre}>
-                      {genre}
-                    </MenuItem>
-                  ))}
-                </Select>
                 <Button
                   type="submit"
                   variant="contained"
@@ -486,13 +506,13 @@ function UserSupplierRegistration() {
           </Box>
         </div>
       )}
-
+      {showUserForm && <UserRegistrationForm onClose={() => setShowUserForm(false)} />}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         PaperProps={{
           sx: {
-            backgroundColor: dialogBackgroundColor, // Cambia el color de fondo de la ventana de diálogo
+            backgroundColor: dialogBackgroundColor,
           },
         }}
       >
@@ -500,8 +520,8 @@ function UserSupplierRegistration() {
         <DialogContent>
           <DialogContentText
             sx={{
-              fontSize: "1.5rem", // Tamaño de fuente más grande
-              fontWeight: "bold", // Letras en negrita
+              fontSize: "1.5rem",
+              fontWeight: "bold",
             }}
           >
             {cardText}
@@ -511,7 +531,7 @@ function UserSupplierRegistration() {
           <Button
             onClick={() => setOpenDialog(false)}
             color="primary"
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           >
             Cerrar
           </Button>

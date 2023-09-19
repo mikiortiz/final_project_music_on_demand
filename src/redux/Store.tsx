@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import formReducer from "./reducers/SupplierFormSlice"; // Importa el slice original
+import registeredReducer from "./reducers/RegisteredFormSlice"; // Importa el slice con el nuevo nombre
 
 const store = configureStore({
   reducer: {
-    form: formReducer, // Usa el slice original llamado "form"
+    registered: registeredReducer, // Usa el slice con el nuevo nombre "registered"
   },
 });
 

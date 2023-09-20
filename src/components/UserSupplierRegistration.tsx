@@ -21,6 +21,7 @@ import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
 import UserRegistrationForm from "./UserRegistrationForm";
+import LoginForm from "./LoginForm";
 
 function UserSupplierRegistration() {
   const [showUserForm, setShowUserForm] = useState(false);
@@ -40,6 +41,8 @@ function UserSupplierRegistration() {
   const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
   const [dialogTextColor, setDialogTextColor] = useState("black");
 
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
   const dispatch = useDispatch();
 
   const musicalGenres = [
@@ -56,8 +59,12 @@ function UserSupplierRegistration() {
     "cumbia",
   ];
 
-  const registeredSuppliers = useSelector((state: RootStateOrAny) => state.registered.Suppliers);
-  const registeredUsers = useSelector((state: RootStateOrAny) => state.registered.MusicUser);  
+  const registeredSuppliers = useSelector(
+    (state: RootStateOrAny) => state.registered.Suppliers
+  );
+  const registeredUsers = useSelector(
+    (state: RootStateOrAny) => state.registered.MusicUser
+  );
 
   const isAdult = () => {
     return parseInt(userAge) >= 18;
@@ -92,10 +99,14 @@ function UserSupplierRegistration() {
   };
 
   const handleSubmit = () => {
-
     const isPasswordUsed =
-      registeredSuppliers.some((supplier: { userPassword: string; }) => supplier.userPassword === userPassword) ||
-      registeredUsers.some((user: { userPassword: string; }) => user.userPassword === userPassword);
+      registeredSuppliers.some(
+        (supplier: { userPassword: string }) =>
+          supplier.userPassword === userPassword
+      ) ||
+      registeredUsers.some(
+        (user: { userPassword: string }) => user.userPassword === userPassword
+      );
 
     if (isPasswordUsed) {
       setDialogTitle("Error de Registro");
@@ -195,6 +206,14 @@ function UserSupplierRegistration() {
       setOpenDialog(true);
     }
   };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+
+    if (dialogTitle === "Éxito") {
+      setShowUserForm(false);
+      setShowCard(false);
+    }
+  };
 
   return (
     <div
@@ -220,6 +239,7 @@ function UserSupplierRegistration() {
           width: "200px",
         }}
       />
+
       <Box
         sx={{
           borderRadius: "10px",
@@ -233,10 +253,29 @@ function UserSupplierRegistration() {
           maxWidth: "500px",
           margin: "0 auto",
           position: "absolute",
-          top: "65%",
+          top: "67%",
           transform: "translateY(-50%)",
         }}
       >
+        <Button
+          onClick={() => setShowLoginForm(true)}
+          variant="outlined"
+          color="primary"
+          fullWidth
+          sx={{
+            height: 50,
+            mt: -5,
+            mb: 2,
+            backgroundColor: "rgba(0, 128, 255, 0.5)",
+            color: "white",
+            borderColor: "black",
+            minWidth: "300px",
+          }}
+        >
+          Login
+        </Button>
+        {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}
+
         <Typography variant="h4" color="white">
           Te Regístraras como
         </Typography>
@@ -280,7 +319,11 @@ function UserSupplierRegistration() {
             Music-Usuario-World
           </Button>
         </div>
-        <Typography variant="caption" color="white" style={{ width: "auto" }}>
+        <Typography
+          variant="caption"
+          color="white"
+          style={{ width: "auto", marginTop: 5 }}
+        >
           En World Music, nuestro "Music-DJ-World" es tu maestro de ceremonias
           musical, y nuestros "Music-Usuario-World" son los oyentes más
           exigentes. Escucha la diferencia con nosotros.
@@ -447,14 +490,15 @@ function UserSupplierRegistration() {
                   autoComplete="off"
                 />
 
-                
-
                 <InputLabel sx={{ color: "white", mt: 1 }}>
                   Género Musical de Referencia
                 </InputLabel>
                 <Select
-                  sx={{ bgcolor: "white", paddingY: "4px", // Ajusta el padding vertical según tus preferencias
-                  height: "40px",}}
+                  sx={{
+                    bgcolor: "white",
+                    paddingY: "4px",
+                    height: "40px",
+                  }}
                   value={genderPreference}
                   onChange={(e) => setGenderPreference(e.target.value)}
                   fullWidth
@@ -506,7 +550,9 @@ function UserSupplierRegistration() {
           </Box>
         </div>
       )}
-      {showUserForm && <UserRegistrationForm onClose={() => setShowUserForm(false)} />}
+      {showUserForm && (
+        <UserRegistrationForm onClose={() => setShowUserForm(false)} />
+      )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -529,7 +575,7 @@ function UserSupplierRegistration() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setOpenDialog(false)}
+            onClick={() => handleCloseDialog()}
             color="primary"
             sx={{ color: "black" }}
           >

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import { addUser } from "../redux/reducers/RegisteredFormSlice";
 import CardImageUsers from "../assets/images/CardImageUsers.png";
 import {
@@ -39,6 +39,8 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
   const [dialogText, setDialogText] = useState("");
   const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
   const [dialogTextColor, setDialogTextColor] = useState("black");
+  const [cardText, setCardText] = useState("");
+  const [openCardDialog, setOpenCardDialog] = useState(false);
 
   useEffect(() => {
     const loadRandomUserData = async () => {
@@ -70,6 +72,13 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
     "cumbia",
   ];
 
+  const registeredSuppliers = useSelector(
+    (state: RootStateOrAny) => state.registered.Suppliers
+  );
+  const registeredUsers = useSelector(
+    (state: RootStateOrAny) => state.registered.MusicUser
+  );
+
   const isAdult = () => {
     return parseInt(userAge) >= 18;
   };
@@ -80,6 +89,21 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
   };
 
   const handleSubmit = () => {
+    const isPasswordUsed =
+      registeredSuppliers.some(
+        (supplier: { userPassword: string }) =>
+          supplier.userPassword === userPassword
+      ) ||
+      registeredUsers.some(
+        (user: { userPassword: string }) => user.userPassword === userPassword
+      );
+
+    if (isPasswordUsed) {
+      setDialogTitle("Error de Registro");
+      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
+      setOpenCardDialog(true);
+      return;
+    }
     if (
       userEmail &&
       userAge &&
@@ -187,6 +211,13 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
 
   const handleCloseDialog = () => {
     setShowDialog(false);
+    if (dialogTitle === "Éxito") {
+      onClose();
+    }
+  };
+
+  const handleCloseCardDialog = () => {
+    setOpenCardDialog(false);
   };
 
   const handleCloseForm = () => {
@@ -231,7 +262,7 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => handleCloseDialog()}
+            onClick={handleCloseDialog}
             color="primary"
             sx={{ color: "black" }}
           >
@@ -404,7 +435,7 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
               <Select
                 sx={{
                   bgcolor: "white",
-                  paddingY: "4px", // Ajusta el padding vertical según tus preferencias
+                  paddingY: "4px",
                   height: "40px",
                 }}
                 value={genderPreference}
@@ -414,7 +445,7 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
                 <MenuItem
                   value=""
                   sx={{
-                    paddingY: "4px", // Ajusta el padding vertical según tus preferencias
+                    paddingY: "4px",
                     height: "40px",
                   }}
                 >
@@ -460,6 +491,39 @@ function UserRegistrationForm({ onClose }: UserRegistrationFormProps) {
               >
                 Regístrate
               </Button>
+
+              <Dialog
+                open={openCardDialog}
+                onClose={handleCloseCardDialog}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: dialogBackgroundColor,
+                  },
+                }}
+              >
+                <DialogTitle sx={{ color: dialogTextColor }}>
+                  {dialogTitle}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText
+                    sx={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {cardText}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleCloseCardDialog}
+                    color="primary"
+                    sx={{ color: "black" }}
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </div>
         </Box>

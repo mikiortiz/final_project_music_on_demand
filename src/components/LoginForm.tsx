@@ -14,11 +14,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { Form } from "react-bootstrap";
 
-type LoginFormProps = {
-  onClose: () => void;
-};
-
-function LoginForm({ onClose }: LoginFormProps) {
+const LoginForm = ({ onClose }: { onClose: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -129,6 +125,6 @@ function LoginForm({ onClose }: LoginFormProps) {
       </Dialog>
     </div>
   );
-}
+};
 
 export default LoginForm;

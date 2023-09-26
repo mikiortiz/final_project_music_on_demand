@@ -12,15 +12,72 @@ import {
   Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Form } from "react-bootstrap";
+import { FormControl } from "@mui/material";
+import { useSelector } from "react-redux";
+import RootState from "../redux/model/RootStateTypes"; // Asegúrate de importar el tipo RootState adecuado
 
 const LoginForm = ({ onClose }: { onClose: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showDialog, setShowDialog] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [userType, setUserType] = useState("");
+
+  const users = useSelector((state: RootState) => state.registered.MusicUsers);
+  const suppliers = useSelector(
+    (state: RootState) => state.registered.Suppliers
+  );
 
   const handleLogin = () => {
+    console.log( "Ingreso de usuario", users);
+    console.log( "Ingreso de proveedor", suppliers);
+    // Lógica de validación de credenciales
+    const user =
+      users &&
+      users.find(
+        (u: { userEmail: string; userPassword: string }) =>
+          u.userEmail === email && u.userPassword === password
+      );
+    const supplier =
+      suppliers &&
+      suppliers.find(
+        (s) => s.userEmail === email && s.userPassword === password
+      );
+
+    if (user) {
+      setLoginSuccess(true);
+      setUserType("Usuario");
+    } else if (supplier) {
+      setLoginSuccess(true);
+      setUserType("Proveedor");
+    } else {
+      setLoginSuccess(false);
+    }
+
     setShowDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+    setLoginSuccess(false);
+  };
+
+  const getDialogContent = () => {
+    if (loginSuccess) {
+      return (
+        <DialogContent>
+          <DialogContentText>
+            ¡Inicio de sesión exitoso como {userType}!
+          </DialogContentText>
+        </DialogContent>
+      );
+    } else {
+      return (
+        <DialogContent>
+          <DialogContentText>Usuario no Existente.</DialogContentText>
+        </DialogContent>
+      );
+    }
   };
 
   return (
@@ -68,7 +125,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
         <Typography variant="h4" color="primary" gutterBottom>
           Iniciar Sesión
         </Typography>
-        <Form style={{ width: "100%" }}>
+        <FormControl style={{ width: "100%" }}>
           <Typography>Email</Typography>
           <TextField
             variant="outlined"
@@ -109,16 +166,18 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
           >
             Registrarse aquí
           </Button>
-        </Form>
+        </FormControl>
       </Box>
 
-      <Dialog open={showDialog} onClose={() => setShowDialog(false)}>
-        <DialogTitle>Éxito de Inicio de Sesión</DialogTitle>
-        <DialogContent>
-          <DialogContentText>¡Inicio de sesión exitoso!</DialogContentText>
-        </DialogContent>
+      <Dialog open={showDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {loginSuccess
+            ? "Éxito de Inicio de Sesión"
+            : "Error de Inicio de Sesión"}
+        </DialogTitle>
+        {getDialogContent()}
         <DialogActions>
-          <Button onClick={() => setShowDialog(false)} color="primary">
+          <Button onClick={handleCloseDialog} color="primary">
             Cerrar
           </Button>
         </DialogActions>

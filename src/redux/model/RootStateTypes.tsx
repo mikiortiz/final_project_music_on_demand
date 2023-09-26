@@ -4,7 +4,7 @@ import { UserData as MusicUser } from "./UserData";
 interface RootState {
   registered: {
     Suppliers: Supplier[];
-    MusicUser: MusicUser[];
+    MusicUsers: MusicUser[];
   };
   // Otros estados si los tienes
 }

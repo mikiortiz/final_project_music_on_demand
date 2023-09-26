@@ -45,6 +45,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
     const loadRandomUserData = async () => {
       const userData = await fetchRandomUserData();
       if (userData) {
+        console.log(userData),
         setUserEmail(userData.email);
         setUserFirstName(userData.name.first);
         setUserLastName(userData.name.last);
@@ -89,13 +90,15 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   //Función que maneja el envío del formulario
   const handleSubmitFormUsers = () => {
     const isPasswordUsed =
-      registeredSuppliers.some(
-        (supplier: { userPassword: string }) =>
-          supplier.userPassword === userPassword
-      ) ||
-      registeredUsers.some(
-        (user: { userPassword: string }) => user.userPassword === userPassword
-      );
+      (registeredSuppliers &&
+        registeredSuppliers.some(
+          (supplier: { userPassword: string }) =>
+            supplier.userPassword === userPassword
+        )) ||
+      (registeredUsers &&
+        registeredUsers.some(
+          (user: { userPassword: string }) => user.userPassword === userPassword
+        ));
 
     if (isPasswordUsed) {
       setDialogTitle("Error de Registro");

@@ -1,8 +1,7 @@
 import { useState } from "react";
-import fondo from "../assets/images/fondo1.png";
+import fondo from "../../public/images/Fondo.png";
 import {
   Button,
-  InputLabel,
   MenuItem,
   Select,
   Dialog,
@@ -12,16 +11,21 @@ import {
   DialogActions,
   TextField,
   Typography,
+  FormControl,
 } from "@mui/material";
-import CardImage from "../assets/images/CardImage.png";
+import CardImage from "../../public/images/CardImageSupplier.png";
 import { Box } from "@mui/system";
-import logomusic from "../assets/images/logomusic1.png";
-import { useDispatch } from "react-redux";
-import { addSupplier } from "../redux/reducers/SupplierFormSlice";
+import logomusic from "../../public/images/Logomusic.png";
+import { useDispatch, useSelector} from "react-redux";
+import  RootState  from "../redux/model/RootStateTypes";
+import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
+import UserRegistrationForm from "./UserRegistrationForm";
+import LoginForm from "./LoginForm";
 
-function UserSupplierRegistration() {
+const UserSupplierRegistration = () => {
+  const [showUserForm, setShowUserForm] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
@@ -37,6 +41,8 @@ function UserSupplierRegistration() {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
   const [dialogTextColor, setDialogTextColor] = useState("black");
+
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -54,10 +60,17 @@ function UserSupplierRegistration() {
     "cumbia",
   ];
 
-  const isAdult = () => {
+  const registeredSuppliers = useSelector(
+    (state: RootState) => state.registered.Suppliers
+  );
+  const registeredUsers = useSelector(
+    (state: RootState) => state.registered.MusicUser
+  );
+
+  const isSupplierAdult = () => {
     return parseInt(userAge) >= 18;
   };
-  const isValidURL = (url: string) => {
+  const isValidAvatarURL = (url: string) => {
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(url);
   };
@@ -72,19 +85,39 @@ function UserSupplierRegistration() {
       setUserLastName(userData.name.last);
       setUserAge(userData.dob.age);
       setUserContactNumber(userData.cell);
-      setCustomAvatarUrl(userData.picture.large); // Establece la URL del avatar automáticamente
+      setCustomAvatarUrl(userData.picture.large);
     }
   };
 
   const handleUsuarioClick = () => {
     setShowCard(false);
+    setShowUserForm(true);
   };
 
   const handleCloseClick = () => {
     setShowCard(false);
+    setShowUserForm(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmitFormSuppliers = () => {
+    const isPasswordUsed =
+      (registeredSuppliers &&
+        registeredSuppliers.some(
+          (supplier: { userPassword: string }) =>
+            supplier.userPassword === userPassword
+        )) ||
+      (registeredUsers &&
+        registeredUsers.some(
+          (user: { userPassword: string }) => user.userPassword === userPassword
+        ));
+
+    if (isPasswordUsed) {
+      setDialogTitle("Error de Registro");
+      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
+      setOpenDialog(true);
+      return;
+    }
+
     if (
       userEmail &&
       userAge &&
@@ -92,8 +125,7 @@ function UserSupplierRegistration() {
       genderPreference &&
       customAvatarUrl
     ) {
-      // validaciones
-      if (!isAdult()) {
+      if (!isSupplierAdult()) {
         setDialogTitle("Error de Registro");
         setCardText("Debes ser Mayor de 18 Años para Registrarte.");
         setOpenDialog(true);
@@ -135,7 +167,7 @@ function UserSupplierRegistration() {
         return;
       }
 
-      if (!isValidURL(customAvatarUrl)) {
+      if (!isValidAvatarURL(customAvatarUrl)) {
         setDialogTitle("Error de Registro");
         setCardText(
           "La URL de la imagen de avatar no tiene un formato válido."
@@ -144,7 +176,7 @@ function UserSupplierRegistration() {
         return;
       }
 
-      const newUser = {
+      const newSupplier = {
         userEmail,
         userFirstName,
         userLastName,
@@ -155,7 +187,7 @@ function UserSupplierRegistration() {
         userContactNumber,
       };
 
-      dispatch(addSupplier(newUser));
+      dispatch(addSupplier(newSupplier));
 
       setUserEmail("");
       setUserFirstName("");
@@ -168,13 +200,21 @@ function UserSupplierRegistration() {
       setCardText("Registrado éxitosamente");
 
       setDialogTitle("Éxito");
-      setDialogBackgroundColor("green"); // Cambia el fondo de la ventana de diálogo a verde
-      setDialogTextColor("white"); // Cambia el color del texto de la ventana de diálogo a blanco
+      setDialogBackgroundColor("green");
+      setDialogTextColor("white");
       setOpenDialog(true);
     } else {
       setDialogTitle("Error");
       setCardText("Por favor, completa todos los campos obligatorios.");
       setOpenDialog(true);
+    }
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+
+    if (dialogTitle === "Éxito") {
+      setShowUserForm(false);
+      setShowCard(false);
     }
   };
 
@@ -202,6 +242,7 @@ function UserSupplierRegistration() {
           width: "200px",
         }}
       />
+
       <Box
         sx={{
           borderRadius: "10px",
@@ -215,10 +256,29 @@ function UserSupplierRegistration() {
           maxWidth: "500px",
           margin: "0 auto",
           position: "absolute",
-          top: "65%",
+          top: "67%",
           transform: "translateY(-50%)",
         }}
       >
+        <Button
+          onClick={() => setShowLoginForm(true)}
+          variant="outlined"
+          color="primary"
+          fullWidth
+          sx={{
+            height: 50,
+            mt: -5,
+            mb: 2,
+            backgroundColor: "rgba(0, 128, 255, 0.5)",
+            color: "white",
+            borderColor: "black",
+            minWidth: "300px",
+          }}
+        >
+          Login
+        </Button>
+        {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}
+
         <Typography variant="h4" color="white">
           Te Regístraras como
         </Typography>
@@ -262,13 +322,23 @@ function UserSupplierRegistration() {
             Music-Usuario-World
           </Button>
         </div>
-        <Typography variant="caption" color="white" style={{ width: "auto" }}>
+        <Typography
+          variant="caption"
+          color="white"
+          style={{
+            width: "auto",
+            marginTop: 5,
+            fontSize: "1.2rem",
+            marginBottom: -60,
+            textAlign: "center",
+            lineHeight: "1.2",
+          }}
+        >
           En World Music, nuestro "Music-DJ-World" es tu maestro de ceremonias
-          musical, y nuestros "Music-Usuario-World" son los oyentes más exigentes. Escucha
-          la diferencia con nosotros.
+          musical, y nuestros "Music-Usuario-World" son los oyentes más
+          exigentes. Escucha la diferencia con nosotros.
         </Typography>
       </Box>
-
       {showCard && (
         <div
           style={{
@@ -279,7 +349,7 @@ function UserSupplierRegistration() {
             justifyContent: "center",
             alignItems: "center",
             width: "90%",
-            height: "90%",
+            height: "95%",
             margin: "auto",
             boxShadow: "0px 0px 100px rgba(0, 0, 0, 1 )",
           }}
@@ -300,199 +370,222 @@ function UserSupplierRegistration() {
               justifyContent: "space-between",
             }}
           >
-            <Button
-              onClick={handleCloseClick}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "35px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "20px",
-                color: "white",
+            <FormControl
+              fullWidth
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: "1rem",
               }}
             >
-              &#x2716;
-            </Button>
-            <div style={{ flex: 1, marginRight: "1rem", marginTop: 10 }}>
-              <InputLabel sx={{ color: "white", mt: 2 }}>Nombre</InputLabel>
-              <TextField
-                placeholder="Nombre"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userFirstName}
-                onChange={(e) => setUserFirstName(e.target.value)}
-                autoComplete="off"
-              />
+              <div style={{ flex: 1 }}>
+                <Typography sx={{ color: "white", mt: 2 }}>Nombre</Typography>
+                <TextField
+                  placeholder="Nombre"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userFirstName}
+                  onChange={(e) => setUserFirstName(e.target.value)}
+                  autoComplete="off"
+                />
 
-              <InputLabel sx={{ color: "white", mt: 1 }}>Apellido</InputLabel>
-              <TextField
-                placeholder="Apellido"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userLastName}
-                onChange={(e) => setUserLastName(e.target.value)}
-                autoComplete="off"
-              />
+                <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
+                <TextField
+                  placeholder="Apellido"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userLastName}
+                  onChange={(e) => setUserLastName(e.target.value)}
+                  autoComplete="off"
+                />
 
-              <InputLabel sx={{ color: "white", mt: 1 }}>Edad</InputLabel>
-              <TextField
-                placeholder="Edad"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userAge}
-                onChange={(e) => setUserAge(e.target.value)}
-                autoComplete="off"
-              />
-              <InputLabel sx={{ color: "white", mt: 1 }}>
-                Numero de Contacto
-              </InputLabel>
-              <TextField
-                placeholder="Número de Contacto"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window" }}
-                value={userContactNumber}
-                onChange={(e) => setUserContactNumber(e.target.value)}
-                autoComplete="off"
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: "5px",
-                  marginTop: "30px",
-                  height: "200px",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  component="div"
-                  align="center"
-                  color="white"
-                  marginTop={"90px"}
-                  marginRight={"40px"}
-                >
-                  Tu Avatar
+                <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
+                <TextField
+                  placeholder="Edad"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userAge}
+                  onChange={(e) => setUserAge(e.target.value)}
+                  autoComplete="off"
+                />
+
+                <Typography sx={{ color: "white", mt: 1 }}>
+                  Numero de Contacto
                 </Typography>
-                <Avatar
-                  alt="Avatar"
-                  src={customAvatarUrl}
-                  sx={{
-                    width: 150,
-                    height: 150,
-                    marginTop: "25px",
+                <TextField
+                  placeholder="Número de Contacto"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window" }}
+                  value={userContactNumber}
+                  onChange={(e) => setUserContactNumber(e.target.value)}
+                  autoComplete="off"
+                />
+
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    borderRadius: "5px",
+                    marginTop: "30px",
+                    height: "200px",
                   }}
-                />
-              </Box>
-            </div>
-            <div style={{ flex: 1, marginTop: 10, overflowX: "auto" }}>
-              {/* Contenedor para permitir el desplazamiento horizontal */}
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <InputLabel sx={{ color: "white", mt: 2 }}>Email</InputLabel>
-                <TextField
-                  placeholder="Email"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window" }}
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  autoComplete="off"
-                  type="email"
-                />
-
-                <InputLabel sx={{ color: "white", mt: 1 }}>
-                  Ingrese una URL para tu Avatar de Presentación
-                </InputLabel>
-                <TextField
-                  placeholder="URL de la Imagen de Avatar"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window" }}
-                  value={customAvatarUrl}
-                  onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                  autoComplete="off"
-                />
-
-                <InputLabel sx={{ color: "white", mt: 1 }}>
-                  Ingrese una Contraseña
-                </InputLabel>
-                <TextField
-                  placeholder="Contraseña"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window" }}
-                  value={userPassword}
-                  onChange={(e) => setUserPassword(e.target.value)}
-                  type="password"
-                  autoComplete="off"
-                />
-
-                <InputLabel sx={{ color: "white", mt: 1 }}>
-                  Género Musical de Referencia
-                </InputLabel>
-                <Select
-                  sx={{ bgcolor: "white" }}
-                  value={genderPreference}
-                  onChange={(e) => setGenderPreference(e.target.value)}
-                  fullWidth
                 >
-                  <MenuItem value="">Seleccionar Género</MenuItem>
-                  {musicalGenres.map((genre, index) => (
-                    <MenuItem key={index} value={genre}>
-                      {genre}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    minWidth: "300px",
-                    width: "auto",
-                    height: "60px",
-                    whiteSpace: "nowrap",
-                    ml: 12,
-                    mb: -7,
-                    position: "absolute",
-                    bottom: "170px",
-                  }}
-                  onClick={handleSubmit}
-                >
-                  Regístrarte
-                </Button>
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    align="center"
+                    color="white"
+                    marginTop={"90px"}
+                    marginRight={"40px"}
+                  >
+                    Tu Avatar
+                  </Typography>
+                  <Avatar
+                    alt="Avatar"
+                    src={customAvatarUrl}
+                    sx={{
+                      width: 150,
+                      height: 150,
+                      marginTop: "25px",
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+
+              <div style={{ flex: 1, marginTop: "32px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    marginTop: "-16px",
+                  }}
+                >
+                  <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
+                  <TextField
+                    placeholder="Email"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    required
+                    sx={{ bgcolor: "Window" }}
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    autoComplete="off"
+                    type="email"
+                  />
+
+                  <Typography sx={{ color: "white", mb: -2 }}>
+                    Ingrese una URL para su Avatar de Presentación
+                  </Typography>
+                  <TextField
+                    placeholder="URL de la Imagen de Avatar"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    required
+                    sx={{ bgcolor: "Window" }}
+                    value={customAvatarUrl}
+                    onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                    autoComplete="off"
+                  />
+
+                  <Typography sx={{ color: "white", mb: -2 }}>
+                    Género Musical de Referencia
+                  </Typography>
+                  <Select
+                    sx={{
+                      bgcolor: "white",
+                      paddingY: "4px",
+                      height: "40px",
+                    }}
+                    value={genderPreference}
+                    onChange={(e) => setGenderPreference(e.target.value)}
+                    fullWidth
+                  >
+                    <MenuItem value="">Seleccionar Género</MenuItem>
+                    {musicalGenres.map((genre, index) => (
+                      <MenuItem key={index} value={genre}>
+                        {genre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  <Typography sx={{ color: "white", mb: -2 }}>
+                    Ingrese una Contraseña
+                  </Typography>
+                  <TextField
+                    placeholder="Contraseña"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    required
+                    sx={{ bgcolor: "Window" }}
+                    value={userPassword}
+                    onChange={(e) => setUserPassword(e.target.value)}
+                    type="password"
+                    autoComplete="off"
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      mt: 2,
+                      width: "auto",
+                      height: "60px",
+                    }}
+                    onClick={handleSubmitFormSuppliers}
+                  >
+                    Regístrate
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      minWidth: "300px",
+                      width: "100%",
+                      height: "60px",
+                      whiteSpace: "nowrap",
+                      mt: 2,
+                    }}
+                    onClick={handleCloseClick}
+                  >
+                    Volver
+                  </Button>
+                </div>
+              </div>
+            </FormControl>
           </Box>
         </div>
       )}
-
+      {showUserForm && (
+        <UserRegistrationForm onClose={() => setShowUserForm(false)} />
+      )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         PaperProps={{
           sx: {
-            backgroundColor: dialogBackgroundColor, // Cambia el color de fondo de la ventana de diálogo
+            backgroundColor: dialogBackgroundColor,
           },
         }}
       >
@@ -500,8 +593,8 @@ function UserSupplierRegistration() {
         <DialogContent>
           <DialogContentText
             sx={{
-              fontSize: "1.5rem", // Tamaño de fuente más grande
-              fontWeight: "bold", // Letras en negrita
+              fontSize: "1.5rem",
+              fontWeight: "bold",
             }}
           >
             {cardText}
@@ -509,9 +602,9 @@ function UserSupplierRegistration() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setOpenDialog(false)}
+            onClick={() => handleCloseDialog()}
             color="primary"
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
           >
             Cerrar
           </Button>
@@ -519,6 +612,6 @@ function UserSupplierRegistration() {
       </Dialog>
     </div>
   );
-}
+};
 
 export default UserSupplierRegistration;

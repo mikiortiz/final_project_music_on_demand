@@ -1,83 +1,59 @@
-import { useState } from "react";
-import {
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Box,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Button, TextField, Typography, IconButton, Box } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormControl } from "@mui/material";
-import { useSelector } from "react-redux";
-import RootState from "../redux/model/RootStateTypes"; // Asegúrate de importar el tipo RootState adecuado
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../redux/reducers/UserLoginSlice";
+import RootState from "../redux/model/RootStateTypes";
+import { SupplierData } from "../redux/model/SupplierData";
+import { UserData } from "../redux/model/UserData";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({ onClose }: { onClose: () => void }) => {
+interface Props {
+  onClose: () => void;
+}
+
+const LoginForm: React.FC<Props> = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showDialog, setShowDialog] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
-  const [userType, setUserType] = useState("");
+  const dispatch = useDispatch();
 
-  const users = useSelector((state: RootState) => state.registered.MusicUsers);
+  const users = useSelector(
+    (state: RootState) => state.registered.MusicUsers
+  ) as UserData[];
   const suppliers = useSelector(
     (state: RootState) => state.registered.Suppliers
-  );
+  ) as SupplierData[];
 
+  const navigate = useNavigate();
+
+  // función de inicio de sesión
   const handleLogin = () => {
-    console.log( "Ingreso de usuario", users);
-    console.log( "Ingreso de proveedor", suppliers);
-    // Lógica de validación de credenciales
-    const user =
-      users &&
-      users.find(
-        (u: { userEmail: string; userPassword: string }) =>
-          u.userEmail === email && u.userPassword === password
-      );
-    const supplier =
-      suppliers &&
-      suppliers.find(
-        (s) => s.userEmail === email && s.userPassword === password
-      );
+    if (email.trim() === "" || password.trim() === "") {
+      ShowWindowDialog("Login incompleto");
+      return;
+    }
+
+    const user = users.find(
+      (u) => u.userEmail === email && u.userPassword === password
+    );
+    const supplier = suppliers.find(
+      (s) => s.userEmail === email && s.userPassword === password
+    );
 
     if (user) {
-      setLoginSuccess(true);
-      setUserType("Usuario");
+      dispatch(setUser({ ...user, userType: "user" }));
+      navigate("/userwelcome");
     } else if (supplier) {
-      setLoginSuccess(true);
-      setUserType("Proveedor");
+      dispatch(setUser({ ...supplier, userType: "supplier" }));
+      navigate("/supplierwelcome");
     } else {
-      setLoginSuccess(false);
+      ShowWindowDialog("Los datos ingresados son incorrectos");
     }
-
-    setShowDialog(true);
   };
 
-  const handleCloseDialog = () => {
-    setShowDialog(false);
-    setLoginSuccess(false);
-  };
-
-  const getDialogContent = () => {
-    if (loginSuccess) {
-      return (
-        <DialogContent>
-          <DialogContentText>
-            ¡Inicio de sesión exitoso como {userType}!
-          </DialogContentText>
-        </DialogContent>
-      );
-    } else {
-      return (
-        <DialogContent>
-          <DialogContentText>Usuario no Existente.</DialogContentText>
-        </DialogContent>
-      );
-    }
+  const ShowWindowDialog = (mensaje: string) => {
+    window.alert(mensaje);
   };
 
   return (
@@ -148,15 +124,17 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ backgroundColor: "white", marginBottom: "1rem" }}
           />
+
           <Button
-            sx={{ mt: 3, height: "60px" }}
             variant="contained"
             color="primary"
             fullWidth
             onClick={handleLogin}
+            style={{ marginTop: 3, height: "60px" }}
           >
             Iniciar Sesión
           </Button>
+
           <Button
             variant="outlined"
             color="primary"
@@ -168,20 +146,6 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
           </Button>
         </FormControl>
       </Box>
-
-      <Dialog open={showDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {loginSuccess
-            ? "Éxito de Inicio de Sesión"
-            : "Error de Inicio de Sesión"}
-        </DialogTitle>
-        {getDialogContent()}
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };

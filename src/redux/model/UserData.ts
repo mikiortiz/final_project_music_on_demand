@@ -4,7 +4,8 @@ export interface UserData {
   userLastName: string;
   userAge: string;
   userPassword: string;
-  genderPreference: string;
   customUserAvatarUrl: string;
   userContactNumber: string;
+  userType?: string;
+  selectedGenres: string[];
 }

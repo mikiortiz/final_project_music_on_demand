@@ -4,7 +4,8 @@ export interface SupplierData {
   userLastName: string;
   userAge: string;
   userPassword: string;
-  genderPreference: string;
   customAvatarUrl: string;
   userContactNumber: string;
+  userType?: string;
+  selectedGenres?: string[];
 }

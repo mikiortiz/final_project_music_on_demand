@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import  RootState  from "../redux/model/RootStateTypes";
+import { RootState } from "../redux/model/RootStateTypes";
 import { addUser } from "../redux/reducers/RegisteredFormSlice";
 import CardImageUsers from "../../public/images/CardImageUsers.png";
 import {
@@ -8,8 +8,6 @@ import {
   TextField,
   Typography,
   Avatar,
-  Select,
-  MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -30,7 +28,6 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   const [userLastName, setUserLastName] = useState("");
   const [userAge, setUserAge] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [genderPreference, setGenderPreference] = useState("");
   const [customUserAvatarUrl, setCustomUserAvatarUrl] = useState("");
   const [userContactNumber, setUserContactNumber] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -38,15 +35,14 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   const [dialogText, setDialogText] = useState("");
   const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
   const [dialogTextColor, setDialogTextColor] = useState("black");
-  const [cardText, setCardText] = useState("");
+  
   const [openCardDialog, setOpenCardDialog] = useState(false);
   // Efecto de carga de datos aleatorios
   useEffect(() => {
     const loadRandomUserData = async () => {
       const userData = await fetchRandomUserData();
       if (userData) {
-        console.log(userData),
-        setUserEmail(userData.email);
+        console.log(userData), setUserEmail(userData.email);
         setUserFirstName(userData.name.first);
         setUserLastName(userData.name.last);
         setUserAge(userData.dob.age);
@@ -57,26 +53,12 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
 
     loadRandomUserData();
   }, []);
-  // Arreglo de géneros musicales
-  const musicalGenres = [
-    "Pop",
-    "Rock",
-    "Electrónica",
-    "Hip-Hop",
-    "Jazz",
-    "Clásica",
-    "R&B",
-    "Reggae",
-    "Country",
-    "Metal",
-    "cumbia",
-  ];
   // Selectores de datos del estado global de Redux
   const registeredSuppliers = useSelector(
-    (state: RootState) => state.registered.Suppliers
+    (state: RootState) => state.registered.DjsUsers
   );
   const registeredUsers = useSelector(
-    (state: RootState) => state.registered.MusicUser
+    (state: RootState) => state.registered.MusicUsers
   );
   // Verificaciones
   const isUserAdult = () => {
@@ -89,30 +71,20 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   };
   //Función que maneja el envío del formulario
   const handleSubmitFormUsers = () => {
-    const isPasswordUsed =
-      (registeredSuppliers &&
-        registeredSuppliers.some(
-          (supplier: { userPassword: string }) =>
-            supplier.userPassword === userPassword
-        )) ||
-      (registeredUsers &&
-        registeredUsers.some(
-          (user: { userPassword: string }) => user.userPassword === userPassword
-        ));
+    const isEmailUsed =
+    registeredSuppliers &&
+    registeredSuppliers.some((supplier: { userEmail: string }) => supplier.userEmail === userEmail) ||
+    (registeredUsers && registeredUsers.some((user: { userEmail: string }) => user.userEmail === userEmail));
 
-    if (isPasswordUsed) {
+    if (isEmailUsed) {
       setDialogTitle("Error de Registro");
-      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
-      setOpenCardDialog(true);
+      setDialogText("Este correo electrónico ya está registrado, por favor, elija otro correo electrónico.");
+      setDialogBackgroundColor("white");
+      setDialogTextColor("black");
+      setShowDialog(true);
       return;
     }
-    if (
-      userEmail &&
-      userAge &&
-      userPassword &&
-      genderPreference &&
-      customUserAvatarUrl
-    ) {
+    if (userEmail && userAge && userPassword && customUserAvatarUrl) {
       // Validaciones adicionales del formulario
       if (!isUserAdult()) {
         setDialogTitle("Error de Registro");
@@ -161,7 +133,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
 
       if (!userEmail.includes("@")) {
         setDialogTitle("Error de Registro");
-        setDialogText("Dirección de Correo Electrónico es inválida.");
+        setDialogText("Emai Existente, Verifique su correo electronico");
         setDialogBackgroundColor("white");
         setDialogTextColor("black");
         setShowDialog(true);
@@ -176,16 +148,16 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
         setShowDialog(true);
         return;
       }
-      // Creación del el objeto con los datos del usuario de tipo UserData
+      // Creación del objeto con los datos del usuario de tipo UserData
       const musicUserData: UserData = {
         userEmail,
         userFirstName,
         userLastName,
         userAge,
         userPassword,
-        genderPreference,
         customUserAvatarUrl,
         userContactNumber,
+        selectedGenres: [],
       };
       // Despachamos acción para agregar un usuario
       dispatch(addUser(musicUserData));
@@ -195,7 +167,6 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
       setUserLastName("");
       setUserAge("");
       setUserPassword("");
-      setGenderPreference("");
       setCustomUserAvatarUrl("");
       setUserContactNumber("");
       setDialogText("Registrado exitosamente");
@@ -403,34 +374,6 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 />
 
                 <Typography sx={{ color: "white", mb: -2 }}>
-                  Género Musical de Referencia
-                </Typography>
-                <Select
-                  sx={{
-                    bgcolor: "white",
-                    paddingY: "4px",
-                    height: "40px",
-                  }}
-                  value={genderPreference}
-                  onChange={(e) => setGenderPreference(e.target.value)}
-                  fullWidth
-                >
-                  <MenuItem
-                    value=""
-                    sx={{
-                      paddingY: "4px",
-                      height: "40px",
-                    }}
-                  >
-                    Seleccionar Género
-                  </MenuItem>
-                  {musicalGenres.map((genre, index) => (
-                    <MenuItem key={index} value={genre}>
-                      {genre}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Typography sx={{ color: "white", mb: -2 }}>
                   Ingrese una Contraseña
                 </Typography>
                 <TextField
@@ -532,7 +475,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                     fontWeight: "bold",
                   }}
                 >
-                  {cardText}
+                  
                 </DialogContentText>
               </DialogContent>
               <DialogActions>

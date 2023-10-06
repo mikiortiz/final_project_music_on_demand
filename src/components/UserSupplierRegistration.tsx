@@ -2,8 +2,6 @@ import { useState } from "react";
 import fondo from "../../public/images/Fondo.png";
 import {
   Button,
-  MenuItem,
-  Select,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,8 +14,8 @@ import {
 import CardImage from "../../public/images/CardImageSupplier.png";
 import { Box } from "@mui/system";
 import logomusic from "../../public/images/Logomusic.png";
-import { useDispatch, useSelector} from "react-redux";
-import  RootState  from "../redux/model/RootStateTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/model/RootStateTypes";
 import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
@@ -32,7 +30,6 @@ const UserSupplierRegistration = () => {
   const [userLastName, setUserLastName] = useState("");
   const [userAge, setUserAge] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [genderPreference, setGenderPreference] = useState("");
   const [customAvatarUrl, setCustomAvatarUrl] = useState("");
   const [userContactNumber, setUserContactNumber] = useState("");
   const [cardText, setCardText] = useState("");
@@ -46,25 +43,8 @@ const UserSupplierRegistration = () => {
 
   const dispatch = useDispatch();
 
-  const musicalGenres = [
-    "Pop",
-    "Rock",
-    "Electrónica",
-    "Hip-Hop",
-    "Jazz",
-    "Clásica",
-    "R&B",
-    "Reggae",
-    "Country",
-    "Metal",
-    "cumbia",
-  ];
-
   const registeredSuppliers = useSelector(
-    (state: RootState) => state.registered.Suppliers
-  );
-  const registeredUsers = useSelector(
-    (state: RootState) => state.registered.MusicUser
+    (state: RootState) => state.registered.DjsUsers
   );
 
   const isSupplierAdult = () => {
@@ -100,31 +80,27 @@ const UserSupplierRegistration = () => {
   };
 
   const handleSubmitFormSuppliers = () => {
-    const isPasswordUsed =
-      (registeredSuppliers &&
-        registeredSuppliers.some(
-          (supplier: { userPassword: string }) =>
-            supplier.userPassword === userPassword
-        )) ||
-      (registeredUsers &&
-        registeredUsers.some(
-          (user: { userPassword: string }) => user.userPassword === userPassword
-        ));
+    const isEmailUsed =
+      registeredSuppliers &&
+      registeredSuppliers.some((supplier) => supplier.userEmail === userEmail);
 
-    if (isPasswordUsed) {
+    if (isEmailUsed) {
       setDialogTitle("Error de Registro");
-      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
+      setCardText(
+        "Este correo electrónico ya está registrado. Por favor, ingrese otro correo electrónico."
+      );
       setOpenDialog(true);
       return;
     }
 
-    if (
-      userEmail &&
-      userAge &&
-      userPassword &&
-      genderPreference &&
-      customAvatarUrl
-    ) {
+    if (userEmail && userAge && userPassword && customAvatarUrl) {
+      if (!userEmail.includes("@")) {
+        setDialogTitle("Error de Registro");
+        setCardText("Dirección de Correo Electrónico Invalido.");
+        setOpenDialog(true);
+        return;
+      }
+
       if (!isSupplierAdult()) {
         setDialogTitle("Error de Registro");
         setCardText("Debes ser Mayor de 18 Años para Registrarte.");
@@ -160,13 +136,6 @@ const UserSupplierRegistration = () => {
         return;
       }
 
-      if (!userEmail.includes("@")) {
-        setDialogTitle("Error de Registro");
-        setCardText("Dirección de Correo Electrónico Invalido.");
-        setOpenDialog(true);
-        return;
-      }
-
       if (!isValidAvatarURL(customAvatarUrl)) {
         setDialogTitle("Error de Registro");
         setCardText(
@@ -182,7 +151,6 @@ const UserSupplierRegistration = () => {
         userLastName,
         userAge,
         userPassword,
-        genderPreference,
         customAvatarUrl,
         userContactNumber,
       };
@@ -194,7 +162,6 @@ const UserSupplierRegistration = () => {
       setUserLastName("");
       setUserAge("");
       setUserPassword("");
-      setGenderPreference("");
       setCustomAvatarUrl("");
       setUserContactNumber("");
       setCardText("Registrado éxitosamente");
@@ -292,7 +259,7 @@ const UserSupplierRegistration = () => {
         >
           <Button
             sx={{
-              backgroundColor: "rgba(255, 255, 255, 0.5)",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
               color: "white",
               borderColor: "black",
               minWidth: "300px",
@@ -308,7 +275,7 @@ const UserSupplierRegistration = () => {
 
           <Button
             sx={{
-              backgroundColor: "rgba(255, 255, 255, 0.5)",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
               color: "white",
               borderColor: "black",
               minWidth: "300px",
@@ -327,7 +294,7 @@ const UserSupplierRegistration = () => {
           color="white"
           style={{
             width: "auto",
-            marginTop: 5,
+            marginTop: 20,
             fontSize: "1.2rem",
             marginBottom: -60,
             textAlign: "center",
@@ -388,7 +355,7 @@ const UserSupplierRegistration = () => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "white", borderRadius: "10px" }}
                   value={userFirstName}
                   onChange={(e) => setUserFirstName(e.target.value)}
                   autoComplete="off"
@@ -401,7 +368,7 @@ const UserSupplierRegistration = () => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={userLastName}
                   onChange={(e) => setUserLastName(e.target.value)}
                   autoComplete="off"
@@ -414,7 +381,7 @@ const UserSupplierRegistration = () => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={userAge}
                   onChange={(e) => setUserAge(e.target.value)}
                   autoComplete="off"
@@ -429,7 +396,7 @@ const UserSupplierRegistration = () => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={userContactNumber}
                   onChange={(e) => setUserContactNumber(e.target.value)}
                   autoComplete="off"
@@ -484,7 +451,7 @@ const UserSupplierRegistration = () => {
                     variant="outlined"
                     size="small"
                     required
-                    sx={{ bgcolor: "Window" }}
+                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                     autoComplete="off"
@@ -500,32 +467,11 @@ const UserSupplierRegistration = () => {
                     variant="outlined"
                     size="small"
                     required
-                    sx={{ bgcolor: "Window" }}
+                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     value={customAvatarUrl}
                     onChange={(e) => setCustomAvatarUrl(e.target.value)}
                     autoComplete="off"
                   />
-
-                  <Typography sx={{ color: "white", mb: -2 }}>
-                    Género Musical de Referencia
-                  </Typography>
-                  <Select
-                    sx={{
-                      bgcolor: "white",
-                      paddingY: "4px",
-                      height: "40px",
-                    }}
-                    value={genderPreference}
-                    onChange={(e) => setGenderPreference(e.target.value)}
-                    fullWidth
-                  >
-                    <MenuItem value="">Seleccionar Género</MenuItem>
-                    {musicalGenres.map((genre, index) => (
-                      <MenuItem key={index} value={genre}>
-                        {genre}
-                      </MenuItem>
-                    ))}
-                  </Select>
 
                   <Typography sx={{ color: "white", mb: -2 }}>
                     Ingrese una Contraseña
@@ -536,7 +482,7 @@ const UserSupplierRegistration = () => {
                     variant="outlined"
                     size="small"
                     required
-                    sx={{ bgcolor: "Window" }}
+                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     value={userPassword}
                     onChange={(e) => setUserPassword(e.target.value)}
                     type="password"
@@ -548,6 +494,7 @@ const UserSupplierRegistration = () => {
                     variant="contained"
                     color="primary"
                     sx={{
+                      borderRadius: "10px",
                       mt: 2,
                       width: "auto",
                       height: "60px",
@@ -561,11 +508,10 @@ const UserSupplierRegistration = () => {
                     variant="contained"
                     color="primary"
                     sx={{
-                      minWidth: "300px",
-                      width: "100%",
-                      height: "60px",
-                      whiteSpace: "nowrap",
+                      borderRadius: "10px",
                       mt: 2,
+                      width: "auto",
+                      height: "60px",
                     }}
                     onClick={handleCloseClick}
                   >

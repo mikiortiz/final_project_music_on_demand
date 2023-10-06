@@ -5,12 +5,12 @@ import { SupplierData } from "../model/SupplierData";
 const registeredFormSlice = createSlice({
   name: "registeredForm",
   initialState: {
-    Suppliers: [] as SupplierData[],
+    DjsUsers: [] as SupplierData[],
     MusicUsers: [] as UserData[],
   },
   reducers: {
     addSupplier: (state, action: PayloadAction<SupplierData>) => {
-      state.Suppliers.push(action.payload);
+      state.DjsUsers.push(action.payload);
     },
     addUser: (state, action: PayloadAction<UserData>) => {
       state.MusicUsers.push(action.payload);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../redux/reducers/UserLoginSlice";
-import RootState from "../redux/model/RootStateTypes";
+import { RootState } from "../redux/model/RootStateTypes";
 import { getAvailableGenres } from "../services/ApiSpotify";
 import {
   Snackbar,
@@ -98,7 +98,11 @@ const SupplierWelcome = () => {
         }}
       ></div>
       <Box
-        sx={{ background: "rgba(0, 0, 0, 0.9)", height: 50, textAlign: "center" }}
+        sx={{
+          background: "rgba(0, 0, 0, 0.9)",
+          height: 50,
+          textAlign: "center",
+        }}
       >
         <Typography sx={{ color: "white", fontSize: 30, fontWeight: "600" }}>
           ELECCION DE GENEROS
@@ -117,8 +121,8 @@ const SupplierWelcome = () => {
         "Crea tu identidad musical seleccionando entre una variedad de géneros
         disponibles en Music World. Destácate en tus áreas de experiencia o
         explora nuevos territorios artísticos. Tu elección define tu viaje
-        musical único. ¡Descubre, experimenta y encuentra tu estilo en el mundo de
-        la música!"
+        musical único. ¡Descubre, experimenta y encuentra tu estilo en el mundo
+        de la música!"
       </Typography>
       <div
         style={{
@@ -282,7 +286,6 @@ const SupplierWelcome = () => {
           </Grid>
         </Container>
       </div>
-      
     </div>
   );
 };

@@ -15,7 +15,7 @@ import CardImage from "../../public/images/CardImageSupplier.png";
 import { Box } from "@mui/system";
 import logomusic from "../../public/images/Logomusic.png";
 import { useDispatch, useSelector } from "react-redux";
-import RootState from "../redux/model/RootStateTypes";
+import { RootState } from "../redux/model/RootStateTypes";
 import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
@@ -44,10 +44,7 @@ const UserSupplierRegistration = () => {
   const dispatch = useDispatch();
 
   const registeredSuppliers = useSelector(
-    (state: RootState) => state.registered.Suppliers
-  );
-  const registeredUsers = useSelector(
-    (state: RootState) => state.registered.MusicUsers
+    (state: RootState) => state.registered.DjsUsers
   );
 
   const isSupplierAdult = () => {
@@ -83,25 +80,27 @@ const UserSupplierRegistration = () => {
   };
 
   const handleSubmitFormSuppliers = () => {
-    const isPasswordUsed =
-      (registeredSuppliers &&
-        registeredSuppliers.some(
-          (supplier: { userPassword: string }) =>
-            supplier.userPassword === userPassword
-        )) ||
-      (registeredUsers &&
-        registeredUsers.some(
-          (user: { userPassword: string }) => user.userPassword === userPassword
-        ));
+    const isEmailUsed =
+      registeredSuppliers &&
+      registeredSuppliers.some((supplier) => supplier.userEmail === userEmail);
 
-    if (isPasswordUsed) {
+    if (isEmailUsed) {
       setDialogTitle("Error de Registro");
-      setCardText("Esta contraseña ya existe, ingrese otra contraseña.");
+      setCardText(
+        "Este correo electrónico ya está registrado. Por favor, ingrese otro correo electrónico."
+      );
       setOpenDialog(true);
       return;
     }
 
     if (userEmail && userAge && userPassword && customAvatarUrl) {
+      if (!userEmail.includes("@")) {
+        setDialogTitle("Error de Registro");
+        setCardText("Dirección de Correo Electrónico Invalido.");
+        setOpenDialog(true);
+        return;
+      }
+
       if (!isSupplierAdult()) {
         setDialogTitle("Error de Registro");
         setCardText("Debes ser Mayor de 18 Años para Registrarte.");
@@ -133,13 +132,6 @@ const UserSupplierRegistration = () => {
       if (userPassword.length < 4) {
         setDialogTitle("Error de Registro");
         setCardText("La Contraseña Debe Tener al Menos 4 Caracteres");
-        setOpenDialog(true);
-        return;
-      }
-
-      if (!userEmail.includes("@")) {
-        setDialogTitle("Error de Registro");
-        setCardText("Dirección de Correo Electrónico Invalido.");
         setOpenDialog(true);
         return;
       }

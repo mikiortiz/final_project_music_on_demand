@@ -4,7 +4,7 @@ import registeredReducer from "./reducers/RegisteredFormSlice";
 
 const store = configureStore({
   reducer: {
-    userLogin: userLoginReducer, // Cambiado de "user" a "userLogin"
+    userLogin: userLoginReducer,
     registered: registeredReducer,
   },
 });

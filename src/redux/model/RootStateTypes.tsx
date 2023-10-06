@@ -1,19 +1,17 @@
 import { SupplierData as Supplier } from "./SupplierData";
 import { UserData as MusicUser } from "./UserData";
 
-type UserType = "user" | "supplier"; // Define los tipos de usuario aquí
+// Definicón, tipos de usuarios
+type UserType = "user" | "supplier";
 
-interface RootState {
+export interface RootState {
   registered: {
-    Suppliers: Supplier[];
+    DjsUsers: Supplier[];
     MusicUsers: MusicUser[];
   };
   userLogin: {
     user: any;
-    userData: MusicUser | Supplier | null; // Define el tipo de usuario aquí
-    userType: UserType | null; // Define el tipo de usuario aquí
+    userData: MusicUser | Supplier | null;
+    userType: UserType | null;
   };
-  // Otros estados si los tienes
 }
-
-export default RootState;

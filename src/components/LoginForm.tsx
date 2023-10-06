@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/reducers/UserLoginSlice";
-import RootState from "../redux/model/RootStateTypes";
+import { RootState } from "../redux/model/RootStateTypes";
 import { SupplierData } from "../redux/model/SupplierData";
 import { UserData } from "../redux/model/UserData";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
     (state: RootState) => state.registered.MusicUsers
   ) as UserData[];
   const suppliers = useSelector(
-    (state: RootState) => state.registered.Suppliers
+    (state: RootState) => state.registered.DjsUsers
   ) as SupplierData[];
 
   const navigate = useNavigate();

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // Importa useEffect y useState desde React
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedGenres } from "../redux/reducers/UserLoginSlice";
+import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
+import { logoutUser } from "../redux/reducers/UserLoginSlice"; // Importa la acción logoutUser
 import { RootState } from "../redux/model/RootStateTypes";
 import { getAvailableGenres } from "../services/ApiSpotify";
 import {
@@ -16,20 +17,27 @@ import {
   Container,
   Avatar,
   Box,
+  Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import SuppliersHome from "../../public/images/SuppliersHome.jpg";
 import logomusic from "../../public/images/Logomusic.png";
 
 const SupplierWelcome = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
   const [showWelcomeSnackbar, setShowWelcomeSnackbar] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Obtenemos los géneros seleccionados del estado global
+  const user = useSelector((state: RootState) => state.userLogin.user);
+  const userEmail = user?.userEmail;
+
   const selectedGenres = useSelector(
-    (state: RootState) => state.userLogin.user?.selectedGenres || []
+    (state: RootState) =>
+      state.registered.DjsUsers.find((user) => user.userEmail === userEmail)
+        ?.selectedGenres || []
   );
 
   useEffect(() => {
@@ -49,9 +57,9 @@ const SupplierWelcome = () => {
     const isGenreSelected = selectedGenres.includes(genre);
 
     if (isGenreSelected) {
-      dispatch(
-        setSelectedGenres(selectedGenres.filter((g: string) => g !== genre))
-      );
+      const updatedGenres = selectedGenres.filter((g: string) => g !== genre);
+      dispatch(setSelectedGenres({ email: userEmail, genres: updatedGenres }));
+
       enqueueSnackbar(`Género ${genre} eliminado de MIS GENEROS`, {
         variant: "error",
         anchorOrigin: {
@@ -61,7 +69,13 @@ const SupplierWelcome = () => {
         style: { backgroundColor: "black" },
       });
     } else {
-      dispatch(setSelectedGenres([...selectedGenres, genre]));
+      dispatch(
+        setSelectedGenres({
+          email: userEmail,
+          genres: [...selectedGenres, genre],
+        })
+      );
+
       enqueueSnackbar(`Género ${genre} agregado a MIS GENEROS`, {
         variant: "success",
         anchorOrigin: {
@@ -73,7 +87,10 @@ const SupplierWelcome = () => {
     }
   };
 
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/");
+  };
 
   return (
     <div
@@ -210,10 +227,22 @@ const SupplierWelcome = () => {
                 </div>
               </div>
             )}
+            {user && (
+              <div style={{ marginLeft: "auto", marginRight: 10 }}>
+                {/* Utiliza el componente Button para el botón de cierre de sesión */}
+                <Button
+                  variant="contained"
+                  onClick={handleLogout}
+                  color="secondary"
+                >
+                  Cerrar Sesión
+                </Button>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
         <Container style={{ marginTop: 50 }}>
-          <Grid container spacing={8}>
+          <Grid container spacing={2}>
             <Grid item xs={4}>
               <Card
                 variant="outlined"

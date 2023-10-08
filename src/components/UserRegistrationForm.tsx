@@ -16,6 +16,7 @@ import {
   Box,
   FormControl,
 } from "@mui/material";
+
 import { fetchRandomUserData } from "../services/ApiUsers";
 import { UserData } from "../redux/model/UserData";
 
@@ -261,7 +262,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 variant="outlined"
                 size="small"
                 required
-                sx={{ bgcolor: "Window" }}
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 value={userFirstName}
                 onChange={(e) => setUserFirstName(e.target.value)}
                 autoComplete="off"
@@ -273,7 +274,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 variant="outlined"
                 size="small"
                 required
-                sx={{ bgcolor: "Window" }}
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 value={userLastName}
                 onChange={(e) => setUserLastName(e.target.value)}
                 autoComplete="off"
@@ -285,7 +286,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 variant="outlined"
                 size="small"
                 required
-                sx={{ bgcolor: "Window" }}
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 value={userAge}
                 onChange={(e) => setUserAge(e.target.value)}
                 autoComplete="off"
@@ -299,7 +300,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 variant="outlined"
                 size="small"
                 required
-                sx={{ bgcolor: "Window" }}
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 value={userContactNumber}
                 onChange={(e) => setUserContactNumber(e.target.value)}
                 autoComplete="off"
@@ -352,7 +353,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
                   autoComplete="off"
@@ -367,7 +368,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={customUserAvatarUrl}
                   onChange={(e) => setCustomUserAvatarUrl(e.target.value)}
                   autoComplete="off"
@@ -382,7 +383,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                   variant="outlined"
                   size="small"
                   required
-                  sx={{ bgcolor: "Window" }}
+                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
                   value={userPassword}
                   onChange={(e) => setUserPassword(e.target.value)}
                   type="password"
@@ -394,6 +395,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                   variant="contained"
                   color="primary"
                   sx={{
+                    borderRadius: "10px",
                     mt: 1,
                     width: "auto",
                     height: "60px",
@@ -407,6 +409,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                   variant="contained"
                   color="primary"
                   sx={{
+                    borderRadius: "10px",
                     minWidth: "300px",
                     width: "100%",
                     height: "60px",

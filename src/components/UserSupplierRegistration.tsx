@@ -313,6 +313,7 @@ const UserSupplierRegistration = () => {
       {showCard && (
         <Grid
           container
+          item
           xs={12}
           sm={12}
           md={12}
@@ -329,6 +330,7 @@ const UserSupplierRegistration = () => {
           }}
         >
           <Grid
+            item
             xs={12}
             sx={{
               backgroundImage: `url(${CardImage})`,
@@ -343,7 +345,7 @@ const UserSupplierRegistration = () => {
               display: "flex",
             }}
           >
-            <Grid xs={6} sm={6} md={6} sx={{ marginRight: 1 }}>
+            <Grid item xs={6} sm={6} md={6} sx={{ marginRight: 1 }}>
               <FormControl fullWidth>
                 <Typography sx={{ color: "white" }}>Nombre</Typography>
                 <TextField

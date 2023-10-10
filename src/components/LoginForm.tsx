@@ -58,6 +58,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
 
   return (
     <Grid
+    item
       xs={12}
       style={{
         marginTop: "-225px",
@@ -74,6 +75,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
     >
       <Grid
         container
+        item
         xs={10}
         sm={10}
         md={10}

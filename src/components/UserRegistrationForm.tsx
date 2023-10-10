@@ -210,6 +210,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   return (
     <Grid
       container
+      item
       xs={12}
       sm={12}
       md={12}
@@ -226,6 +227,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
       }}
     >
       <Grid
+        item
         sm={12}
         md={12}
         xs={12}
@@ -242,7 +244,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
           display: "flex",
         }}
       >
-        <Grid xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
+        <Grid item xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
           <FormControl fullWidth>
             <Typography sx={{ color: "white" }}>Nombre</Typography>
             <TextField
@@ -296,6 +298,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
             />
             <Grid
               container
+              item
               xs={12}
               sm={12}
               md={12}
@@ -317,7 +320,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
               >
                 Tu Avatar
               </Typography>
-              <Grid xs={12} sm={4} md={4}>
+              <Grid item xs={12} sm={4} md={4}>
                 <Avatar
                   alt="Avatar"
                   src={customUserAvatarUrl}
@@ -332,7 +335,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
           </FormControl>
         </Grid>
 
-        <Grid xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
+        <Grid item xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
           <FormControl fullWidth>
             <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
             <TextField

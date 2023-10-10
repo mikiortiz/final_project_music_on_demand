@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserData } from "../model/UserData";
-import { SupplierData } from "../model/SupplierData";
+import { UserData } from "../../model/UserData";
+import { SupplierData } from "../../model/SupplierData";
 
 interface UserLoginState {
   user: UserData | SupplierData | null;

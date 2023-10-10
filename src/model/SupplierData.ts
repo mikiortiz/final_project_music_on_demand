@@ -1,11 +1,11 @@
-export interface UserData {
+export interface SupplierData {
   userEmail: string;
   userFirstName: string;
   userLastName: string;
   userAge: string;
   userPassword: string;
-  customUserAvatarUrl: string;
+  customAvatarUrl: string;
   userContactNumber: string;
   userType?: string;
-  selectedGenres: string[];
+  selectedGenres?: string[];
 }

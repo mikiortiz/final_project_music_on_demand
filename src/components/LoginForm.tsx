@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, IconButton, Box } from "@mui/material";
+import { Button, TextField, Typography, IconButton, Grid } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/reducers/UserLoginSlice";
-import { RootState } from "../redux/model/RootStateTypes";
-import { SupplierData } from "../redux/model/SupplierData";
-import { UserData } from "../redux/model/UserData";
+import { RootState } from "../model/RootStateTypes";
+import { SupplierData } from "../model/SupplierData";
+import { UserData } from "../model/UserData";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -57,23 +57,27 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <div
+    <Grid
+      xs={12}
       style={{
+        marginTop: "-225px",
         borderRadius: "10px",
-        marginBottom: "300px",
         position: "fixed",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "650px",
-        height: "700px",
+        height: "580px",
+        width: "900px",
         zIndex: 9999,
         backgroundColor: "rgba(0, 0, 0, 1)",
       }}
     >
-      <Box
+      <Grid
+        container
+        xs={10}
+        sm={10}
+        md={10}
         sx={{
-          marginTop: 1,
           borderRadius: "10px",
           width: "550px",
           height: "500px",
@@ -145,8 +149,8 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
             Registrarse aquí
           </Button>
         </FormControl>
-      </Box>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

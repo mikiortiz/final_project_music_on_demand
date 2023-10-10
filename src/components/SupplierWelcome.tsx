@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"; // Importa useEffect y useState des
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
 import { logoutUser } from "../redux/reducers/UserLoginSlice"; // Importa la acción logoutUser
-import { RootState } from "../redux/model/RootStateTypes";
+import { RootState } from "../model/RootStateTypes";
 import { getAvailableGenres } from "../services/ApiSpotify";
 import {
   Snackbar,
@@ -14,9 +14,7 @@ import {
   CardContent,
   Chip,
   Grid,
-  Container,
   Avatar,
-  Box,
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -93,9 +91,13 @@ const SupplierWelcome = () => {
   };
 
   return (
-    <div
+    <Grid
+      container
+      item
+      xs={12}
+      sm={12}
+      md={12}
       style={{
-        position: "relative",
         height: "100vh",
         width: "100vw",
       }}
@@ -114,86 +116,16 @@ const SupplierWelcome = () => {
           zIndex: -1,
         }}
       ></div>
-      <Box
-        sx={{
-          background: "rgba(0, 0, 0, 0.9)",
-          height: 50,
-          textAlign: "center",
-        }}
-      >
-        <Typography sx={{ color: "white", fontSize: 30, fontWeight: "600" }}>
-          ELECCION DE GENEROS
-        </Typography>
-      </Box>
-      <Typography
-        sx={{
-          background: "rgba(0, 0, 0, 0.7)",
-          color: "white",
-          fontSize: -30,
-          fontWeight: "600",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
-        "Crea tu identidad musical seleccionando entre una variedad de géneros
-        disponibles en Music World. Destácate en tus áreas de experiencia o
-        explora nuevos territorios artísticos. Tu elección define tu viaje
-        musical único. ¡Descubre, experimenta y encuentra tu estilo en el mundo
-        de la música!"
-      </Typography>
-      <div
+      <AppBar
+        position="static"
         style={{
-          position: "relative",
-          zIndex: 1,
+          marginTop: -8,
+          background: "rgba(0, 0, 0, 0.5)",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+          height: "70px",
         }}
       >
-        {showWelcomeSnackbar && (
-          <Snackbar
-            open={showWelcomeSnackbar}
-            autoHideDuration={2000}
-            onClose={() => setShowWelcomeSnackbar(false)}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          >
-            <SnackbarContent
-              style={{
-                background: "rgba(0, 0, 0, 1)",
-                color: "white",
-                textAlign: "center",
-                padding: "20px",
-              }}
-              message={
-                <div style={{ position: "relative", marginTop: "40px" }}>
-                  <Typography variant="h4" style={{ marginBottom: "20px" }}>
-                    ¡Bienvenido, {user?.userFirstName}!
-                  </Typography>
-                  <img
-                    src={logomusic}
-                    alt="Logo"
-                    style={{
-                      borderRadius: "10px",
-                      width: "200px",
-                      margin: "0 auto",
-                      marginBottom: "20px",
-                    }}
-                  />
-                  <Typography variant="body1">
-                    Descubre la plataforma de música exclusiva para proveedores.
-                    Aquí podrás encontrar todas las herramientas y recursos que
-                    necesitas para potenciar tu negocio musical.
-                  </Typography>
-                </div>
-              }
-            />
-          </Snackbar>
-        )}
-        <AppBar
-          position="static"
-          style={{
-            background: "rgba(0, 0, 0, 0.5)",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-            height: "70px",
-          }}
-        >
+        <Grid item xs={12}>
           <Toolbar>
             {user && (
               <div
@@ -207,7 +139,6 @@ const SupplierWelcome = () => {
                   src={user.customAvatarUrl}
                   alt="User Avatar"
                   style={{
-                    marginLeft: "80px",
                     width: 60,
                     height: 60,
                     borderRadius: "50%",
@@ -228,8 +159,7 @@ const SupplierWelcome = () => {
               </div>
             )}
             {user && (
-              <div style={{ marginLeft: "auto", marginRight: 10 }}>
-                {/* Utiliza el componente Button para el botón de cierre de sesión */}
+              <Grid sx={{ marginLeft: "auto" }}>
                 <Button
                   variant="contained"
                   onClick={handleLogout}
@@ -237,85 +167,202 @@ const SupplierWelcome = () => {
                 >
                   Cerrar Sesión
                 </Button>
-              </div>
+              </Grid>
             )}
           </Toolbar>
-        </AppBar>
-        <Container style={{ marginTop: 50 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <Card
-                variant="outlined"
-                sx={{
-                  marginLeft: -6,
-                  height: "100%",
-                  background: "rgba(0, 0, 0, 0.4)",
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h5" style={{ marginBottom: 10 }}>
-                    Mis Géneros
-                  </Typography>
-                  <div style={{ display: "flex", flexWrap: "wrap" }}>
-                    {selectedGenres.map((genre: string) => (
-                      <Chip
-                        key={genre}
-                        label={genre}
-                        color="primary"
-                        style={{ margin: 5 }}
-                        onClick={() => handleGenreClick(genre)}
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
+        </Grid>
+      </AppBar>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        sx={{
+          mt: -1,
+          background: "rgba(0, 0, 0, 0.9)",
+          height: 50,
+        }}
+      >
+        <Typography
+          sx={{
+            color: "white",
+            fontSize: 30,
+            fontWeight: "600",
+            textAlign: "center",
+          }}
+        >
+          ELECCION DE GENEROS
+        </Typography>
+      </Grid>
+      <Typography
+        sx={{
+          mt: -1,
+          background: "rgba(0, 0, 0, 0.7)",
+          color: "white",
+          fontSize: -30,
+          fontWeight: "600",
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        "Crea tu identidad musical seleccionando entre una variedad de géneros
+        disponibles en Music World. Destácate en tus áreas de experiencia o
+        explora nuevos territorios artísticos. Tu elección define tu viaje
+        musical único. ¡Descubre, experimenta y encuentra tu estilo en el mundo
+        de la música!"
+      </Typography>
 
-            <Grid item xs={8}>
-              <Card
-                variant="outlined"
-                sx={{
-                  marginRight: -3,
+      {showWelcomeSnackbar && (
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          container
+          style={{
+            position: "relative",
+            marginTop: "2rem",
+            textAlign: "center",
+            alignItems: "center",
+          }}
+        >
+          <Snackbar
+            open={showWelcomeSnackbar}
+            autoHideDuration={3000}
+            onClose={() => setShowWelcomeSnackbar(false)}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <SnackbarContent
+              style={{
+                height: "100%",
+                background: "rgba(0, 0, 0, 1)",
+                color: "white",
+                textAlign: "center",
+                padding: "20px",
+              }}
+              message={
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  container
+                  style={{ position: "relative", marginTop: "10px" }}
+                >
+                  <Grid>
+                    <Typography
+                      variant="h4"
+                      style={{
+                        marginBottom: "1rem",
+                        marginLeft: "60px",
+                      }}
+                    >
+                      ¡Bienvenido!
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      style={{ marginBottom: "1rem", marginLeft: "80px" }}
+                    >
+                      {user?.userFirstName}!
+                    </Typography>
+                  </Grid>
+
+                  <img
+                    src={logomusic}
+                    alt="Logo"
+                    style={{
+                      borderRadius: "10px",
+                      marginLeft: "65px",
+                      maxWidth: "200px",
+                      marginBottom: "1rem",
+                    }}
+                  />
+                  <Typography variant="body1" style={{ padding: " 10px" }}>
+                    Descubre la plataforma de música exclusiva para proveedores.
+                    Aquí podrás encontrar todas las herramientas y recursos que
+                    necesitas para potenciar tu negocio musical.
+                  </Typography>
+                </Grid>
+              }
+            />
+          </Snackbar>
+        </Grid>
+      )}
+
+      <Grid container spacing={5} item xs={12} sm={12} md={12}>
+        <Grid item xs={4}>
+          <Card
+            variant="outlined"
+            sx={{
+              marginRight: -3,
+              marginLeft: "1px",
+              height: "100%",
+              background: "rgba(0, 0, 0, 0.4)",
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h5" mb={2}>
+                Mis Géneros
+              </Typography>
+
+              {selectedGenres.map((genre: string) => (
+                <Chip
+                  key={genre}
+                  label={genre}
+                  color="primary"
+                  style={{ margin: 5 }}
+                  onClick={() => handleGenreClick(genre)}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={8} sm={8} md={8}>
+          <Card
+            variant="outlined"
+            sx={{
+              marginRight: -5,
+              marginLeft: 5,
+              background: "rgba(0, 0, 0, 0.4)",
+              color: "white",
+              textAlign: "center",
+              mt: 5,
+            }}
+          >
+            <CardContent>
+              <Typography variant="h5" style={{ marginBottom: 10 }}>
+                Elige tus Géneros
+              </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  maxHeight: "300px",
+                  overflowY: "auto",
                   background: "rgba(0, 0, 0, 0.4)",
-                  color: "white",
-                  textAlign: "center",
                 }}
               >
-                <CardContent>
-                  <Typography variant="h5" style={{ marginBottom: 10 }}>
-                    Elige tus Géneros
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      maxHeight: "300px",
-                      overflowY: "auto",
-                      background: "rgba(0, 0, 0, 0.4)",
-                    }}
-                  >
-                    {genres.map((genre) => (
-                      <Chip
-                        sx={{ color: "white" }}
-                        key={genre}
-                        label={genre}
-                        color={
-                          selectedGenres.includes(genre) ? "primary" : "default"
-                        }
-                        onClick={() => handleGenreClick(genre)}
-                        style={{ cursor: "pointer", margin: 5 }}
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
-    </div>
+                {genres.map((genre) => (
+                  <Chip
+                    sx={{ color: "white" }}
+                    key={genre}
+                    label={genre}
+                    color={
+                      selectedGenres.includes(genre) ? "primary" : "default"
+                    }
+                    onClick={() => handleGenreClick(genre)}
+                    style={{ cursor: "pointer", margin: 5 }}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

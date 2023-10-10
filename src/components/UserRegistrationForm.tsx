@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/model/RootStateTypes";
+import { RootState } from "../model/RootStateTypes";
 import { addUser } from "../redux/reducers/RegisteredFormSlice";
 import CardImageUsers from "../../public/images/CardImageUsers.png";
 import {
@@ -13,12 +13,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Box,
   FormControl,
+  Grid,
 } from "@mui/material";
 
 import { fetchRandomUserData } from "../services/ApiUsers";
-import { UserData } from "../redux/model/UserData";
+import { UserData } from "../model/UserData";
 
 const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   // Obtenemos la función de despacho de Redux
@@ -36,7 +36,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   const [dialogText, setDialogText] = useState("");
   const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
   const [dialogTextColor, setDialogTextColor] = useState("black");
-  
+
   const [openCardDialog, setOpenCardDialog] = useState(false);
   // Efecto de carga de datos aleatorios
   useEffect(() => {
@@ -73,13 +73,20 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   //Función que maneja el envío del formulario
   const handleSubmitFormUsers = () => {
     const isEmailUsed =
-    registeredSuppliers &&
-    registeredSuppliers.some((supplier: { userEmail: string }) => supplier.userEmail === userEmail) ||
-    (registeredUsers && registeredUsers.some((user: { userEmail: string }) => user.userEmail === userEmail));
+      (registeredSuppliers &&
+        registeredSuppliers.some(
+          (supplier: { userEmail: string }) => supplier.userEmail === userEmail
+        )) ||
+      (registeredUsers &&
+        registeredUsers.some(
+          (user: { userEmail: string }) => user.userEmail === userEmail
+        ));
 
     if (isEmailUsed) {
       setDialogTitle("Error de Registro");
-      setDialogText("Este correo electrónico ya está registrado, por favor, elija otro correo electrónico.");
+      setDialogText(
+        "Este correo electrónico ya está registrado, por favor, elija otro correo electrónico."
+      );
       setDialogBackgroundColor("white");
       setDialogTextColor("black");
       setShowDialog(true);
@@ -201,230 +208,204 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div
+    <Grid
+      container
+      xs={12}
+      sm={12}
+      md={12}
       style={{
         borderRadius: "20px",
         color: "white",
         position: "fixed",
-        display: "flex",
         justifyContent: "center",
         alignItems: "center",
         width: "90%",
-        height: "90%",
+        height: "95%",
         margin: "auto",
         boxShadow: "0px 0px 100px rgba(0, 0, 0, 1 )",
       }}
     >
-      <div
-        style={{
-          borderRadius: "20px",
-          color: "white",
-          position: "fixed",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "90%",
+      <Grid
+        sm={12}
+        md={12}
+        xs={12}
+        sx={{
+          backgroundImage: `url(${CardImageUsers})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           height: "90%",
-          margin: "auto",
-          boxShadow: "0px 0px 100px rgba(0, 0, 0, 1 )",
+          width: "90%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          padding: "1rem",
+          borderRadius: "10px",
+          display: "flex",
         }}
       >
-        <Box
-          sx={{
-            backgroundImage: `url(${CardImageUsers})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            height: "90%",
-            width: "90%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            padding: "1rem",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <FormControl
-            fullWidth
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: "1rem",
-            }}
-          >
-            <div style={{ flex: "1", marginTop: "-15px" }}>
-              <Typography sx={{ color: "white", mt: 2 }}>Nombre</Typography>
-              <TextField
-                placeholder="Nombre"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                value={userFirstName}
-                onChange={(e) => setUserFirstName(e.target.value)}
-                autoComplete="off"
-              />
-              <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
-              <TextField
-                placeholder="Apellido"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                value={userLastName}
-                onChange={(e) => setUserLastName(e.target.value)}
-                autoComplete="off"
-              />
-              <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
-              <TextField
-                placeholder="Edad"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                value={userAge}
-                onChange={(e) => setUserAge(e.target.value)}
-                autoComplete="off"
-              />
-              <Typography sx={{ color: "white", mt: 1 }}>
-                Número de Contacto
-              </Typography>
-              <TextField
-                placeholder="Número de Contacto"
-                fullWidth
-                variant="outlined"
-                size="small"
-                required
-                sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                value={userContactNumber}
-                onChange={(e) => setUserContactNumber(e.target.value)}
-                autoComplete="off"
-              />
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: "5px",
-                  marginTop: "30px",
-                  height: "200px",
-                }}
+        <Grid xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
+          <FormControl fullWidth>
+            <Typography sx={{ color: "white" }}>Nombre</Typography>
+            <TextField
+              placeholder="Nombre"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={userFirstName}
+              onChange={(e) => setUserFirstName(e.target.value)}
+              autoComplete="off"
+            />
+            <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
+            <TextField
+              placeholder="Apellido"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={userLastName}
+              onChange={(e) => setUserLastName(e.target.value)}
+              autoComplete="off"
+            />
+            <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
+            <TextField
+              placeholder="Edad"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={userAge}
+              onChange={(e) => setUserAge(e.target.value)}
+              autoComplete="off"
+            />
+            <Typography sx={{ color: "white", mt: 1 }}>
+              Número de Contacto
+            </Typography>
+            <TextField
+              placeholder="Número de Contacto"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={userContactNumber}
+              onChange={(e) => setUserContactNumber(e.target.value)}
+              autoComplete="off"
+            />
+            <Grid
+              container
+              xs={12}
+              sm={12}
+              md={12}
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                borderRadius: "5px",
+                marginTop: "5px",
+              }}
+            >
+              <Typography
+                variant="h5"
+                align="center"
+                color="white"
+                marginTop={9}
+                marginRight={"40px"}
               >
-                <Typography
-                  variant="h5"
-                  component="div"
-                  align="center"
-                  color="white"
-                  marginTop={"90px"}
-                  marginRight={"40px"}
-                >
-                  Tu Avatar
-                </Typography>
+                Tu Avatar
+              </Typography>
+              <Grid xs={12} sm={4} md={4}>
                 <Avatar
                   alt="Avatar"
                   src={customUserAvatarUrl}
                   sx={{
                     width: 150,
                     height: 150,
-                    marginTop: "25px",
+                    marginTop: "5px",
                   }}
                 />
-              </div>
-            </div>
+              </Grid>
+            </Grid>
+          </FormControl>
+        </Grid>
 
-            <div style={{ flex: "1" }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                }}
-              >
-                <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
-                <TextField
-                  placeholder="Email"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  autoComplete="off"
-                  type="email"
-                />
-                <Typography sx={{ color: "white", mb: -2 }}>
-                  Ingrese una URL para su Avatar de Presentación
-                </Typography>
-                <TextField
-                  placeholder="URL de la Imagen de Avatar"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                  value={customUserAvatarUrl}
-                  onChange={(e) => setCustomUserAvatarUrl(e.target.value)}
-                  autoComplete="off"
-                />
+        <Grid xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
+          <FormControl fullWidth>
+            <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
+            <TextField
+              placeholder="Email"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px", mt: 2 }}
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              autoComplete="off"
+              type="email"
+            />
+            <Typography sx={{ color: "white", mt: 1 }}>
+              Ingrese una URL para su Avatar de Presentación
+            </Typography>
+            <TextField
+              placeholder="URL de la Imagen de Avatar"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={customUserAvatarUrl}
+              onChange={(e) => setCustomUserAvatarUrl(e.target.value)}
+              autoComplete="off"
+            />
 
-                <Typography sx={{ color: "white", mb: -2 }}>
-                  Ingrese una Contraseña
-                </Typography>
-                <TextField
-                  placeholder="Contraseña"
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  required
-                  sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                  value={userPassword}
-                  onChange={(e) => setUserPassword(e.target.value)}
-                  type="password"
-                  autoComplete="off"
-                />
+            <Typography sx={{ color: "white", mt: 1 }}>
+              Ingrese una Contraseña
+            </Typography>
+            <TextField
+              placeholder="Contraseña"
+              fullWidth
+              variant="outlined"
+              size="small"
+              required
+              sx={{ bgcolor: "Window", borderRadius: "10px" }}
+              value={userPassword}
+              onChange={(e) => setUserPassword(e.target.value)}
+              type="password"
+              autoComplete="off"
+            />
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    borderRadius: "10px",
-                    mt: 1,
-                    width: "auto",
-                    height: "60px",
-                  }}
-                  onClick={handleSubmitFormUsers}
-                >
-                  Regístrate
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    borderRadius: "10px",
-                    minWidth: "300px",
-                    width: "100%",
-                    height: "60px",
-                    whiteSpace: "nowrap",
-                    ml: 0,
-                    mt: 2,
-                    position: "relative",
-                    bottom: 0,
-                  }}
-                  onClick={handleCloseForm}
-                >
-                  Volver
-                </Button>
-              </div>
-            </div>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "10px",
+                mt: 4,
+                width: "auto",
+                height: "60px",
+              }}
+              onClick={handleSubmitFormUsers}
+            >
+              Regístrate
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "10px",
+                mt: 4,
+                width: "auto",
+                height: "60px",
+              }}
+              onClick={handleCloseForm}
+            >
+              Volver
+            </Button>
 
             <Dialog
               open={showDialog}
@@ -477,9 +458,7 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                     fontSize: "1.5rem",
                     fontWeight: "bold",
                   }}
-                >
-                  
-                </DialogContentText>
+                ></DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button
@@ -492,9 +471,9 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
               </DialogActions>
             </Dialog>
           </FormControl>
-        </Box>
-      </div>
-    </div>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

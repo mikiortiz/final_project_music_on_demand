@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SupplierData } from "../model/SupplierData";
-import { UserData } from "../model/UserData";
+import { SupplierData } from "../../model/SupplierData";
+import { UserData } from "../../model/UserData";
 
 interface RegisteredFormState {
   DjsUsers: SupplierData[];

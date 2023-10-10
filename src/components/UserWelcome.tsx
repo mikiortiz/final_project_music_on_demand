@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux/model/RootStateTypes";
+import { RootState } from "../model/RootStateTypes";
 import { AppBar, Typography, Avatar, Toolbar, Button } from "@mui/material";
 import { logoutUser } from "../redux/reducers/UserLoginSlice";
 import { useNavigate } from "react-router-dom";
@@ -31,22 +31,6 @@ const UserWelcome: React.FC = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div
-        style={{
-          background: "rgba(0, 0, 0, 0.9)",
-          height: "50px",
-          textAlign: "center",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          style={{ color: "white", fontSize: "30px", fontWeight: "600" }}
-        >
-          SECCION DE MUSIC-USER
-        </Typography>
-      </div>
       <AppBar
         position="static"
         style={{
@@ -101,6 +85,23 @@ const UserWelcome: React.FC = () => {
           )}
         </Toolbar>
       </AppBar>
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.9)",
+          height: "50px",
+          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          style={{ color: "white", fontSize: "30px", fontWeight: "600" }}
+        >
+          SECCION DE MUSIC-USER
+        </Typography>
+      </div>
+
       {/* Contenido adicional aquí */}
     </div>
   );

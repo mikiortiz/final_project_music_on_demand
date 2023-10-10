@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserData } from "../model/UserData";
-import { SupplierData } from "../model/SupplierData";
+import { UserData } from "../../model/UserData";
+import { SupplierData } from "../../model/SupplierData";
 
 interface UserLoginState {
   user: UserData | SupplierData | null;
+  isLoggedOut: boolean;
 }
 
 const initialState: UserLoginState = {
   user: null,
+  isLoggedOut: false,
 };
 
 const userLoginSlice = createSlice({
@@ -16,19 +18,14 @@ const userLoginSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<UserData | SupplierData | null>) => {
       state.user = action.payload;
-      // Agrega el campo selectedGenres al usuario cuando se establece
-      if (state.user) {
-        state.user.selectedGenres = [];
-      }
+      state.isLoggedOut = false; // Al establecer un nuevo usuario, reseteamos el estado de cierre de sesión
     },
-    setSelectedGenres: (state, action: PayloadAction<string[]>) => {
-      // Establece los géneros seleccionados en el usuario
-      if (state.user) {
-        state.user.selectedGenres = action.payload;
-      }
+    logoutUser: (state) => {
+      state.user = null;
+      state.isLoggedOut = true;
     },
   },
 });
 
-export const { setUser, setSelectedGenres } = userLoginSlice.actions;
+export const { setUser, logoutUser } = userLoginSlice.actions;
 export default userLoginSlice.reducer;

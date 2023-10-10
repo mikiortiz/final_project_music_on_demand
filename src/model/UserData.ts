@@ -7,5 +7,5 @@ export interface UserData {
   customUserAvatarUrl: string;
   userContactNumber: string;
   userType?: string;
-  selectedGenres: string[];
+  selectedGenres?: string[];
 }

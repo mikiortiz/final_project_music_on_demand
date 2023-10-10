@@ -10,12 +10,13 @@ import {
   TextField,
   Typography,
   FormControl,
+  Grid,
 } from "@mui/material";
 import CardImage from "../../public/images/CardImageSupplier.png";
 import { Box } from "@mui/system";
 import logomusic from "../../public/images/Logomusic.png";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/model/RootStateTypes";
+import { RootState } from "../model/RootStateTypes";
 import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import Avatar from "@mui/material/Avatar";
 import { fetchRandomUserData } from "../services/ApiUsers";
@@ -205,7 +206,7 @@ const UserSupplierRegistration = () => {
         style={{
           borderRadius: "10px",
           position: "absolute",
-          top: "20px",
+          top: "2px",
           width: "200px",
         }}
       />
@@ -216,10 +217,9 @@ const UserSupplierRegistration = () => {
           backgroundColor: "rgba(0, 0, 0, 0.7)",
           width: "90%",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+
           justifyContent: "center",
-          padding: "5%",
+          padding: "15px",
           maxWidth: "500px",
           margin: "0 auto",
           position: "absolute",
@@ -227,92 +227,100 @@ const UserSupplierRegistration = () => {
           transform: "translateY(-50%)",
         }}
       >
-        <Button
-          onClick={() => setShowLoginForm(true)}
-          variant="outlined"
-          color="primary"
-          fullWidth
-          sx={{
-            height: 50,
-            mt: -5,
-            mb: 2,
-            backgroundColor: "rgba(0, 128, 255, 0.5)",
-            color: "white",
-            borderColor: "black",
-            minWidth: "300px",
-          }}
-        >
-          Login
-        </Button>
-        {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}
+        <Grid container justifyContent="center">
+          <Grid item xs={12} sm={12} md={12}>
+            <Button
+              onClick={() => setShowLoginForm(true)}
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{
+                height: 50,
+                backgroundColor: "rgba(0, 128, 255, 0.5)",
+                color: "white",
+                borderColor: "black",
+              }}
+            >
+              Login
+            </Button>
+          </Grid>
+          {showLoginForm && (
+            <LoginForm onClose={() => setShowLoginForm(false)} />
+          )}
 
-        <Typography variant="h4" color="white">
-          Te Regístraras como
-        </Typography>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            marginTop: "20px",
-          }}
-        >
-          <Button
-            sx={{
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              color: "white",
-              borderColor: "black",
-              minWidth: "300px",
-              width: "auto",
-              height: "60px",
-              whiteSpace: "nowrap",
+          <Typography variant="h4" color="white">
+            Te Regístraras como
+          </Typography>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              marginTop: "10px",
+              marginBottom: "5px",
             }}
-            variant="outlined"
-            onClick={handleProveedorClick}
           >
-            Music-DJ-World
-          </Button>
+            <Button
+              sx={{
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+                borderColor: "black",
+                minWidth: "300px",
+                width: "auto",
+                height: "60px",
+                whiteSpace: "nowrap",
+              }}
+              variant="outlined"
+              onClick={handleProveedorClick}
+            >
+              Music-DJ-World
+            </Button>
 
-          <Button
-            sx={{
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              color: "white",
-              borderColor: "black",
-              minWidth: "300px",
-              width: "auto",
-              height: "60px",
-              whiteSpace: "nowrap",
-            }}
-            variant="outlined"
-            onClick={handleUsuarioClick}
-          >
-            Music-Usuario-World
-          </Button>
-        </div>
-        <Typography
-          variant="caption"
-          color="white"
-          style={{
-            width: "auto",
-            marginTop: 20,
-            fontSize: "1.2rem",
-            marginBottom: -60,
-            textAlign: "center",
-            lineHeight: "1.2",
-          }}
-        >
-          En World Music, nuestro "Music-DJ-World" es tu maestro de ceremonias
-          musical, y nuestros "Music-Usuario-World" son los oyentes más
-          exigentes. Escucha la diferencia con nosotros.
-        </Typography>
+            <Button
+              sx={{
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+                borderColor: "black",
+                minWidth: "300px",
+                width: "auto",
+                height: "60px",
+                whiteSpace: "nowrap",
+              }}
+              variant="outlined"
+              onClick={handleUsuarioClick}
+            >
+              Music-Usuario-World
+            </Button>
+          </div>
+          <Grid item xs={12} sm={12} md={12}>
+            <Typography
+              variant="caption"
+              color="white"
+              sx={{
+                width: "auto",
+                fontSize: "1.2rem",
+                textAlign: "center",
+                lineHeight: "1.2",
+              }}
+            >
+              En World Music, nuestro "Music-DJ-World" es tu maestro de
+              ceremonias musical, y nuestros "Music-Usuario-World" son los
+              oyentes más exigentes. Escucha la diferencia con nosotros.
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
       {showCard && (
-        <div
+        <Grid
+          container
+          item
+          xs={12}
+          sm={12}
+          md={12}
           style={{
             borderRadius: "20px",
             color: "white",
             position: "fixed",
-            display: "flex",
             justifyContent: "center",
             alignItems: "center",
             width: "90%",
@@ -321,7 +329,9 @@ const UserSupplierRegistration = () => {
             boxShadow: "0px 0px 100px rgba(0, 0, 0, 1 )",
           }}
         >
-          <Box
+          <Grid
+            item
+            xs={12}
             sx={{
               backgroundImage: `url(${CardImage})`,
               backgroundSize: "cover",
@@ -333,25 +343,13 @@ const UserSupplierRegistration = () => {
               padding: "1rem",
               borderRadius: "10px",
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
             }}
           >
-            <FormControl
-              fullWidth
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: "1rem",
-              }}
-            >
-              <div style={{ flex: 1 }}>
-                <Typography sx={{ color: "white", mt: 2 }}>Nombre</Typography>
+            <Grid item xs={6} sm={6} md={6} sx={{ marginRight: 1 }}>
+              <FormControl fullWidth>
+                <Typography sx={{ color: "white" }}>Nombre</Typography>
                 <TextField
                   placeholder="Nombre"
-                  fullWidth
                   variant="outlined"
                   size="small"
                   required
@@ -364,7 +362,6 @@ const UserSupplierRegistration = () => {
                 <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
                 <TextField
                   placeholder="Apellido"
-                  fullWidth
                   variant="outlined"
                   size="small"
                   required
@@ -377,7 +374,6 @@ const UserSupplierRegistration = () => {
                 <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
                 <TextField
                   placeholder="Edad"
-                  fullWidth
                   variant="outlined"
                   size="small"
                   required
@@ -392,7 +388,6 @@ const UserSupplierRegistration = () => {
                 </Typography>
                 <TextField
                   placeholder="Número de Contacto"
-                  fullWidth
                   variant="outlined"
                   size="small"
                   required
@@ -402,127 +397,133 @@ const UserSupplierRegistration = () => {
                   autoComplete="off"
                 />
 
-                <div
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
                   style={{
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
                     backgroundColor: "rgba(0, 0, 0, 0.7)",
                     borderRadius: "5px",
-                    marginTop: "30px",
-                    height: "200px",
+                    marginTop: "5px",
                   }}
                 >
                   <Typography
                     variant="h5"
-                    component="div"
                     align="center"
                     color="white"
-                    marginTop={"90px"}
+                    marginTop={9}
                     marginRight={"40px"}
                   >
                     Tu Avatar
                   </Typography>
-                  <Avatar
-                    alt="Avatar"
-                    src={customAvatarUrl}
-                    sx={{
-                      width: 150,
-                      height: 150,
-                      marginTop: "25px",
-                    }}
-                  />
-                </div>
-              </div>
+                  <Grid item xs={12} sm={4} md={4}>
+                    <Avatar
+                      alt="Avatar"
+                      src={customAvatarUrl}
+                      sx={{
+                        width: 150,
+                        height: 150,
+                        marginTop: "5px",
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </FormControl>
+            </Grid>
 
-              <div style={{ flex: 1, marginTop: "32px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                    marginTop: "-16px",
+            <Grid item xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
+              <FormControl
+                fullWidth
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
+                <Typography sx={{ color: "white" }}>
+                  Ingrese una URL para su Avatar de Presentación
+                </Typography>
+                <TextField
+                  placeholder="URL de la Imagen de Avatar"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window", borderRadius: "10px", mt: -2 }}
+                  value={customAvatarUrl}
+                  onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                  autoComplete="off"
+                />
+
+                <Typography sx={{ color: "white", mt: -1 }}>Email</Typography>
+                <TextField
+                  placeholder="Email"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window", borderRadius: "10px", mt: -2 }}
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  autoComplete="off"
+                  type="email"
+                />
+
+                <Typography sx={{ color: "white", mt: -1 }}>
+                  Ingrese una Contraseña
+                </Typography>
+                <TextField
+                  placeholder="Contraseña"
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  required
+                  sx={{ bgcolor: "Window", borderRadius: "10px", mt: -2 }}
+                  value={userPassword}
+                  onChange={(e) => setUserPassword(e.target.value)}
+                  type="password"
+                  autoComplete="off"
+                />
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "10px",
+                    mt: 2,
+                    width: "auto",
+                    height: "60px",
                   }}
+                  onClick={handleSubmitFormSuppliers}
                 >
-                  <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
-                  <TextField
-                    placeholder="Email"
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                    required
-                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                    value={userEmail}
-                    onChange={(e) => setUserEmail(e.target.value)}
-                    autoComplete="off"
-                    type="email"
-                  />
-
-                  <Typography sx={{ color: "white", mb: -2 }}>
-                    Ingrese una URL para su Avatar de Presentación
-                  </Typography>
-                  <TextField
-                    placeholder="URL de la Imagen de Avatar"
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                    required
-                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                    value={customAvatarUrl}
-                    onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  <Typography sx={{ color: "white", mb: -2 }}>
-                    Ingrese una Contraseña
-                  </Typography>
-                  <TextField
-                    placeholder="Contraseña"
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                    required
-                    sx={{ bgcolor: "Window", borderRadius: "10px" }}
-                    value={userPassword}
-                    onChange={(e) => setUserPassword(e.target.value)}
-                    type="password"
-                    autoComplete="off"
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      borderRadius: "10px",
-                      mt: 2,
-                      width: "auto",
-                      height: "60px",
-                    }}
-                    onClick={handleSubmitFormSuppliers}
-                  >
-                    Regístrate
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      borderRadius: "10px",
-                      mt: 2,
-                      width: "auto",
-                      height: "60px",
-                    }}
-                    onClick={handleCloseClick}
-                  >
-                    Volver
-                  </Button>
-                </div>
-              </div>
-            </FormControl>
-          </Box>
-        </div>
+                  Regístrate
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "10px",
+                    mt: 2,
+                    width: "auto",
+                    height: "60px",
+                  }}
+                  onClick={handleCloseClick}
+                >
+                  Volver
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
+
       {showUserForm && (
         <UserRegistrationForm onClose={() => setShowUserForm(false)} />
       )}

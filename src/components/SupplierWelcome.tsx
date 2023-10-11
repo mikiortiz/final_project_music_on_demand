@@ -1,30 +1,24 @@
 import { useEffect, useState } from "react"; // Importa useEffect y useState desde React
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
-import { logoutUser } from "../redux/reducers/UserLoginSlice"; // Importa la acción logoutUser
 import { RootState } from "../model/RootStateTypes";
 import { getAvailableGenres } from "../services/ApiSpotify";
 import {
   Snackbar,
   SnackbarContent,
-  AppBar,
-  Toolbar,
   Typography,
   Card,
   CardContent,
   Chip,
   Grid,
-  Avatar,
-  Button,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import SuppliersHome from "../../public/images/SuppliersHome.jpg";
 import logomusic from "../../public/images/Logomusic.png";
+import Navbar from "../components/NavbarSuppliers";
 
 const SupplierWelcome = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
   const [showWelcomeSnackbar, setShowWelcomeSnackbar] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
@@ -50,6 +44,7 @@ const SupplierWelcome = () => {
 
     fetchGenres();
   }, []);
+  
 
   const handleGenreClick = (genre: string) => {
     const isGenreSelected = selectedGenres.includes(genre);
@@ -85,11 +80,6 @@ const SupplierWelcome = () => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
-
   return (
     <Grid
       container
@@ -116,62 +106,9 @@ const SupplierWelcome = () => {
           zIndex: -1,
         }}
       ></div>
-      <AppBar
-        position="static"
-        style={{
-          marginTop: -8,
-          background: "rgba(0, 0, 0, 0.5)",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-          height: "70px",
-        }}
-      >
-        <Grid item xs={12}>
-          <Toolbar>
-            {user && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "auto",
-                }}
-              >
-                <Avatar
-                  src={user.customAvatarUrl}
-                  alt="User Avatar"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: "50%",
-                    marginRight: 10,
-                  }}
-                />
-                <div>
-                  <Typography
-                    variant="subtitle1"
-                    style={{ color: "#fff", fontWeight: "bold" }}
-                  >
-                    {user.userFirstName}
-                  </Typography>
-                  <Typography variant="body2" style={{ color: "#fff" }}>
-                    {user.userEmail}
-                  </Typography>
-                </div>
-              </div>
-            )}
-            {user && (
-              <Grid sx={{ marginLeft: "auto" }}>
-                <Button
-                  variant="contained"
-                  onClick={handleLogout}
-                  color="secondary"
-                >
-                  Cerrar Sesión
-                </Button>
-              </Grid>
-            )}
-          </Toolbar>
-        </Grid>
-      </AppBar>
+      <Grid container item xs={12} sm={12} md={12}>
+        <Navbar />
+      </Grid>
       <Grid
         item
         xs={12}

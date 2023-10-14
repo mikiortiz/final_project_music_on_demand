@@ -39,7 +39,6 @@ const initialState: RegisteredFormState = {
       userPassword: "1111",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
       userContactNumber: "(068) Y09-7656",
-      selectedGenres: [],
     },
     {
       userEmail: "Gisela.Leites@example.com",
@@ -49,7 +48,6 @@ const initialState: RegisteredFormState = {
       userPassword: "1111",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       userContactNumber: "(44) 8504-6472",
-      selectedGenres: [],
     },
   ],
 };
@@ -78,9 +76,19 @@ const registeredFormSlice = createSlice({
         user.selectedGenres = genres;
       }
     },
+    setSelectedEvents: (
+      state,
+      action: PayloadAction<{ email: string; events: string[] }>
+    ) => {
+      const { email, events } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user) {
+        user.selectedEvents = events;
+      }
+    },
   },
 });
 
-export const { addSupplier, addUser, setSelectedGenres } =
+export const { addSupplier, addUser, setSelectedGenres, setSelectedEvents } =
   registeredFormSlice.actions;
 export default registeredFormSlice.reducer;

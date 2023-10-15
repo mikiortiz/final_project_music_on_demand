@@ -18,6 +18,7 @@ const initialState: RegisteredFormState = {
       customAvatarUrl: "https://randomuser.me/api/portraits/men/94.jpg",
       userContactNumber: "(474)-691-9215",
       selectedGenres: [],
+      selectedEvents: []
     },
     {
       userEmail: "Miguel.Ortiz@example.com",
@@ -28,6 +29,7 @@ const initialState: RegisteredFormState = {
       customAvatarUrl: "https://randomuser.me/api/portraits/men/57.jpg",
       userContactNumber: "(02622)-517454",
       selectedGenres: [],
+      selectedEvents: [],
     },
   ],
   MusicUsers: [

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import Navbar from "../components/NavbarSuppliers";
 import { eventTypes } from "../model/EventTypes";
@@ -13,6 +13,17 @@ const TypesEvents = () => {
 
   const user = useSelector((state: RootState) => state.userLogin.user);
   const userEmail = user?.userEmail;
+  const DjsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
+
+  useEffect(() => {
+    // Inicializar selectedCards con los eventos seleccionados del Redux Store
+    if (userEmail) {
+      const user = DjsUsers.find((user) => user.userEmail === userEmail);
+      if (user && user.selectedEvents) {
+        setSelectedCards(new Set(user.selectedEvents));
+      }
+    }
+  }, [userEmail, DjsUsers]); // Vuelve a ejecutarse si el userEmail o DjsUsers cambian
 
   const handleCardClick = (eventName: string) => {
     const updatedSelectedCards = new Set(selectedCards);
@@ -23,13 +34,10 @@ const TypesEvents = () => {
     }
 
     // Convierte el conjunto a un array y asegúrate de que todos los elementos sean de tipo string
-    const selectedEventsArray: string[] =
-      Array.from(updatedSelectedCards).map(String);
+    const selectedEventsArray: string[] = Array.from(updatedSelectedCards).map(String);
 
     // Dispara la acción setSelectedEvents con el email del usuario y los eventos seleccionados
-    dispatch(
-      setSelectedEvents({ email: userEmail, events: selectedEventsArray })
-    );
+    dispatch(setSelectedEvents({ email: userEmail, events: selectedEventsArray }));
     setSelectedCards(updatedSelectedCards);
   };
   return (
@@ -41,7 +49,7 @@ const TypesEvents = () => {
       md={12}
       style={{
         marginTop: -7,
-        height: "100%",
+        height: "auto",
         width: "100vw",
         backgroundImage: `url(${EventsSuppliers})`,
         backgroundSize: "cover",
@@ -85,7 +93,7 @@ const TypesEvents = () => {
       </div>
 
       {eventTypes.map((eventType, eventName) => (
-        <Grid item xs={12} sm={6} md={4} lg={2} key={eventName}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={eventName}>
           <Card
             onClick={() => handleCardClick(eventType.name)}
             sx={{
@@ -93,9 +101,10 @@ const TypesEvents = () => {
               borderRadius: 2,
               border: 1,
               borderColor: "black",
+              height: "154px",
               width: "93%",
               margin: "3px",
-              ml: 1,
+              ml: "13px",
               color: "white",
               textAlign: "center",
               cursor: "pointer",
@@ -103,6 +112,7 @@ const TypesEvents = () => {
           >
             <CardContent
               sx={{
+                zIndex: 1,
                 textAlign: "center",
                 borderBottom: 1,
                 height: 10,
@@ -128,8 +138,8 @@ const TypesEvents = () => {
                 src={eventType.image}
                 alt={`${eventType.name} Image`}
                 sx={{
-                  ml: "-5px",
-                  mt: -1,
+                  ml: "-9px",
+                  mt: "-15px",
                   width: "106%",
                   height: "125%",
                   borderRadius: 1,

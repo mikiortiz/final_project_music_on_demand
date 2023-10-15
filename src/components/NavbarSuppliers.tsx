@@ -1,26 +1,52 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../model/RootStateTypes";
+import { logoutUser } from "../redux/reducers/UserLoginSlice";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
   Typography,
   Button,
   Avatar,
+  Badge,
   Grid,
 } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
-import { logoutUser } from "../redux/reducers/UserLoginSlice";
-import { useNavigate } from "react-router-dom";
 
 const SupplierNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.userLogin.user);
+  const djsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
+  const [totalSelectedEvents, setTotalSelectedEvents] = useState(0);
+  const [totalSelectedGenres, setTotalSelectedGenres] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      const currentUser = djsUsers.find(
+        (djUser) => djUser.userEmail === user.userEmail
+      );
+      if (currentUser) {
+        // Calcula la cantidad de eventos seleccionados
+        const currentUserEvents = currentUser.selectedEvents || [];
+        setTotalSelectedEvents(currentUserEvents.length);
+
+        // Calcula la cantidad de géneros seleccionados
+        const currentUserGenres = currentUser.selectedGenres || [];
+        setTotalSelectedGenres(currentUserGenres.length);
+      }
+    }
+  }, [user, djsUsers]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/");
+    navigate("/"); // Redirige a la página de inicio después del cierre de sesión.
   };
+
+  if (!user) {
+    // Si no hay usuario actual, el componente no muestra nada
+    return null;
+  }
 
   return (
     <AppBar
@@ -33,57 +59,92 @@ const SupplierNavbar = () => {
       }}
     >
       <Toolbar>
-        <Grid item container xs={12} sm={6} alignItems="center">
+        <Grid item container xs={12} sm={6}>
           {user && (
-            <React.Fragment>
-              <Grid item>
-                <Avatar
-                  src={user.customAvatarUrl}
-                  alt="User Avatar"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: "50%",
-                    marginRight: 10,
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <div>
-                  <Typography
-                    variant="subtitle1"
-                    style={{ color: "#fff", fontWeight: "bold" }}
-                  >
-                    {user.userFirstName}
-                  </Typography>
-                  <Typography variant="body2" style={{ color: "#fff" }}>
-                    {user.userLastName}
-                  </Typography>
-                </div>
-              </Grid>
-            </React.Fragment>
+            <Grid style={{ height: 50, textAlign: "center" }}>
+              <Avatar
+                src={user.customAvatarUrl}
+                alt="User Avatar"
+                style={{
+                  marginTop: -3,
+                  width: 60,
+                  height: 60,
+                  borderRadius: "50%",
+                  marginLeft: 10,
+                }}
+              />
+              <Typography
+                variant="subtitle1"
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  marginTop: 3,
+                  marginLeft: 11,
+                }}
+              >
+                {user.userFirstName}
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{ color: "#fff", marginLeft: 11, marginTop: -4 }}
+              >
+                {user.userLastName}
+              </Typography>
+            </Grid>
           )}
         </Grid>
 
         {user && (
           <Grid container>
-            <Button
-              variant="contained"
-              onClick={() => navigate("/supplierwelcome")}
-              color="primary"
-              style={{ margin: "auto" }}
-            >
-              supplierwelcome
-            </Button>
+            <div style={{ position: "relative", marginLeft: -25 }}>
+              <Button
+                variant="contained"
+                onClick={() => navigate("/supplierwelcome")}
+                color="primary"
+                style={{ margin: "auto", position: "relative" }}
+              >
+                Mis Géneros
+                <Badge
+                  color="primary"
+                  badgeContent={totalSelectedGenres}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  sx={{
+                    position: "absolute",
+                    bottom: "50%",
+                    right: -3,
+                    transform: "scale(1.8)",
+                  }}
+                />
+              </Button>
+            </div>
+            <div style={{ position: "relative", marginLeft: 30 }}>
+              <Button
+                variant="contained"
+                onClick={() => navigate("/typesevents")}
+                color="primary"
+                style={{ margin: "auto", position: "relative" }}
+              >
+                ¿Eventos?
+                <Badge
+                  color="primary"
+                  badgeContent={totalSelectedEvents}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  sx={{
+                    position: "absolute",
+                    bottom: "50%",
+                    right: -3,
+                    transform: "scale(1.8)",
+                  }}
+                />
+              </Button>
+            </div>
 
-            <Button
-              variant="contained"
-              onClick={() => navigate("/typesevents")}
-              color="primary"
-              style={{ margin: "auto" }}
-            >
-              Tipos de Eventos para DJs
-            </Button>
             <Button
               variant="contained"
               onClick={handleLogout}

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"; // Importa useEffect y useState desde React
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
+import { setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
 import { RootState } from "../model/RootStateTypes";
 import { getAvailableGenres } from "../services/ApiSpotify";
 import {
@@ -20,7 +21,6 @@ import Navbar from "../components/NavbarSuppliers";
 const SupplierWelcome = () => {
   const dispatch = useDispatch();
   const [genres, setGenres] = useState<string[]>([]);
-  const [showWelcomeSnackbar, setShowWelcomeSnackbar] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
 
   const user = useSelector((state: RootState) => state.userLogin.user);
@@ -30,6 +30,10 @@ const SupplierWelcome = () => {
     (state: RootState) =>
       state.registered.DjsUsers.find((user) => user.userEmail === userEmail)
         ?.selectedGenres || []
+  );
+
+  const hasShownWelcomeMessage = useSelector(
+    (state: RootState) => state.userLogin.hasShownWelcomeMessage
   );
 
   useEffect(() => {
@@ -77,6 +81,10 @@ const SupplierWelcome = () => {
         style: { backgroundColor: "black" },
       });
     }
+  };
+
+  const handleCloseWelcomeSnackbar = () => {
+    dispatch(setShowWelcomeMessage(false)); // Marca que se ha mostrado el mensaje de bienvenida
   };
 
   return (
@@ -140,7 +148,7 @@ const SupplierWelcome = () => {
           mundo de la música!"
         </Typography>
 
-        {showWelcomeSnackbar && (
+        {hasShownWelcomeMessage && (
           <Grid
             item
             xs={12}
@@ -155,9 +163,9 @@ const SupplierWelcome = () => {
             }}
           >
             <Snackbar
-              open={showWelcomeSnackbar}
+              open={hasShownWelcomeMessage}
               autoHideDuration={3000}
-              onClose={() => setShowWelcomeSnackbar(false)}
+              onClose={handleCloseWelcomeSnackbar}
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
               <SnackbarContent

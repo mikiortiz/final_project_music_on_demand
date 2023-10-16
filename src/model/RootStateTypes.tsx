@@ -10,6 +10,7 @@ export interface RootState {
     MusicUsers: MusicUser[];
   };
   userLogin: {
+    hasShownWelcomeMessage: any;
     user: any;
     userData: MusicUser | Supplier | null;
     userType: UserType | null;

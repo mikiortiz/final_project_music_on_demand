@@ -3,7 +3,7 @@ import { Button, TextField, Typography, IconButton, Grid } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/reducers/UserLoginSlice";
+import { setUser, setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
 import { RootState } from "../model/RootStateTypes";
 import { SupplierData } from "../model/SupplierData";
 import { UserData } from "../model/UserData";
@@ -46,6 +46,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
       navigate("/userwelcome");
     } else if (supplier) {
       dispatch(setUser({ ...supplier, userType: "supplier" }));
+      dispatch(setShowWelcomeMessage(true));
       navigate("/supplierwelcome");
     } else {
       ShowWindowDialog("Los datos ingresados son incorrectos");

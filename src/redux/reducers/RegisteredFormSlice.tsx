@@ -18,6 +18,7 @@ const initialState: RegisteredFormState = {
       customAvatarUrl: "https://randomuser.me/api/portraits/men/94.jpg",
       userContactNumber: "(474)-691-9215",
       selectedGenres: [],
+      selectedEvents: []
     },
     {
       userEmail: "Miguel.Ortiz@example.com",
@@ -28,6 +29,7 @@ const initialState: RegisteredFormState = {
       customAvatarUrl: "https://randomuser.me/api/portraits/men/57.jpg",
       userContactNumber: "(02622)-517454",
       selectedGenres: [],
+      selectedEvents: [],
     },
   ],
   MusicUsers: [
@@ -39,7 +41,6 @@ const initialState: RegisteredFormState = {
       userPassword: "1111",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
       userContactNumber: "(068) Y09-7656",
-      selectedGenres: [],
     },
     {
       userEmail: "Gisela.Leites@example.com",
@@ -49,7 +50,6 @@ const initialState: RegisteredFormState = {
       userPassword: "1111",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       userContactNumber: "(44) 8504-6472",
-      selectedGenres: [],
     },
   ],
 };
@@ -78,9 +78,19 @@ const registeredFormSlice = createSlice({
         user.selectedGenres = genres;
       }
     },
+    setSelectedEvents: (
+      state,
+      action: PayloadAction<{ email: string; events: string[] }>
+    ) => {
+      const { email, events } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user) {
+        user.selectedEvents = events;
+      }
+    },
   },
 });
 
-export const { addSupplier, addUser, setSelectedGenres } =
+export const { addSupplier, addUser, setSelectedGenres, setSelectedEvents } =
   registeredFormSlice.actions;
 export default registeredFormSlice.reducer;

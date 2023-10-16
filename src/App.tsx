@@ -3,6 +3,7 @@ import UserSupplierRegistration from "./components/UserSupplierRegistration";
 import SupplierWelcome from "./components/SupplierWelcome";
 import UserWelcome from "./components/UserWelcome";
 import { SnackbarProvider } from "notistack";
+import TypesEvents from "./components/TypesEvents";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/" element={<UserSupplierRegistration />} />
             <Route path="/supplierwelcome" element={<SupplierWelcome />} />
             <Route path="/userwelcome" element={<UserWelcome />} />
+            <Route path="/TypesEvents" element={<TypesEvents />} />
             {/* Otras rutas */}
           </Routes>
         </div>

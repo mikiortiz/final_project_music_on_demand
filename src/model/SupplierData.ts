@@ -8,4 +8,5 @@ export interface SupplierData {
   userContactNumber: string;
   userType?: string;
   selectedGenres?: string[];
+  selectedEvents?: string[];
 }

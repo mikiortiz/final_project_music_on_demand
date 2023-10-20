@@ -27,11 +27,12 @@ const SupplierNavbar = () => {
         (djUser) => djUser.userEmail === user.userEmail
       );
       if (currentUser) {
-        // Calcula la cantidad de eventos seleccionados
-        const currentUserEvents = currentUser.selectedEvents || [];
-        setTotalSelectedEvents(currentUserEvents.length);
+        // Calculo la cantidad de eventos y géneros seleccionados
+        const currentUserEvents = currentUser.selectedEvents || {};
 
-        // Calcula la cantidad de géneros seleccionados
+        const totalEvents = Object.keys(currentUserEvents).length;
+        setTotalSelectedEvents(totalEvents);
+
         const currentUserGenres = currentUser.selectedGenres || [];
         setTotalSelectedGenres(currentUserGenres.length);
       }
@@ -40,11 +41,11 @@ const SupplierNavbar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/"); // Redirige a la página de inicio después del cierre de sesión.
+    navigate("/");
   };
 
+  // Si no hay usuario actual, el componente no muestra nada
   if (!user) {
-    // Si no hay usuario actual, el componente no muestra nada
     return null;
   }
 
@@ -144,6 +145,14 @@ const SupplierNavbar = () => {
                 />
               </Button>
             </div>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/PriceConfigurationEvents")}
+              color="primary"
+              style={{ margin: "auto", marginLeft: 30 }}
+            >
+              Mis Tarifas
+            </Button>
 
             <Button
               variant="contained"

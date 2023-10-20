@@ -2,44 +2,57 @@ import { useState, useEffect } from "react";
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import Navbar from "../components/NavbarSuppliers";
 import { eventTypes } from "../model/EventTypes";
-import EventsSuppliers from "../../public/images/EventsSuppliers.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedEvents } from "../redux/reducers/RegisteredFormSlice";
 import { RootState } from "../model/RootStateTypes";
+import EventsSuppliers from "../../public/images/EventsSuppliers.jpg";
+import { Event } from "../model/SupplierData";
 
 const TypesEvents = () => {
-  const [selectedCards, setSelectedCards] = useState(new Set());
+  const [selectedCards, setSelectedCards] = useState<Event[]>([]);
   const dispatch = useDispatch();
-
   const user = useSelector((state: RootState) => state.userLogin.user);
   const userEmail = user?.userEmail;
   const DjsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
 
   useEffect(() => {
-    // Inicializar selectedCards con los eventos seleccionados del Redux Store
+    // Se inicializan las Cards con los eventos seleccionados del Store
     if (userEmail) {
       const user = DjsUsers.find((user) => user.userEmail === userEmail);
       if (user && user.selectedEvents) {
-        setSelectedCards(new Set(user.selectedEvents));
+        setSelectedCards(user.selectedEvents);
       }
     }
-  }, [userEmail, DjsUsers]); // Vuelve a ejecutarse si el userEmail o DjsUsers cambian
+  }, [userEmail, DjsUsers]);
 
   const handleCardClick = (eventName: string) => {
-    const updatedSelectedCards = new Set(selectedCards);
-    if (updatedSelectedCards.has(eventName)) {
-      updatedSelectedCards.delete(eventName);
-    } else {
-      updatedSelectedCards.add(eventName);
+    const clickedEvent = eventTypes.find((event) => event.name === eventName);
+    if (clickedEvent) {
+      const isSelected = selectedCards.some(
+        (event) => event.eventName === clickedEvent.name
+      );
+      const updatedSelectedCards: Event[] = isSelected
+        ? selectedCards.filter((event) => event.eventName !== clickedEvent.name)
+        : [
+            ...selectedCards,
+            {
+              eventName: clickedEvent.name,
+              price: 0,
+              hours: "",
+            },
+          ];
+      console.log(
+        "Eventos seleccionados por el usuario:",
+        updatedSelectedCards
+      );
+      // Despacho la acción setSelectedEvents con el email del usuario y los eventos seleccionados
+      dispatch(
+        setSelectedEvents({ email: userEmail, events: updatedSelectedCards })
+      );
+      setSelectedCards(updatedSelectedCards);
     }
-
-    // Convierte el conjunto a un array y asegúrate de que todos los elementos sean de tipo string
-    const selectedEventsArray: string[] = Array.from(updatedSelectedCards).map(String);
-
-    // Dispara la acción setSelectedEvents con el email del usuario y los eventos seleccionados
-    dispatch(setSelectedEvents({ email: userEmail, events: selectedEventsArray }));
-    setSelectedCards(updatedSelectedCards);
   };
+
   return (
     <Grid
       container
@@ -92,8 +105,8 @@ const TypesEvents = () => {
         </Typography>
       </div>
 
-      {eventTypes.map((eventType, eventName) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={eventName}>
+      {eventTypes.map((eventType) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={eventType.name}>
           <Card
             onClick={() => handleCardClick(eventType.name)}
             sx={{
@@ -117,8 +130,10 @@ const TypesEvents = () => {
                 borderBottom: 1,
                 height: 10,
                 borderRadius: 2,
-                backgroundColor: selectedCards.has(eventType.name)
-                  ? "#7b1fa2"
+                backgroundColor: selectedCards.some(
+                  (event) => event.eventName === eventType.name
+                )
+                  ? "#0072B9"
                   : "transparent",
               }}
             >

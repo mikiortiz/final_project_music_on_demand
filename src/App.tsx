@@ -4,6 +4,7 @@ import SupplierWelcome from "./components/SupplierWelcome";
 import UserWelcome from "./components/UserWelcome";
 import { SnackbarProvider } from "notistack";
 import TypesEvents from "./components/TypesEvents";
+import PriceConfigurationEvents from "./components/PriceConfigurationEvents";
 
 function App() {
   return (
@@ -11,12 +12,14 @@ function App() {
       <Router>
         <div>
           <Routes>
-            {/* Otras rutas */}
             <Route path="/" element={<UserSupplierRegistration />} />
             <Route path="/supplierwelcome" element={<SupplierWelcome />} />
             <Route path="/userwelcome" element={<UserWelcome />} />
             <Route path="/TypesEvents" element={<TypesEvents />} />
-            {/* Otras rutas */}
+            <Route
+              path="/PriceConfigurationEvents"
+              element={<PriceConfigurationEvents />}
+            />
           </Routes>
         </div>
       </Router>

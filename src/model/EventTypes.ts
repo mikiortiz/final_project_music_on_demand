@@ -22,6 +22,6 @@ export const eventTypes = [
   { name: "Eventos Culturales", image: CulturalImg },
   { name: "Reuniones Sociales", image: SocialMeetingsImg },
   { name: "Eventos de Caridad", image: CharityEvents },
-  { name: "Ferias y Festivales Locales", image: PartiesandFestivals },
+  { name: "Ferias y Festivales", image: PartiesandFestivals },
   { name: "Eventos Religiosos", image: ReligiousEvents },
 ];

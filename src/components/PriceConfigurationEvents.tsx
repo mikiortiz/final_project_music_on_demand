@@ -63,7 +63,7 @@ const PriceConfigurationEvents = () => {
       md={12}
       style={{
         marginTop: -7,
-        height: "auto",
+        height: "100%",
         width: "100vw",
         backgroundImage: `url(${PriceEventsImg})`,
         backgroundSize: "cover",
@@ -187,45 +187,47 @@ const PriceConfigurationEvents = () => {
             </Grid>
           </ListItem>
         ))}
-        <Button
-          sx={{
-            marginLeft: "5%",
-            marginTop: "20px",
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            color: "white",
-            width: "90%",
-            height: "60px",
-            borderRadius: 2,
-          }}
-          variant="contained"
-          onClick={() => {
-            const userEmail = user?.userEmail;
-            if (userEmail) {
-              const eventsWithPricesAndHours = selectedEvents.map((event) => {
-                const eventName = event.eventName;
-                const eventInfo = eventPrices[eventName] || {
-                  price: 0,
-                  hours: "",
-                };
-                return {
-                  eventName,
-                  price: eventInfo.price,
-                  hours: eventInfo.hours,
-                };
-              });
-
-              dispatch(
-                setSelectedEvents({
-                  email: userEmail,
-                  events: eventsWithPricesAndHours,
-                })
-              );
-            }
-          }}
-        >
-          Guardar
-        </Button>
       </List>
+      <Button
+        sx={{
+          marginLeft: "5%",
+          marginTop: "10%",
+          backgroundColor: "rgba(0, 0, 0, 0.9)",
+          color: "white",
+          width: "90%",
+          height: "60px",
+          borderRadius: 2,
+          marginBottom: 21,
+          border: 1,
+        }}
+        variant="contained"
+        onClick={() => {
+          const userEmail = user?.userEmail;
+          if (userEmail) {
+            const eventsWithPricesAndHours = selectedEvents.map((event) => {
+              const eventName = event.eventName;
+              const eventInfo = eventPrices[eventName] || {
+                price: 0,
+                hours: "",
+              };
+              return {
+                eventName,
+                price: eventInfo.price,
+                hours: eventInfo.hours,
+              };
+            });
+
+            dispatch(
+              setSelectedEvents({
+                email: userEmail,
+                events: eventsWithPricesAndHours,
+              })
+            );
+          }
+        }}
+      >
+        Guardar
+      </Button>
     </Grid>
   );
 };

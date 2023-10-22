@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
-import { logoutUser } from "../redux/reducers/UserLoginSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -11,13 +9,20 @@ import {
   Avatar,
   Badge,
   Grid,
+  Hidden,
 } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MenuIcon from "@mui/icons-material/Menu";
+import { logoutUser } from "../redux/reducers/UserLoginSlice";
+import { RootState } from "../model/RootStateTypes";
 
 const SupplierNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.userLogin.user);
   const djsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [totalSelectedEvents, setTotalSelectedEvents] = useState(0);
   const [totalSelectedGenres, setTotalSelectedGenres] = useState(0);
 
@@ -27,9 +32,7 @@ const SupplierNavbar = () => {
         (djUser) => djUser.userEmail === user.userEmail
       );
       if (currentUser) {
-        // Calculo la cantidad de eventos y géneros seleccionados
         const currentUserEvents = currentUser.selectedEvents || {};
-
         const totalEvents = Object.keys(currentUserEvents).length;
         setTotalSelectedEvents(totalEvents);
 
@@ -39,15 +42,18 @@ const SupplierNavbar = () => {
     }
   }, [user, djsUsers]);
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/");
   };
-
-  // Si no hay usuario actual, el componente no muestra nada
-  if (!user) {
-    return null;
-  }
 
   return (
     <AppBar
@@ -60,110 +66,141 @@ const SupplierNavbar = () => {
       }}
     >
       <Toolbar>
-        <Grid item container xs={12} sm={6}>
-          {user && (
-            <Grid style={{ height: 50, textAlign: "center" }}>
-              <Avatar
-                src={user.customAvatarUrl}
-                alt="User Avatar"
-                style={{
-                  marginTop: -3,
-                  width: 60,
-                  height: 60,
-                  borderRadius: "50%",
-                  marginLeft: 10,
-                }}
-              />
-              <Typography
-                variant="subtitle1"
-                style={{
-                  color: "#fff",
-                  fontWeight: "bold",
-                  marginTop: 3,
-                  marginLeft: 11,
-                }}
-              >
-                {user.userFirstName}
-              </Typography>
-              <Typography
-                variant="body2"
-                style={{ color: "#fff", marginLeft: 11, marginTop: -4 }}
-              >
-                {user.userLastName}
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
-
-        {user && (
-          <Grid container>
-            <div style={{ position: "relative", marginLeft: -25 }}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            {user && (
+              <Grid container alignItems="center">
+                <Avatar src={user.customAvatarUrl} alt="User Avatar" sx={{ width:50, height: 50}} />
+                <Typography variant="subtitle1" sx={{ marginLeft: 1 }}>
+                  {user.userFirstName} {user.userLastName}
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+          <Grid item>
+            <Hidden lgUp>
+              <Button color="inherit" onClick={handleMenuOpen}>
+                <MenuIcon />
+              </Button>
+            </Hidden>
+            <Hidden mdDown>
               <Button
-                variant="contained"
                 onClick={() => navigate("/supplierwelcome")}
+                variant="outlined"
                 color="primary"
-                style={{ margin: "auto", position: "relative" }}
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
               >
                 Mis Géneros
                 <Badge
-                  color="primary"
                   badgeContent={totalSelectedGenres}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  sx={{
-                    position: "absolute",
-                    bottom: "50%",
-                    right: -3,
-                    transform: "scale(1.8)",
-                  }}
+                  color="secondary"
+                  sx={{ position: "absolute", top: 2, right: 2 }}
                 />
               </Button>
-            </div>
-            <div style={{ position: "relative", marginLeft: 30 }}>
               <Button
-                variant="contained"
                 onClick={() => navigate("/typesevents")}
+                variant="outlined"
                 color="primary"
-                style={{ margin: "auto", position: "relative" }}
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
               >
                 ¿Eventos?
                 <Badge
-                  color="primary"
                   badgeContent={totalSelectedEvents}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  sx={{
-                    position: "absolute",
-                    bottom: "50%",
-                    right: -3,
-                    transform: "scale(1.8)",
-                  }}
+                  color="secondary"
+                  sx={{ position: "absolute", top: 2, right: 2 }}
                 />
               </Button>
-            </div>
-            <Button
-              variant="contained"
-              onClick={() => navigate("/PriceConfigurationEvents")}
-              color="primary"
-              style={{ margin: "auto", marginLeft: 30 }}
+              <Button
+                onClick={() => navigate("/PriceConfigurationEvents")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+              >
+                Mis Tarifas
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleLogout}
+                color="secondary"
+                style={{
+                  margin: "auto",
+                  position: "relative",
+                  display: "inline-block",
+                }}
+              >
+                Cerrar Sesión
+              </Button>
+            </Hidden>
+          </Grid>
+        </Grid>
+        <Hidden lgUp>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem
+              onClick={() => {
+                navigate("/supplierwelcome");
+                handleMenuClose();
+              }}
+            >
+              Mis Géneros
+              <Badge
+                badgeContent={totalSelectedGenres}
+                color="secondary"
+                sx={{ position: "absolute", top: 5, right: 15 }}
+              />
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/typesevents");
+                handleMenuClose();
+              }}
+            >
+              ¿Eventos?
+              <Badge
+                badgeContent={totalSelectedEvents}
+                color="secondary"
+                sx={{ position: "absolute", top: 5, right: 15 }}
+              />
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/PriceConfigurationEvents");
+                handleMenuClose();
+              }}
             >
               Mis Tarifas
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={handleLogout}
-              color="secondary"
-              style={{ margin: "auto" }}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleLogout();
+                handleMenuClose();
+              }}
             >
               Cerrar Sesión
-            </Button>
-          </Grid>
-        )}
+            </MenuItem>
+          </Menu>
+        </Hidden>
       </Toolbar>
     </AppBar>
   );

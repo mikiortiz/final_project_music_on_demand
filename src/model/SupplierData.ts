@@ -1,3 +1,9 @@
+export interface Event {
+  eventName: string;
+  price: number;
+  hours: string;
+}
+
 export interface SupplierData {
   userEmail: string;
   userFirstName: string;
@@ -8,5 +14,5 @@ export interface SupplierData {
   userContactNumber: string;
   userType?: string;
   selectedGenres?: string[];
-  selectedEvents?: string[];
+  selectedEvents?: Event[]; // Ahora selectedEvents es un arreglo de objetos de tipo Event
 }

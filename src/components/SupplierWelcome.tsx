@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
 import { setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
@@ -84,7 +84,7 @@ const SupplierWelcome = () => {
   };
 
   const handleCloseWelcomeSnackbar = () => {
-    dispatch(setShowWelcomeMessage(false)); // Marca que se ha mostrado el mensaje de bienvenida
+    dispatch(setShowWelcomeMessage(false));
   };
 
   return (
@@ -157,7 +157,6 @@ const SupplierWelcome = () => {
             container
             style={{
               position: "relative",
-              marginTop: "2rem",
               textAlign: "center",
               alignItems: "center",
             }}
@@ -170,55 +169,52 @@ const SupplierWelcome = () => {
             >
               <SnackbarContent
                 style={{
-                  height: "100%",
                   background: "rgba(0, 0, 0, 1)",
                   color: "white",
                   textAlign: "center",
-                  padding: "20px",
+
+                  width: "100%",
+                  maxWidth: "auto",
                 }}
                 message={
                   <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={12}
                     container
-                    style={{ position: "relative", marginTop: "10px" }}
+                    direction="column"
+                    alignItems="center"
+                    spacing={2}
                   >
-                    <Grid>
-                      <Typography
-                        variant="h4"
-                        style={{
-                          marginBottom: "1rem",
-                          marginLeft: "60px",
-                        }}
-                      >
-                        ¡Bienvenido!
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        style={{ marginBottom: "1rem", marginLeft: "80px" }}
-                      >
-                        {user?.userFirstName}!
+                    <Grid item>
+                      <Typography variant="h4">¡Bienvenid@!</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h4">
+                        {user?.userFirstName}
                       </Typography>
                     </Grid>
-
-                    <img
-                      src={logomusic}
-                      alt="Logo"
-                      style={{
-                        borderRadius: "10px",
-                        marginLeft: "65px",
-                        maxWidth: "200px",
-                        marginBottom: "1rem",
-                      }}
-                    />
-                    <Typography variant="body1" style={{ padding: " 10px" }}>
-                      Descubre la plataforma de música exclusiva para
-                      proveedores. Aquí podrás encontrar todas las herramientas
-                      y recursos que necesitas para potenciar tu negocio
-                      musical.
-                    </Typography>
+                    <Grid item>
+                      <Typography variant="h4">
+                        Ya eres Dj de Music-World
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <img
+                        src={logomusic}
+                        alt="Logo"
+                        style={{
+                          borderRadius: "10px",
+                          maxWidth: "200px",
+                          marginTop: "1rem",
+                        }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="body1">
+                        Descubre la plataforma de música exclusiva para
+                        proveedores. Aquí podrás encontrar todas las
+                        herramientas y recursos que necesitas para potenciar tu
+                        negocio musical.
+                      </Typography>
+                    </Grid>
                   </Grid>
                 }
               />

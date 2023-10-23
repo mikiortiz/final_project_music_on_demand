@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SupplierData } from "../../model/SupplierData";
+import { SupplierData, Event } from "../../model/SupplierData";
 import { UserData } from "../../model/UserData";
 
 interface RegisteredFormState {
@@ -18,7 +18,7 @@ const initialState: RegisteredFormState = {
       customAvatarUrl: "https://randomuser.me/api/portraits/men/94.jpg",
       userContactNumber: "(474)-691-9215",
       selectedGenres: [],
-      selectedEvents: []
+      selectedEvents: [],
     },
     {
       userEmail: "Miguel.Ortiz@example.com",
@@ -80,7 +80,7 @@ const registeredFormSlice = createSlice({
     },
     setSelectedEvents: (
       state,
-      action: PayloadAction<{ email: string; events: string[] }>
+      action: PayloadAction<{ email: string; events: Event[] }>
     ) => {
       const { email, events } = action.payload;
       const user = state.DjsUsers.find((user) => user.userEmail === email);

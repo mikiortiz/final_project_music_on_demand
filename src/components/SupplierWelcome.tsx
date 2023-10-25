@@ -107,29 +107,19 @@ const SupplierWelcome = () => {
       <div>
         <Navbar />
 
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
+        <Typography
           sx={{
-            background: "rgba(0, 0, 0, 0.9)",
-            height: 50,
+            backgroundColor: "black",
+            color: "white",
+            fontSize: 30,
+            fontWeight: "600",
+            textAlign: "center",
+            mt: "1px",
           }}
         >
-          <Typography
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              fontSize: 30,
-              fontWeight: "600",
-              textAlign: "center",
-              mt: "1px",
-            }}
-          >
-            ELECCION DE GENEROS
-          </Typography>
-        </Grid>
+          ELECCION DE GENEROS
+        </Typography>
+
         <Typography
           sx={{
             background: "rgba(0, 0, 0, 0.7)",

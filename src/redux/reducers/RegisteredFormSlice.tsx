@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SupplierData, Event } from "../../model/SupplierData";
+import { SupplierData, Event, Area } from "../../model/SupplierData";
 import { UserData } from "../../model/UserData";
 
 interface RegisteredFormState {
@@ -19,6 +19,7 @@ const initialState: RegisteredFormState = {
       userContactNumber: "(474)-691-9215",
       selectedGenres: [],
       selectedEvents: [],
+      areas: [],
     },
     {
       userEmail: "Miguel.Ortiz@example.com",
@@ -30,6 +31,7 @@ const initialState: RegisteredFormState = {
       userContactNumber: "(02622)-517454",
       selectedGenres: [],
       selectedEvents: [],
+      areas: [],
     },
   ],
   MusicUsers: [
@@ -59,11 +61,7 @@ const registeredFormSlice = createSlice({
   initialState,
   reducers: {
     addSupplier: (state, action: PayloadAction<SupplierData>) => {
-      const supplier: SupplierData = {
-        ...action.payload,
-        selectedGenres: action.payload.selectedGenres || [],
-      };
-      state.DjsUsers.push(supplier);
+      state.DjsUsers.push(action.payload);
     },
     addUser: (state, action: PayloadAction<UserData>) => {
       state.MusicUsers.push(action.payload);
@@ -88,9 +86,34 @@ const registeredFormSlice = createSlice({
         user.selectedEvents = events;
       }
     },
+    addArea: (state, action: PayloadAction<{ email: string; area: Area }>) => {
+      const { email, area } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user && user.areas) {
+        user.areas.push(area);
+      }
+    },
+    removeArea: (
+      state,
+      action: PayloadAction<{ email: string; area: Area }>
+    ) => {
+      const { email, area } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user && user.areas) {
+        user.areas = user.areas.filter(
+          (a) => JSON.stringify(a) !== JSON.stringify(area)
+        );
+      }
+    },
   },
 });
 
-export const { addSupplier, addUser, setSelectedGenres, setSelectedEvents } =
-  registeredFormSlice.actions;
+export const {
+  addSupplier,
+  addUser,
+  setSelectedGenres,
+  setSelectedEvents,
+  addArea,
+  removeArea,
+} = registeredFormSlice.actions;
 export default registeredFormSlice.reducer;

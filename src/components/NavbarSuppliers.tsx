@@ -70,7 +70,11 @@ const SupplierNavbar = () => {
           <Grid item>
             {user && (
               <Grid container alignItems="center">
-                <Avatar src={user.customAvatarUrl} alt="User Avatar" sx={{ width:50, height: 50}} />
+                <Avatar
+                  src={user.customAvatarUrl}
+                  alt="User Avatar"
+                  sx={{ width: 50, height: 50 }}
+                />
                 <Typography variant="subtitle1" sx={{ marginLeft: 1 }}>
                   {user.userFirstName} {user.userLastName}
                 </Typography>
@@ -103,6 +107,7 @@ const SupplierNavbar = () => {
                   sx={{ position: "absolute", top: 2, right: 2 }}
                 />
               </Button>
+
               <Button
                 onClick={() => navigate("/typesevents")}
                 variant="outlined"
@@ -122,6 +127,7 @@ const SupplierNavbar = () => {
                   sx={{ position: "absolute", top: 2, right: 2 }}
                 />
               </Button>
+
               <Button
                 onClick={() => navigate("/PriceConfigurationEvents")}
                 variant="outlined"
@@ -136,6 +142,22 @@ const SupplierNavbar = () => {
               >
                 Mis Tarifas
               </Button>
+
+              <Button
+                onClick={() => navigate("/DjsArea")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+              >
+                Areas de Trabajo
+              </Button>
+
               <Button
                 variant="contained"
                 onClick={handleLogout}
@@ -190,6 +212,14 @@ const SupplierNavbar = () => {
               }}
             >
               Mis Tarifas
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/DjsArea");
+                handleMenuClose();
+              }}
+            >
+              Areas de Trabajo
             </MenuItem>
             <MenuItem
               onClick={() => {

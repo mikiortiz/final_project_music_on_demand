@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import PriceEventsImg from "../../public/images/PriceEventsImg.jpg";
-import Navbar from "../components/NavbarSuppliers";
+import PriceEventsImg from "../../../public/images/PriceEventsImg.jpg";
+import Navbar from "./NavbarSuppliers";
 import {
   List,
   ListItem,
@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
-import { setSelectedEvents } from "../redux/reducers/RegisteredFormSlice";
+import { RootState } from "../../model/RootStateTypes";
+import { setSelectedEvents } from "../../redux/reducers/RegisteredFormSlice";
 
 const PriceConfigurationEvents = () => {
   const [eventPrices, setEventPrices] = useState<{

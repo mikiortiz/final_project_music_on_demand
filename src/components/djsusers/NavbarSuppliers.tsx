@@ -14,8 +14,8 @@ import {
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import { logoutUser } from "../redux/reducers/UserLoginSlice";
-import { RootState } from "../model/RootStateTypes";
+import { logoutUser } from "../../redux/reducers/UserLoginSlice";
+import { RootState } from "../../model/RootStateTypes";
 
 const SupplierNavbar = () => {
   const dispatch = useDispatch();

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
-import Navbar from "../components/NavbarSuppliers";
-import { eventTypes } from "../model/EventTypes";
+import Navbar from "./NavbarSuppliers";
+import { eventTypes } from "../../model/EventTypes";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedEvents } from "../redux/reducers/RegisteredFormSlice";
-import { RootState } from "../model/RootStateTypes";
-import EventsSuppliers from "../../public/images/EventsSuppliers.jpg";
-import { Event } from "../model/SupplierData";
+import { setSelectedEvents } from "../../redux/reducers/RegisteredFormSlice";
+import { RootState } from "../../model/RootStateTypes";
+import EventsSuppliers from "../../../public/images/EventsSuppliers.jpg";
+import { Event } from "../../model/SupplierData";
 
 const TypesEvents = () => {
   const [selectedCards, setSelectedCards] = useState<Event[]>([]);

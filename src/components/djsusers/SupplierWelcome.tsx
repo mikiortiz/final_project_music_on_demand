@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
-import { setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
-import { RootState } from "../model/RootStateTypes";
-import { getAvailableGenres } from "../services/ApiSpotify";
+import { setSelectedGenres } from "../../redux/reducers/RegisteredFormSlice";
+import { setShowWelcomeMessage } from "../../redux/reducers/UserLoginSlice";
+import { RootState } from "../../model/RootStateTypes";
+import { getAvailableGenres } from "../../services/ApiSpotify";
 import {
   Snackbar,
   SnackbarContent,
@@ -14,9 +14,9 @@ import {
   Grid,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import SuppliersHome from "../../public/images/SuppliersHome.jpg";
-import logomusic from "../../public/images/Logomusic.png";
-import Navbar from "../components/NavbarSuppliers";
+import SuppliersHome from "../../../public/images/SuppliersHome.jpg";
+import logomusic from "../../../public/images/Logomusic.png";
+import Navbar from "./NavbarSuppliers";
 
 const SupplierWelcome = () => {
   const dispatch = useDispatch();

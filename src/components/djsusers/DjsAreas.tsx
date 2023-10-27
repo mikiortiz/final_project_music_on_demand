@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
+import { RootState } from "../../model/RootStateTypes";
 import GoogleMapReact from "google-map-react";
-import { addArea } from "../redux/reducers/RegisteredFormSlice";
+import { addArea } from "../../redux/reducers/RegisteredFormSlice";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Area } from "../model/SupplierData";
-import { removeArea } from "../redux/reducers/RegisteredFormSlice";
-import Navbar from "../components/NavbarSuppliers";
-import ImgWorkArea from "../../public/images/ImgWorkArea.avif";
+import { Area } from "../../model/SupplierData";
+import { removeArea } from "../../redux/reducers/RegisteredFormSlice";
+import Navbar from "./NavbarSuppliers";
 import {
   Card,
   CardContent,
@@ -22,7 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { enqueueSnackbar } from "notistack";
 
 const DjAreas = () => {
-  const mapRef = useRef(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
   const dispatch = useDispatch();
 
   const userEmail = useSelector(
@@ -43,7 +42,8 @@ const DjAreas = () => {
 
   const [circle, setCircle] = useState<google.maps.Circle | null>(null);
   const [areaName, setAreaName] = useState<string>("");
-  const [isAreaWindowOpen, setIsAreaWindowOpen] = useState(false); // Nuevo estado para controlar la apertura/cierre de la ventana de áreas
+  const [isAreaWindowOpen, setIsAreaWindowOpen] = useState(false);
+  const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
 
   useEffect(() => {
     if (circle && mapRef.current) {
@@ -80,7 +80,7 @@ const DjAreas = () => {
         radius: radius,
       };
 
-      // Despacha la acción addArea con el email del usuario y el área definida
+      // Despachamos la acción addArea con el email del usuario y el área definida
       if (userEmail) {
         dispatch(
           addArea({
@@ -89,7 +89,6 @@ const DjAreas = () => {
           })
         );
 
-        // Limpiar los campos después de guardar el área
         setAreaName("");
       }
     } else {
@@ -99,10 +98,10 @@ const DjAreas = () => {
 
   const maprender = (map: any, maps: any) => {
     const newCircle = new maps.Circle({
-      strokeColor: "#FF0000",
+      strokeColor: "#000000",
       strokeOpacity: 0.8,
       strokeWeight: 2,
-      fillColor: "#FF0000",
+      fillColor: "#000000",
       fillOpacity: 0.35,
       editable: true,
       draggable: true,
@@ -113,17 +112,40 @@ const DjAreas = () => {
 
     setCircle(newCircle);
 
-    newCircle.addListener("drag", () => {
-      // logCircleProperties(newCircle);
-    });
+    map.addListener("click", (e: any) => {
+      // Obtiengo las coordenadas donde se hizo clic
+      const clickedLocation = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      };
 
-    maps.event.addListener(newCircle, "radius_changed", () => {
-      // logCircleProperties(newCircle);
+      newCircle.setCenter(clickedLocation);
+
+      map.panTo(clickedLocation);
     });
   };
 
   const handleDeleteArea = (areaToDelete: Area) => {
     dispatch(removeArea({ email: userEmail, area: areaToDelete }));
+  };
+
+  const handleGoToArea = (area: Area) => {
+    console.log("Ir a área:", area);
+    setIsAreaWindowOpen(false);
+
+    //Ubicación del área seleccionada y establecemos el radio
+    const newCenter = new google.maps.LatLng(
+      parseFloat(area.lat),
+      parseFloat(area.lng)
+    );
+    circle?.setCenter(newCenter);
+    circle?.setRadius(area.radius);
+
+    //Referencia del mapa está llegando correctamente
+    console.log("Referencia del mapa:", googleMap);
+
+    // Centra el mapa en la ubicación del área seleccionada
+    googleMap?.panTo(newCenter);
   };
 
   return (
@@ -162,7 +184,7 @@ const DjAreas = () => {
             justifyContent: "center",
           }}
         >
-          ADMINISTRA TUS ÁREAS DE SERVICIO
+          ÁREAS DE SERVICIO
         </Typography>
 
         <Typography
@@ -204,6 +226,8 @@ const DjAreas = () => {
             disableDefaultUI: true,
           }}
           onGoogleApiLoaded={({ map, maps }) => {
+            setGoogleMap(map);
+
             maprender(map, maps);
           }}
         ></GoogleMapReact>
@@ -279,7 +303,7 @@ const DjAreas = () => {
               <Grid container item xs={12}>
                 <Card
                   style={{
-                    backgroundImage: `url(${ImgWorkArea})`,
+                    background: "rgba(0, 0, 0, 0.8)",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -291,6 +315,8 @@ const DjAreas = () => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     zIndex: 9999,
+                    maxHeight: "80%",
+                    overflowY: "auto",
                   }}
                 >
                   <CardContent>
@@ -307,48 +333,64 @@ const DjAreas = () => {
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
+                          maxHeight: "50px",
+                          overflow: "auto",
                         }}
                       >
                         Mis Áreas
                       </Typography>
                     </Grid>
 
-                    {/*Lista de áreas seleccionadas*/}
-                    <List>
+                    {/* Lista de áreas seleccionadas */}
+                    <List style={{ maxHeight: "200px", overflowY: "auto" }}>
                       {areas?.map((area, index) => (
                         <ListItem key={index}>
                           <Grid
-                            container
+                            item
+                            xs={12}
+                            sm={12}
+                            md={12}
                             style={{
-                              marginTop: -15,
-                              width: "100%",
+                              marginTop: -10,
+                              width: "auto",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "revert-layer",
                               background: "rgba(0, 0, 0, 0.8)",
-                              height: 50,
+                              height: 60,
                               borderRadius: 2,
-                              padding: "0 16px",
+                              padding: "0 8px",
                             }}
                           >
+                            <Grid>
+                              <Button
+                                onClick={() => handleGoToArea(area)}
+                                color="primary"
+                                sx={{
+                                  minWidth: "unset",
+                                  backgroundColor: "rgba(0, 128, 255, 0.5)",
+                                  color: "white",
+                                }}
+                              >
+                                Ir
+                              </Button>
+                            </Grid>
                             <Grid style={{ textAlign: "center", flex: 1 }}>
                               {area.name}
                             </Grid>
                             <Grid
                               container
                               sx={{
-                                width: "100px",
+                                width: "auto",
                                 bgcolor: "blueviolet",
                                 borderRadius: 2,
                               }}
                             >
                               <IconButton
-                                sx={{ color: "white", height: "30px" }}
-                                edge="end"
+                                sx={{ color: "white", height: "auto" }}
                                 aria-label="Eliminar"
                                 onClick={() => handleDeleteArea(area)}
                               >
-                                <Typography>Eliminar</Typography>
                                 <DeleteIcon />
                               </IconButton>
                             </Grid>

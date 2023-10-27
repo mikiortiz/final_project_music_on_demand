@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
+import { RootState } from "../../model/RootStateTypes";
 import { AppBar, Typography, Avatar, Toolbar, Button } from "@mui/material";
-import { logoutUser } from "../redux/reducers/UserLoginSlice";
+import { logoutUser } from "../../redux/reducers/UserLoginSlice";
 import { useNavigate } from "react-router-dom";
 
 const UserWelcome: React.FC = () => {

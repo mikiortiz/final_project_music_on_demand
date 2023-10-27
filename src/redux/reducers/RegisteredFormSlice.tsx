@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SupplierData, Event } from "../../model/SupplierData";
+import { SupplierData, Event, Area } from "../../model/SupplierData";
 import { UserData } from "../../model/UserData";
 
 interface RegisteredFormState {
@@ -14,22 +14,24 @@ const initialState: RegisteredFormState = {
       userFirstName: "Ismael",
       userLastName: "Gonzales",
       userAge: "34",
-      userPassword: "1111",
+      userPassword: "asdasd",
       customAvatarUrl: "https://randomuser.me/api/portraits/men/94.jpg",
       userContactNumber: "(474)-691-9215",
       selectedGenres: [],
       selectedEvents: [],
+      areas: [],
     },
     {
       userEmail: "Miguel.Ortiz@example.com",
       userFirstName: "Miguel",
       userLastName: "Ortiz",
       userAge: "33",
-      userPassword: "1111",
+      userPassword: "asdasd",
       customAvatarUrl: "https://randomuser.me/api/portraits/men/57.jpg",
       userContactNumber: "(02622)-517454",
       selectedGenres: [],
       selectedEvents: [],
+      areas: [],
     },
   ],
   MusicUsers: [
@@ -38,7 +40,7 @@ const initialState: RegisteredFormState = {
       userFirstName: "Tiago",
       userLastName: "Gonzales",
       userAge: "18",
-      userPassword: "1111",
+      userPassword: "asdasd",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
       userContactNumber: "(068) Y09-7656",
     },
@@ -47,7 +49,7 @@ const initialState: RegisteredFormState = {
       userFirstName: "Gisela",
       userLastName: "Leites",
       userAge: "34",
-      userPassword: "1111",
+      userPassword: "asdasd",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       userContactNumber: "(44) 8504-6472",
     },
@@ -59,11 +61,7 @@ const registeredFormSlice = createSlice({
   initialState,
   reducers: {
     addSupplier: (state, action: PayloadAction<SupplierData>) => {
-      const supplier: SupplierData = {
-        ...action.payload,
-        selectedGenres: action.payload.selectedGenres || [],
-      };
-      state.DjsUsers.push(supplier);
+      state.DjsUsers.push(action.payload);
     },
     addUser: (state, action: PayloadAction<UserData>) => {
       state.MusicUsers.push(action.payload);
@@ -88,9 +86,34 @@ const registeredFormSlice = createSlice({
         user.selectedEvents = events;
       }
     },
+    addArea: (state, action: PayloadAction<{ email: string; area: Area }>) => {
+      const { email, area } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user && user.areas) {
+        user.areas.push(area);
+      }
+    },
+    removeArea: (
+      state,
+      action: PayloadAction<{ email: string; area: Area }>
+    ) => {
+      const { email, area } = action.payload;
+      const user = state.DjsUsers.find((user) => user.userEmail === email);
+      if (user && user.areas) {
+        user.areas = user.areas.filter(
+          (a) => JSON.stringify(a) !== JSON.stringify(area)
+        );
+      }
+    },
   },
 });
 
-export const { addSupplier, addUser, setSelectedGenres, setSelectedEvents } =
-  registeredFormSlice.actions;
+export const {
+  addSupplier,
+  addUser,
+  setSelectedGenres,
+  setSelectedEvents,
+  addArea,
+  removeArea,
+} = registeredFormSlice.actions;
 export default registeredFormSlice.reducer;

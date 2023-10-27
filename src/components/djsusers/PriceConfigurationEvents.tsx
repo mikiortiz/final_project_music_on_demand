@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import PriceEventsImg from "../../public/images/PriceEventsImg.jpg";
-import Navbar from "../components/NavbarSuppliers";
+import PriceEventsImg from "../../../public/images/PriceEventsImg.jpg";
+import Navbar from "./NavbarSuppliers";
 import {
   List,
   ListItem,
@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../model/RootStateTypes";
-import { setSelectedEvents } from "../redux/reducers/RegisteredFormSlice";
+import { RootState } from "../../model/RootStateTypes";
+import { setSelectedEvents } from "../../redux/reducers/RegisteredFormSlice";
 
 const PriceConfigurationEvents = () => {
   const [eventPrices, setEventPrices] = useState<{
@@ -62,14 +62,14 @@ const PriceConfigurationEvents = () => {
       sm={12}
       md={12}
       style={{
-        marginTop: -7,
-        height: "100%",
+        position: "relative",
+        minHeight: "100vh",
         width: "100vw",
+        marginTop: -7,
         backgroundImage: `url(${PriceEventsImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        position: "relative",
       }}
     >
       <div>
@@ -174,9 +174,12 @@ const PriceConfigurationEvents = () => {
                 borderRadius: 5,
               }}
             />
-            <Grid container sx={{ width: "100px" }}>
+            <Grid
+              container
+              sx={{ width: "100px", bgcolor: "blueviolet", borderRadius: 2 }}
+            >
               <IconButton
-                color="secondary"
+                sx={{ color: "white" }}
                 edge="end"
                 aria-label="Eliminar"
                 onClick={() => handleDeleteEvent(event.eventName)}
@@ -188,46 +191,48 @@ const PriceConfigurationEvents = () => {
           </ListItem>
         ))}
       </List>
-      <Button
-        sx={{
-          marginLeft: "5%",
-          marginTop: "10%",
-          backgroundColor: "rgba(0, 0, 0, 0.9)",
-          color: "white",
-          width: "90%",
-          height: "60px",
-          borderRadius: 2,
-          marginBottom: 21,
-          border: 1,
-        }}
-        variant="contained"
-        onClick={() => {
-          const userEmail = user?.userEmail;
-          if (userEmail) {
-            const eventsWithPricesAndHours = selectedEvents.map((event) => {
-              const eventName = event.eventName;
-              const eventInfo = eventPrices[eventName] || {
-                price: 0,
-                hours: "",
-              };
-              return {
-                eventName,
-                price: eventInfo.price,
-                hours: eventInfo.hours,
-              };
-            });
+      <Grid container>
+        <Button
+          variant="outlined"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            color: "white",
+            borderColor: "white",
+            bottom: 5,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "90%",
+            height: "70px",
+            borderRadius: 1,
+          }}
+          onClick={() => {
+            const userEmail = user?.userEmail;
+            if (userEmail) {
+              const eventsWithPricesAndHours = selectedEvents.map((event) => {
+                const eventName = event.eventName;
+                const eventInfo = eventPrices[eventName] || {
+                  price: 0,
+                  hours: "",
+                };
+                return {
+                  eventName,
+                  price: eventInfo.price,
+                  hours: eventInfo.hours,
+                };
+              });
 
-            dispatch(
-              setSelectedEvents({
-                email: userEmail,
-                events: eventsWithPricesAndHours,
-              })
-            );
-          }
-        }}
-      >
-        Guardar
-      </Button>
+              dispatch(
+                setSelectedEvents({
+                  email: userEmail,
+                  events: eventsWithPricesAndHours,
+                })
+              );
+            }
+          }}
+        >
+          Guardar Mis Tarifas
+        </Button>
+      </Grid>
     </Grid>
   );
 };

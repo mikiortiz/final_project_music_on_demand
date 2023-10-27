@@ -1,3 +1,10 @@
+export interface Area {
+  name: string;
+  lat: string;
+  lng: string;
+  radius: number;
+}
+
 export interface Event {
   eventName: string;
   price: number;
@@ -15,4 +22,5 @@ export interface SupplierData {
   userType?: string;
   selectedGenres?: string[];
   selectedEvents?: Event[]; // Ahora selectedEvents es un arreglo de objetos de tipo Event
+  areas?: Area[];
 }

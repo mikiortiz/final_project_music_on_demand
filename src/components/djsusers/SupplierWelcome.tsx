@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedGenres } from "../redux/reducers/RegisteredFormSlice";
-import { setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
-import { RootState } from "../model/RootStateTypes";
-import { getAvailableGenres } from "../services/ApiSpotify";
+import { setSelectedGenres } from "../../redux/reducers/RegisteredFormSlice";
+import { setShowWelcomeMessage } from "../../redux/reducers/UserLoginSlice";
+import { RootState } from "../../model/RootStateTypes";
+import { getAvailableGenres } from "../../services/ApiSpotify";
 import {
   Snackbar,
   SnackbarContent,
@@ -14,9 +14,9 @@ import {
   Grid,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import SuppliersHome from "../../public/images/SuppliersHome.jpg";
-import logomusic from "../../public/images/Logomusic.png";
-import Navbar from "../components/NavbarSuppliers";
+import SuppliersHome from "../../../public/images/SuppliersHome.jpg";
+import logomusic from "../../../public/images/Logomusic.png";
+import Navbar from "./NavbarSuppliers";
 
 const SupplierWelcome = () => {
   const dispatch = useDispatch();
@@ -107,29 +107,19 @@ const SupplierWelcome = () => {
       <div>
         <Navbar />
 
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
+        <Typography
           sx={{
-            background: "rgba(0, 0, 0, 0.9)",
-            height: 50,
+            backgroundColor: "black",
+            color: "white",
+            fontSize: 30,
+            fontWeight: "600",
+            textAlign: "center",
+            mt: "1px",
           }}
         >
-          <Typography
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              fontSize: 30,
-              fontWeight: "600",
-              textAlign: "center",
-              mt: "1px",
-            }}
-          >
-            ELECCION DE GENEROS
-          </Typography>
-        </Grid>
+          ELECCION DE GENEROS
+        </Typography>
+
         <Typography
           sx={{
             background: "rgba(0, 0, 0, 0.7)",

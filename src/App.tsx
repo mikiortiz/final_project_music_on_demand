@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UserSupplierRegistration from "./components/UserSupplierRegistration";
-import SupplierWelcome from "./components/SupplierWelcome";
-import UserWelcome from "./components/UserWelcome";
+import SupplierWelcome from "./components/djsusers/SupplierWelcome";
+import UserWelcome from "./components/musicusers/UserWelcome";
 import { SnackbarProvider } from "notistack";
-import TypesEvents from "./components/TypesEvents";
-import PriceConfigurationEvents from "./components/PriceConfigurationEvents";
+import TypesEvents from "./components/djsusers/TypesEvents";
+import PriceConfigurationEvents from "./components/djsusers/PriceConfigurationEvents";
+import DjsArea from "./components/djsusers/DjsAreas";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               path="/PriceConfigurationEvents"
               element={<PriceConfigurationEvents />}
             />
+            <Route path="/DjsArea" element={<DjsArea />} />
           </Routes>
         </div>
       </Router>

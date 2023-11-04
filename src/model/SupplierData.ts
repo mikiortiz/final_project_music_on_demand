@@ -1,9 +1,4 @@
-export interface Area {
-  name: string;
-  lat: string;
-  lng: string;
-  radius: number;
-}
+import { Area } from "./AreaType";
 
 export interface Event {
   eventName: string;

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SupplierData, Event, Area } from "../../model/SupplierData";
+import { SupplierData, Event } from "../../model/SupplierData";
+import { Area } from "../../model/AreaType";
 import { UserData } from "../../model/UserData";
 
 interface RegisteredFormState {
@@ -43,6 +44,7 @@ const initialState: RegisteredFormState = {
       userPassword: "asdasd",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
       userContactNumber: "(068) Y09-7656",
+      area: [],
     },
     {
       userEmail: "Gisela.Leites@example.com",
@@ -52,6 +54,7 @@ const initialState: RegisteredFormState = {
       userPassword: "asdasd",
       customUserAvatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       userContactNumber: "(44) 8504-6472",
+      area: [],
     },
   ],
 };
@@ -88,9 +91,30 @@ const registeredFormSlice = createSlice({
     },
     addArea: (state, action: PayloadAction<{ email: string; area: Area }>) => {
       const { email, area } = action.payload;
-      const user = state.DjsUsers.find((user) => user.userEmail === email);
-      if (user && user.areas) {
-        user.areas.push(area);
+      const djUser = state.DjsUsers.find((user) => user.userEmail === email);
+      const musicUser = state.MusicUsers.find(
+        (user) => user.userEmail === email
+      );
+      if (djUser && djUser.areas) {
+        djUser.areas.push(area);
+      }
+      if (musicUser && musicUser.area) {
+        // Busca el índice del área existente en el array
+        const existingAreaIndex = musicUser.area.findIndex(
+          (area) => area === area
+        );
+        if (existingAreaIndex !== -1) {
+          // Actualiza solo la latitud o longitud según sea necesario
+          if (area.lat !== undefined) {
+            musicUser.area[existingAreaIndex].lat = area.lat;
+          }
+          if (area.lng !== undefined) {
+            musicUser.area[existingAreaIndex].lng = area.lng;
+          }
+        } else {
+          // Si el área no existe, agrégala al array
+          musicUser.area.push(area);
+        }
       }
     },
     removeArea: (
@@ -98,9 +122,17 @@ const registeredFormSlice = createSlice({
       action: PayloadAction<{ email: string; area: Area }>
     ) => {
       const { email, area } = action.payload;
-      const user = state.DjsUsers.find((user) => user.userEmail === email);
-      if (user && user.areas) {
-        user.areas = user.areas.filter(
+      const djUser = state.DjsUsers.find((user) => user.userEmail === email);
+      const musicUser = state.MusicUsers.find(
+        (user) => user.userEmail === email
+      );
+      if (djUser && djUser.areas) {
+        djUser.areas = djUser.areas.filter(
+          (a) => JSON.stringify(a) !== JSON.stringify(area)
+        );
+      }
+      if (musicUser && musicUser.area) {
+        musicUser.area = musicUser.area.filter(
           (a) => JSON.stringify(a) !== JSON.stringify(area)
         );
       }

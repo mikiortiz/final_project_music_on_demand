@@ -1,3 +1,5 @@
+import { Area } from "./AreaType";
+
 export interface UserData {
   userEmail: string;
   userFirstName: string;
@@ -8,4 +10,5 @@ export interface UserData {
   userContactNumber: string;
   userType?: string;
   selectedGenres?: string[];
+  area?: Area[];
 }

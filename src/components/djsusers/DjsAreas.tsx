@@ -107,7 +107,7 @@ const DjAreas = () => {
       draggable: true,
       map,
       center: defaultCenter,
-      radius: 15000,
+      radius: 500,
     });
 
     setCircle(newCircle);
@@ -130,7 +130,6 @@ const DjAreas = () => {
   };
 
   const handleGoToArea = (area: Area) => {
-    console.log("Ir a área:", area);
     setIsAreaWindowOpen(false);
 
     if (
@@ -138,7 +137,6 @@ const DjAreas = () => {
       area.lng !== undefined &&
       area.radius !== undefined
     ) {
-      //Ubicación del área seleccionada y establecemos el radio
       const newCenter = new google.maps.LatLng(
         parseFloat(area.lat),
         parseFloat(area.lng)
@@ -148,17 +146,9 @@ const DjAreas = () => {
       if (typeof area.radius === "number") {
         circle?.setCenter(newCenter);
         circle?.setRadius(area.radius);
-
-        //Referencia del mapa está llegando correctamente
-        console.log("Referencia del mapa:", googleMap);
-
         // Centra el mapa en la ubicación del área seleccionada
         googleMap?.panTo(newCenter);
-      } else {
-        console.error("Radio de área no válido");
       }
-    } else {
-      console.error("Latitud, longitud o radio de área no válidos");
     }
   };
 
@@ -234,7 +224,7 @@ const DjAreas = () => {
         <GoogleMapReact
           bootstrapURLKeys={{ key: "AIzaSyBfjO7sxd8P6HDrF1lmvLV151z7ocauPD0" }}
           defaultCenter={defaultCenter}
-          defaultZoom={8}
+          defaultZoom={13}
           yesIWantToUseGoogleMapApiInternals
           options={{
             disableDefaultUI: true,
@@ -312,7 +302,6 @@ const DjAreas = () => {
                 Mis Areas
               </Button>
             </Grid>
-            {/* Ventana de áreas */}
             {isAreaWindowOpen && (
               <Grid container item xs={12}>
                 <Card

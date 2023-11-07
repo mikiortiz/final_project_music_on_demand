@@ -40,8 +40,8 @@ const UserWelcome: React.FC = () => {
     <AppBar
       position="static"
       style={{
-        marginTop: -1,
-        background: "rgba(0, 0, 0, 0.5)",
+        marginTop: -7,
+        background: "rgba(0, 0, 0, 1)",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
         height: "auto",
       }}
@@ -82,7 +82,10 @@ const UserWelcome: React.FC = () => {
 
           {user && (
             <div>
-              <Typography variant="subtitle1" style={{ color: "#fff", fontWeight: "bold" }}>
+              <Typography
+                variant="subtitle1"
+                style={{ color: "#fff", fontWeight: "bold" }}
+              >
                 {user.userFirstName}
               </Typography>
               <Typography variant="body2" style={{ color: "#fff" }}>
@@ -96,20 +99,20 @@ const UserWelcome: React.FC = () => {
           <div style={{ marginLeft: "auto", marginRight: "10px" }}>
             {user && (
               <div>
-                 <Button
-                onClick={() => navigate("/usermaphome")}
-                variant="outlined"
-                color="primary"
-                sx={{
-                  mr: 5,
-                  height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
-                  color: "white",
-                  borderColor: "black",
-                }}
-              >
-                Mi Ubicación
-              </Button>
+                <Button
+                  onClick={() => navigate("/usermaphome")}
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    mr: 5,
+                    height: 40,
+                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    color: "white",
+                    borderColor: "black",
+                  }}
+                >
+                  Mi Ubicación
+                </Button>
                 <Button
                   variant="contained"
                   onClick={handleLogout}

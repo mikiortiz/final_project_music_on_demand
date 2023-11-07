@@ -5,7 +5,7 @@ import { eventTypes } from "../../model/EventTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedEvents } from "../../redux/reducers/RegisteredFormSlice";
 import { RootState } from "../../model/RootStateTypes";
-import EventsSuppliers from "../../../public/images/EventsSuppliers.jpg";
+import EventsSuppliers from "/images/EventsSuppliers.jpg";
 import { Event } from "../../model/SupplierData";
 
 const TypesEvents = () => {
@@ -41,10 +41,6 @@ const TypesEvents = () => {
               hours: "",
             },
           ];
-      console.log(
-        "Eventos seleccionados por el usuario:",
-        updatedSelectedCards
-      );
       // Despacho la acción setSelectedEvents con el email del usuario y los eventos seleccionados
       dispatch(
         setSelectedEvents({ email: userEmail, events: updatedSelectedCards })

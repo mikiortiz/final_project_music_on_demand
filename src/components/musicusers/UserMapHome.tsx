@@ -1,107 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import GoogleMapReact from "google-map-react";
-import RoomIcon from "@mui/icons-material/Room";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../model/RootStateTypes";
-import {
-  Avatar,
-  Typography,
-  Snackbar,
-  SnackbarContent,
-  Grid,
-  Button,
-} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import logomusic from "../../../public/images/Logomusic.png";
-import { setShowWelcomeMessage } from "../../redux/reducers/UserLoginSlice";
+import { Button, Grid, Typography } from "@mui/material";
 import { addArea } from "../../redux/reducers/RegisteredFormSlice";
-
-const MuiMarker: React.FC<{
-  lat: number;
-  lng: number;
-  userAvatarUrl: string;
-}> = ({ lat, lng, userAvatarUrl }) => {
-  if (!lat || !lng) {
-    return null;
-  }
-  return (
-    <div
-      style={{
-        position: "absolute",
-        transform: "translate(-50%, -100%)",
-        zIndex: 1,
-      }}
-    >
-      <RoomIcon color="primary" style={{ fontSize: 100, marginBottom: -10 }} />
-      {userAvatarUrl && (
-        <Avatar
-          src={userAvatarUrl}
-          alt="User Marker"
-          style={{
-            background: "rgba(0, 0, 0, 0.9)",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.9)",
-            position: "absolute",
-            transform: "translate(75%, -90%)",
-            marginTop: "-40%",
-            zIndex: 3,
-            width: "40px",
-            height: "40px",
-          }}
-        />
-      )}
-      <Typography
-        style={{
-          textAlign: "center",
-          color: "white",
-          background: "rgba(0, 0, 0, 0.8)",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.9)",
-          position: "absolute",
-          transform: "translate(0%, -85%)",
-          marginTop: "-95%",
-          borderRadius: 5,
-          zIndex: 1,
-          width: "auto",
-          height: "auto",
-        }}
-      >
-        ¿Dónde iremos?
-      </Typography>
-    </div>
-  );
-};
+import { RootState } from "../../model/RootStateTypes";
 
 const MapComponentHome: React.FC = () => {
   const navigate = useNavigate();
-  const [center, setCenter] = useState<{ lat: number; lng: number }>({
+  const [newPosition, setNewPosition] = useState<{ lat: number; lng: number }>({
     lat: -33.58101234209427,
     lng: -69.0172903733438,
   });
 
   const dispatch = useDispatch();
-  const userAvatarUrl = useSelector(
-    (state: RootState) => state.userLogin.user?.customUserAvatarUrl
-  );
-  const hasShownWelcomeMessage = useSelector(
-    (state: RootState) => state.userLogin.hasShownWelcomeMessage
-  );
-
   const user = useSelector((state: RootState) => state.userLogin.user);
 
-  useEffect(() => {
-    // Muestra el cartel de bienvenida una vez cuando el componente se monta
-    dispatch(setShowWelcomeMessage(true));
-
-    const timer = setTimeout(() => {
-      dispatch(setShowWelcomeMessage(false));
-    }, 5000);
-
-
-    return () => clearTimeout(timer);
-  }, [dispatch]);
+  const mapRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
 
   const handleMapClick = (e: any) => {
-    console.log("Coordenadas clickeadas en el mapa:", e.lat, e.lng);
-    setCenter({ lat: e.lat, lng: e.lng });
+    const clickedPosition = {
+      lat: e.lat,
+      lng: e.lng,
+    };
+    setNewPosition(clickedPosition);
+
+    // Mueve el marcador a la nueva posición
+    if (markerRef.current && mapRef.current) {
+      markerRef.current.setPosition(clickedPosition);
+    }
   };
 
   const handleSaveLocation = () => {
@@ -109,14 +37,11 @@ const MapComponentHome: React.FC = () => {
       addArea({
         email: user?.userEmail || "",
         area: {
-          name:"",
-          lat: center.lat.toString(),
-          lng: center.lng.toString(),
-          radius: 0, 
+          lat: newPosition.lat.toString(),
+          lng: newPosition.lng.toString(),
         },
       })
     );
-    console.log("Ubicación guardada:", { lat: center.lat, lng: center.lng });
     navigate("/userwelcome");
   };
 
@@ -130,19 +55,88 @@ const MapComponentHome: React.FC = () => {
         left: 0,
       }}
     >
+      <Grid
+        zIndex={1}
+        item
+        xs={12}
+        style={{ position: "absolute", top: 0, left: 0 }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            height: "auto",
+            backgroundColor: "black",
+            color: "white",
+            fontWeight: "600",
+            fontSize: 30,
+            textAlign: "center",
+            mt: "1px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          ENCUENTRA A LOS MEJORES DJS EN TU ÁREA
+        </Typography>
+
+        <Typography
+          sx={{
+            background: "rgba(0, 0, 0, 0.7)",
+            color: "white",
+            fontSize: -30,
+            fontWeight: "600",
+            width: "100%",
+            textAlign: "center",
+            mt: "1px",
+          }}
+        >
+          Una vez que hayas establecido tu ubicación perfecta, desbloquea un
+          mundo de posibilidades musicales. Haz clic en "Ver DJs Cercanos a esta
+          Ubicación" y sumérgete en un océano de talento. Descubre perfiles,
+          variedad de generos, y elige a los DJs que harán vibrar tus altavoces
+          y llenarán el aire con notas inolvidables.
+        </Typography>
+      </Grid>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: "AIzaSyBfjO7sxd8P6HDrF1lmvLV151z7ocauPD0" }} // Reemplaza "API_KEY" con tu clave de API de Google Maps
-        center={center}
-        zoom={8}
+        bootstrapURLKeys={{
+          key: "AIzaSyBfjO7sxd8P6HDrF1lmvLV151z7ocauPD0",
+        }}
+        center={newPosition}
+        zoom={15}
         options={{ disableDefaultUI: true }}
         onClick={handleMapClick}
-      >
-        <MuiMarker
-          userAvatarUrl={userAvatarUrl}
-          lat={center.lat}
-          lng={center.lng}
-        />
-      </GoogleMapReact>
+        yesIWantToUseGoogleMapApiInternals={true}
+        onGoogleApiLoaded={({ map }) => {
+          mapRef.current = map;
+
+          markerRef.current = new window.google.maps.Marker({
+            position: newPosition,
+            map: mapRef.current,
+            draggable: true,
+            title: "¡Aquí estoy!",
+            icon: {
+              path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+              fillColor: "blue",
+              fillOpacity: 1,
+              strokeColor: "white",
+              strokeWeight: 2,
+              scale: 13,
+            },
+          });
+
+          markerRef.current.addListener(
+            "dragend",
+            (event: any) => {
+              const draggedPosition = {
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng(),
+              };
+              setNewPosition(draggedPosition);
+            },
+            { passive: true }
+          );
+        }}
+      />
       <Grid container item>
         <Button
           variant="outlined"
@@ -160,79 +154,9 @@ const MapComponentHome: React.FC = () => {
             height: "60px",
           }}
         >
-          Guardar UBI
+          Ver Djs Cercanos a esta Ubicación
         </Button>
       </Grid>
-
-      {hasShownWelcomeMessage && (
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          container
-          style={{
-            position: "relative",
-            textAlign: "center",
-            alignItems: "center",
-          }}
-        >
-          <Snackbar
-            open={hasShownWelcomeMessage}
-            autoHideDuration={3000}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          >
-            <SnackbarContent
-              style={{
-                background: "rgba(0, 0, 0, 0.8)",
-                color: "white",
-                textAlign: "center",
-                width: "100%",
-                maxWidth: "500px",
-              }}
-              message={
-                <Grid
-                  container
-                  direction="column"
-                  alignItems="center"
-                  spacing={2}
-                >
-                  <Grid item>
-                    <Typography variant="h4">¡Bienvenid@!</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h4">{user?.userFirstName}</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h4">
-                      Ya eres Dj de Music-World
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <img
-                      src={logomusic}
-                      alt="Logo"
-                      style={{
-                        borderRadius: "10px",
-                        maxWidth: "200px",
-                        marginTop: "1rem",
-                      }}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1">
-                      Descubre la plataforma de música exclusiva para
-                      proveedores. Aquí podrás encontrar todas las herramientas
-                      y recursos que necesitas para potenciar tu negocio
-                      musical.
-                    </Typography>
-                  </Grid>
-                </Grid>
-              }
-            />
-          </Snackbar>
-        </Grid>
-      )}
     </div>
   );
 };

@@ -14,8 +14,8 @@ import {
   Grid,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import SuppliersHome from "../../../public/images/SuppliersHome.jpg";
-import logomusic from "../../../public/images/Logomusic.png";
+import SuppliersHome from "/images/SuppliersHome.jpg";
+import logomusic from "/images/Logomusic.png";
 import Navbar from "./NavbarSuppliers";
 
 const SupplierWelcome = () => {

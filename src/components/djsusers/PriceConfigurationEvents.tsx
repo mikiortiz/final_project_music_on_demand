@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PriceEventsImg from "../../../public/images/PriceEventsImg.jpg";
+import PriceEventsImg from "/images/PriceEventsImg.jpg";
 import Navbar from "./NavbarSuppliers";
 import {
   List,

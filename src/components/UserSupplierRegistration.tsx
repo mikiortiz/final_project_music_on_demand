@@ -1,5 +1,5 @@
 import { useState } from "react";
-import fondo from "../../public/images/Fondo.png";
+import fondo from "/images/Fondo.png";
 import {
   Button,
   Dialog,
@@ -12,9 +12,9 @@ import {
   FormControl,
   Grid,
 } from "@mui/material";
-import CardImage from "../../public/images/CardImageSupplier.png";
+import CardImage from "/images/CardImageSupplier.png";
 import { Box } from "@mui/system";
-import logomusic from "../../public/images/Logomusic.png";
+import logomusic from "/images/Logomusic.png";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../model/RootStateTypes";
 import { addSupplier } from "../redux/reducers/RegisteredFormSlice";

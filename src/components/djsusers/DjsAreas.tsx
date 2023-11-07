@@ -5,7 +5,7 @@ import GoogleMapReact from "google-map-react";
 import { addArea } from "../../redux/reducers/RegisteredFormSlice";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Area } from "../../model/SupplierData";
+import { Area } from "../../model/AreaType";
 import { removeArea } from "../../redux/reducers/RegisteredFormSlice";
 import Navbar from "./NavbarSuppliers";
 import {
@@ -47,7 +47,7 @@ const DjAreas = () => {
 
   useEffect(() => {
     if (circle && mapRef.current) {
-      const circleCenter = circle.getCenter();
+      const circleCenter = circle.getCenter()!;
       (mapRef.current as google.maps.Map).panTo({
         lat: circleCenter.lat(),
         lng: circleCenter.lng(),
@@ -59,8 +59,8 @@ const DjAreas = () => {
     if (circle && areaName.trim() !== "") {
       const radius = circle.getRadius();
       const center = {
-        lat: circle.getCenter().lat(),
-        lng: circle.getCenter().lng(),
+        lat: circle.getCenter()!.lat(),
+        lng: circle.getCenter()!.lng(),
       };
 
       enqueueSnackbar("Área guardada exitosamente.", {
@@ -107,7 +107,7 @@ const DjAreas = () => {
       draggable: true,
       map,
       center: defaultCenter,
-      radius: 15000,
+      radius: 500,
     });
 
     setCircle(newCircle);
@@ -130,22 +130,26 @@ const DjAreas = () => {
   };
 
   const handleGoToArea = (area: Area) => {
-    console.log("Ir a área:", area);
     setIsAreaWindowOpen(false);
 
-    //Ubicación del área seleccionada y establecemos el radio
-    const newCenter = new google.maps.LatLng(
-      parseFloat(area.lat),
-      parseFloat(area.lng)
-    );
-    circle?.setCenter(newCenter);
-    circle?.setRadius(area.radius);
+    if (
+      area.lat !== undefined &&
+      area.lng !== undefined &&
+      area.radius !== undefined
+    ) {
+      const newCenter = new google.maps.LatLng(
+        parseFloat(area.lat),
+        parseFloat(area.lng)
+      );
 
-    //Referencia del mapa está llegando correctamente
-    console.log("Referencia del mapa:", googleMap);
-
-    // Centra el mapa en la ubicación del área seleccionada
-    googleMap?.panTo(newCenter);
+      // Verifica que area.radius sea un número antes de usarlo
+      if (typeof area.radius === "number") {
+        circle?.setCenter(newCenter);
+        circle?.setRadius(area.radius);
+        // Centra el mapa en la ubicación del área seleccionada
+        googleMap?.panTo(newCenter);
+      }
+    }
   };
 
   return (
@@ -220,7 +224,7 @@ const DjAreas = () => {
         <GoogleMapReact
           bootstrapURLKeys={{ key: "AIzaSyBfjO7sxd8P6HDrF1lmvLV151z7ocauPD0" }}
           defaultCenter={defaultCenter}
-          defaultZoom={8}
+          defaultZoom={13}
           yesIWantToUseGoogleMapApiInternals
           options={{
             disableDefaultUI: true,
@@ -298,7 +302,6 @@ const DjAreas = () => {
                 Mis Areas
               </Button>
             </Grid>
-            {/* Ventana de áreas */}
             {isAreaWindowOpen && (
               <Grid container item xs={12}>
                 <Card

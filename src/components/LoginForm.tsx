@@ -43,7 +43,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
 
     if (user) {
       dispatch(setUser({ ...user, userType: "user" }));
-      navigate("/userwelcome");
+      navigate("/usermaphome");
     } else if (supplier) {
       dispatch(setUser({ ...supplier, userType: "supplier" }));
       dispatch(setShowWelcomeMessage(true));

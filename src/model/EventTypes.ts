@@ -1,15 +1,15 @@
-import Wedding from "../../public/images/eventsImgs/Wedding.jpg";
-import PartiesForChildren from "../../public/images/eventsImgs/PartiesForChildren.jpg";
-import BirthdayParties from "../../public/images/eventsImgs/BirthdayParties.jpg";
-import CorporateEvents from "../../public/images/eventsImgs/CorporateEvents.jpg";
-import SportsEvents from "../../public/images/eventsImgs/SportsEvents.avif";
-import Conserts from "../../public/images/eventsImgs/Conserts.jpg";
-import FashionImg from "../../public/images/eventsImgs/FashionImg.jpg";
-import CulturalImg from "../../public/images/eventsImgs/CulturalImg.jpg";
-import SocialMeetingsImg from "../../public/images/eventsImgs/SocialMeetingsImg.jpg";
-import CharityEvents from "../../public/images/eventsImgs/CharityEvents.jpg";
-import PartiesandFestivals from "../../public/images/eventsImgs/PartiesandFestivals.jpg";
-import ReligiousEvents from "../../public/images/eventsImgs/ReligiousEvents.jpg";
+import Wedding from "/images/eventsImgs/Wedding.jpg";
+import PartiesForChildren from "/images/eventsImgs/PartiesForChildren.jpg";
+import BirthdayParties from "/images/eventsImgs/BirthdayParties.jpg";
+import CorporateEvents from "/images/eventsImgs/CorporateEvents.jpg";
+import SportsEvents from "/images/eventsImgs/SportsEvents.avif";
+import Conserts from "/images/eventsImgs/Conserts.jpg";
+import FashionImg from "/images/eventsImgs/FashionImg.jpg";
+import CulturalImg from "/images/eventsImgs/CulturalImg.jpg";
+import SocialMeetingsImg from "/images/eventsImgs/SocialMeetingsImg.jpg";
+import CharityEvents from "/images/eventsImgs/CharityEvents.jpg";
+import PartiesandFestivals from "/images/eventsImgs/PartiesandFestivals.jpg";
+import ReligiousEvents from "/images/eventsImgs/ReligiousEvents.jpg";
 
 export const eventTypes = [
   { name: "Bodas", image: Wedding },

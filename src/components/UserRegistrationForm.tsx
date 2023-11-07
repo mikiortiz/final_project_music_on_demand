@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../model/RootStateTypes";
 import { addUser } from "../redux/reducers/RegisteredFormSlice";
-import CardImageUsers from "../../public/images/CardImageUsers.png";
+import CardImageUsers from "/images/CardImageUsers.png";
 import {
   Button,
   TextField,

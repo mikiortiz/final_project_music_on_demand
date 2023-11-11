@@ -7,6 +7,7 @@ import TypesEvents from "./components/djsusers/TypesEvents";
 import PriceConfigurationEvents from "./components/djsusers/PriceConfigurationEvents";
 import DjsArea from "./components/djsusers/DjsAreas";
 import UserWelcome from "./components/musicusers/UserWelcome";
+import ContractList from "./components/musicusers/ContractList";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             />
             <Route path="/DjsArea" element={<DjsArea />} />
             <Route path="/userwelcome" element={<UserWelcome />} />
+            <Route path="/contractlist" element={<ContractList />} />
           </Routes>
         </div>
       </Router>

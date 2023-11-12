@@ -1,3 +1,4 @@
+import { EventTypeContract } from "./EventTypes";
 import { SupplierData as Supplier } from "./SupplierData";
 import { UserData as MusicUser } from "./UserData";
 
@@ -14,5 +15,9 @@ export interface RootState {
     user: any;
     userData: MusicUser | Supplier | null;
     userType: UserType | null;
+  };
+  contract: {
+    selectedEvent: EventTypeContract | null;
+    contracts: any[];
   };
 }

@@ -9,14 +9,12 @@ import CulturalImg from "/images/eventsImgs/CulturalImg.jpg";
 import SocialMeetingsImg from "/images/eventsImgs/SocialMeetingsImg.jpg";
 import CharityEvents from "/images/eventsImgs/CharityEvents.jpg";
 import PartiesandFestivals from "/images/eventsImgs/PartiesandFestivals.jpg";
-import ReligiousEvents from "/public/images/eventsImgs/ReligiousEvents.jpg";
+import ReligiousEvents from "/images/eventsImgs/ReligiousEvents.jpg";
 
-export interface EventType {
-  hours: any;
-  price: any;
+export interface EventTypeContract {
   eventName: string;
-  name: string;
-  image: string;
+  price: number;
+  hours: number;
 }
 
 export const eventTypes = [

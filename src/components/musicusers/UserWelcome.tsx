@@ -67,7 +67,7 @@ const UserWelcome = () => {
   }, [selectedMusicUser, DjsUsers]);
 
   const handleContractClick = (dj: SupplierData) => {
-    navigate("/contractlist", { state: { selectedDj: dj } });
+    navigate("/contractconfiguration", { state: { selectedDj: dj } });
   };
 
   return (
@@ -342,7 +342,7 @@ const UserWelcome = () => {
                         <SettingsIcon
                           style={{ fontSize: 48, marginRight: 15 }}
                         />
-                      } // Cambia el tamaño del icono aquí
+                      } 
                     >
                       CONTRATAR Y CONFIGURAR
                     </Button>

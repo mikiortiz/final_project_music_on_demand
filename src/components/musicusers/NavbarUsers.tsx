@@ -114,7 +114,7 @@ const UserNavbar: React.FC = () => {
                   Djs sercanos
                 </Button>
                 <Button
-                  onClick={() => navigate("/contractlist")}
+                  onClick={() => navigate("/listcontracts")}
                   variant="outlined"
                   color="primary"
                   sx={{

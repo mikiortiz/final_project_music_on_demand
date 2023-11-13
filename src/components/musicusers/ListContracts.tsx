@@ -1,11 +1,43 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../model/RootStateTypes";
-import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
 import NavbarUser from "./NavbarUsers";
+import { eventTypes } from "../../model/EventTypes";
+import { deleteContract } from "../../redux/reducers/ContractSlice";
+import { RootState } from "../../model/RootStateTypes";
+import { useNavigate } from "react-router-dom";
 
 const ListContract: React.FC = () => {
+  const navigate = useNavigate();
   const contracts = useSelector((state: RootState) => state.contract.contracts);
+  const musicUserEmail = useSelector(
+    (state: RootState) => state.userLogin.user?.userEmail
+  );
+  const dispatch = useDispatch();
+
+  const userContracts = contracts.filter(
+    (contract) => contract.email === musicUserEmail
+  );
+
+  const [noContractsDialogOpen, setNoContractsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (userContracts.length === 0) {
+      setNoContractsDialogOpen(true);
+    }
+  }, [userContracts]);
 
   return (
     <div
@@ -29,35 +61,52 @@ const ListContract: React.FC = () => {
         <Typography
           variant="h5"
           style={{
+            marginBottom: "5px",
             marginTop: "1px",
             width: "100%",
+            height: "50px",
             background: "rgba(0, 0, 0, 0.8)",
             color: "white",
             textAlign: "center",
             fontWeight: "bolder",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           Mis Contratos
         </Typography>
+
         <Grid container spacing={2} justifyContent="center">
-          {contracts.map((contract) => (
-            <Grid
-              item
-              key={contract.djInfo?.userEmail}
-              xs={12}
-              sm={6}
-              md={6}
-              lg={6}
-            >
-              <Card>
-                <CardContent>
-                  {contract.eventName && (
-                    <>
+          {userContracts.map((userContract, index) => {
+            const contractDetails = userContract.contract;
+
+            return (
+              <Grid
+                item
+                key={index}
+                xs={12}
+                sm={6}
+                md={6}
+                lg={6}
+              >
+                {contractDetails.eventName && (
+                  <Card
+                    sx={{ background: "rgba(0, 0, 0, 0.8)", color: "white" }}
+                  >
+                    <CardContent>
                       <Typography
                         variant="h6"
-                        sx={{ mt: -1, mb: 1, textAlign: "center" }}
+                        sx={{
+                          borderRadius: 2,
+                          mt: -1,
+                          mb: 1,
+                          textAlign: "center",
+                          background: "rgba(0, 0, 0, 0.7)",
+                          color: "white",
+                        }}
                       >
-                        Contrato De: {contract.eventName}
+                        Contrato De: {contractDetails.eventName}
                       </Typography>
                       <Grid container>
                         <Grid
@@ -68,13 +117,18 @@ const ListContract: React.FC = () => {
                           style={{ position: "relative" }}
                         >
                           <Avatar
-                            alt={contract.eventName}
-                            style={{
+                            alt={contractDetails.eventName}
+                            sx={{
                               width: "100%",
                               height: "100%",
-                              borderRadius: 2,
+                              borderRadius: 5,
                             }}
-                            src={contract.eventImageUrl}
+                            src={
+                              eventTypes.find(
+                                (eventType) =>
+                                  eventType.name === contractDetails.eventName
+                              )?.image
+                            }
                           />
                         </Grid>
                         <Grid
@@ -88,41 +142,79 @@ const ListContract: React.FC = () => {
                             alignItems: "flex-end",
                           }}
                         >
-                          {contract.djInfo && (
-                            <div style={{ marginTop: "10px" }}>
+                          {contractDetails.djInfo && (
+                            <Grid style={{ width: "90%", marginRight: "5%" }}>
                               <Typography
                                 sx={{
+                                  borderRadius: "10px 10px 0px 0px",
+                                  textAlign: "center",
+                                  height: "30px",
                                   backgroundColor: "rgba(0, 0, 0, 0.7)",
                                   color: "white",
                                   padding: "5px",
-                                  fontSize: "14px",
+                                  fontSize: "20px",
                                 }}
-                              >{`DJ: ${contract.djInfo.userFirstName} ${contract.djInfo.userLastName}`}</Typography>
+                              >
+                                {`DJ: ${contractDetails.djInfo.userFirstName} ${contractDetails.djInfo.userLastName}`}
+                              </Typography>
                               <Avatar
-                                alt={`${contract.djInfo.userFirstName} ${contract.djInfo.userLastName}`}
-                                src={contract.djInfo.customAvatarUrl}
+                                alt={`${contractDetails.djInfo.userFirstName} ${contractDetails.djInfo.userLastName}`}
+                                src={contractDetails.djInfo.userImg}
                                 style={{
-                                  width: "30%",
+                                  width: "100%",
                                   height: "auto",
-                                  borderRadius: 2,
+                                  borderRadius: "0px 0px 10px 10px",
                                 }}
                               />
-                            </div>
+                            </Grid>
                           )}
                         </Grid>
                       </Grid>
-                      <Typography>{`Fecha de mi evento: ${contract.EventDate}`}</Typography>
-                      <Typography>{`Dirección de mi evento: ${contract.EventAddress}`}</Typography>
-                      <Typography>{`Duración del evento: ${contract.EventHours} horas`}</Typography>
-                      <Typography>{`Cliente: ${contract.ClientFirstName} ${contract.ClientLastName}`}</Typography>
-                      <Typography>{`Costo Total: ${contract.totalCost}`}</Typography>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                      <Grid sx={{ mt: 1 }}>
+                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
+                        <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
+                        <Typography>{`Duración del evento: ${contractDetails.EventHours} horas`}</Typography>
+                        <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
+                        <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
+                      </Grid>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() =>
+                          dispatch(
+                            deleteContract({ email: userContract.email })
+                          )
+                        }
+                        sx={{ mt: 2, width: "100%" }}
+                      >
+                        Eliminar Contrato
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </Grid>
+            );
+          })}
         </Grid>
+
+        <Dialog open={noContractsDialogOpen} fullWidth maxWidth="sm">
+          <DialogTitle>No tienes contratos pendientes</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Parece que no tienes contratos pendientes en este momento.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => navigate("/userwelcome")}
+              variant="contained"
+              color="secondary"
+              style={{ width: "200px" }}
+            >
+              Volver
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     </div>
   );

@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ContractState {
-  contracts: any[]; 
+  contracts: any[];
   selectedEvent: any;
 }
 
@@ -11,17 +11,27 @@ const initialState: ContractState = {
 };
 
 const contractSlice = createSlice({
-  name: 'contract',
+  name: "contract",
   initialState,
   reducers: {
     addContract: (state, action: PayloadAction<any>) => {
-      state.contracts.push(action.payload);
+      const userEmail = action.payload.userEmail;
+      state.contracts.push({ ...action.payload, userEmail });
     },
     setSelectedEvent: (state, action: PayloadAction<any>) => {
       state.selectedEvent = action.payload;
     },
+    deleteContract: (state, action: PayloadAction<any>) => {
+      const contractIndex = state.contracts.findIndex(
+        (contract) => contract.email === action.payload.email
+      );
+      if (contractIndex !== -1) {
+        state.contracts.splice(contractIndex, 1);
+      }
+    },
   },
 });
 
-export const { addContract, setSelectedEvent } = contractSlice.actions;
+export const { addContract, setSelectedEvent, deleteContract } =
+  contractSlice.actions;
 export default contractSlice.reducer;

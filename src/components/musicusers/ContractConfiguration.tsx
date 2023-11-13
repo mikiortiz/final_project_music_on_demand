@@ -31,6 +31,7 @@ const ContractConfiguration: React.FC = () => {
   const dispatch = useDispatch();
   const selectedDj = location.state?.selectedDj;
   const { selectedEvent } = useSelector((state: RootState) => state.contract);
+  const musicUser = useSelector((state: RootState) => state.userLogin.user);
 
   const [contractDetails, setContractDetails] = useState({
     EventHours: "",
@@ -71,6 +72,7 @@ const ContractConfiguration: React.FC = () => {
         ...contractDetails,
         eventName: selectedEvent.eventName,
         djInfo: {
+          userImg: selectedDj.customAvatarUrl,
           userFirstName: selectedDj.userFirstName,
           userLastName: selectedDj.userLastName,
           userEmail: selectedDj.userEmail,
@@ -78,8 +80,10 @@ const ContractConfiguration: React.FC = () => {
         totalCost: totalCost,
       };
 
-      console.log("Detalles del contrato:", contractData);
-      dispatch(addContract(contractData));
+      dispatch(
+        addContract({ email: musicUser.userEmail, contract: contractData })
+      );
+
       setOpenDialog(false);
       setContractDetails({
         EventHours: "",
@@ -102,6 +106,7 @@ const ContractConfiguration: React.FC = () => {
         ...contractDetails,
         eventName: selectedEvent.eventName,
         djInfo: {
+          userImg: selectedDj.customAvatarUrl,
           userFirstName: selectedDj.userFirstName,
           userLastName: selectedDj.userLastName,
           userEmail: selectedDj.userEmail,
@@ -109,8 +114,10 @@ const ContractConfiguration: React.FC = () => {
         totalCost: totalCost,
       };
 
-      console.log("Detalles del contrato (Reenviado):", contractData);
-      dispatch(addContract(contractData));
+      dispatch(
+        addContract({ email: musicUser.userEmail, contract: contractData })
+      );
+
       setOpenDialog(false);
       setContractDetails({
         EventHours: "",
@@ -175,7 +182,7 @@ const ContractConfiguration: React.FC = () => {
           <Grid
             container
             alignItems="center"
-            justifyContent="space-between" 
+            justifyContent="space-between"
             sx={{ paddingLeft: "20px", paddingRight: "20px" }}
           >
             <Grid container item alignItems="center" xs={6}>

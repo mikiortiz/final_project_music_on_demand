@@ -24,6 +24,11 @@ import {
 import { eventTypes } from "../../model/EventTypes";
 import { EventTypeContract } from "../../model/EventTypes";
 import { RootState } from "../../model/RootStateTypes";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+
+const startDate = dayjs("2023-01-01");
+const endDate = dayjs();
 
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +40,6 @@ const ContractConfiguration: React.FC = () => {
 
   const [contractDetails, setContractDetails] = useState({
     EventHours: "",
-    EventDate: "",
     EventAddress: "",
     ClientFirstName: "",
     ClientLastName: "",
@@ -45,6 +49,7 @@ const ContractConfiguration: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -70,6 +75,7 @@ const ContractConfiguration: React.FC = () => {
 
       const contractData = {
         ...contractDetails,
+        EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
           userImg: selectedDj.customAvatarUrl,
@@ -87,7 +93,6 @@ const ContractConfiguration: React.FC = () => {
       setOpenDialog(false);
       setContractDetails({
         EventHours: "",
-        EventDate: "",
         EventAddress: "",
         ClientFirstName: "",
         ClientLastName: "",
@@ -104,6 +109,7 @@ const ContractConfiguration: React.FC = () => {
 
       const contractData = {
         ...contractDetails,
+        EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
           userImg: selectedDj.customAvatarUrl,
@@ -121,7 +127,6 @@ const ContractConfiguration: React.FC = () => {
       setOpenDialog(false);
       setContractDetails({
         EventHours: "",
-        EventDate: "",
         EventAddress: "",
         ClientFirstName: "",
         ClientLastName: "",
@@ -135,12 +140,14 @@ const ContractConfiguration: React.FC = () => {
     dispatch(setSelectedEvent(event));
     setContractDetails({
       EventHours: "",
-      EventDate: "",
+
       EventAddress: "",
       ClientFirstName: "",
       ClientLastName: "",
       eventName: event.eventName,
     });
+    setSelectedDate(null);
+
     setShowWarning(false);
     setOpenDialog(true);
   };
@@ -320,16 +327,19 @@ const ContractConfiguration: React.FC = () => {
                             margin="normal"
                             required
                           />
-                          <TextField
-                            variant="filled"
-                            label="Fecha del evento"
-                            name="EventDate"
-                            value={contractDetails.EventDate}
-                            onChange={handleInputChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
+
+                          <Grid item marginTop={2} xs={12}>
+                            <DatePicker
+                              label="Fecha del evento"
+                              value={selectedDate}
+                              onChange={(date) => setSelectedDate(date)}
+                              minDate={startDate}
+                              maxDate={endDate}
+                              views={["year", "month", "day"]}
+                              sx={{ width: "100%" }}
+                            />
+                          </Grid>
+
                           <TextField
                             variant="filled"
                             label="Domicilio"
@@ -342,7 +352,7 @@ const ContractConfiguration: React.FC = () => {
                           />
                           <TextField
                             variant="filled"
-                            label="Nombre del cliente"
+                            label="Nombre del Responsable del Evento"
                             name="ClientFirstName"
                             value={contractDetails.ClientFirstName}
                             onChange={handleInputChange}
@@ -352,7 +362,7 @@ const ContractConfiguration: React.FC = () => {
                           />
                           <TextField
                             variant="filled"
-                            label="Apellido del cliente"
+                            label="Apellido del Responsable del Evento"
                             name="ClientLastName"
                             value={contractDetails.ClientLastName}
                             onChange={handleInputChange}
@@ -421,7 +431,6 @@ const ContractConfiguration: React.FC = () => {
                               color="primary"
                               disabled={
                                 !contractDetails.EventHours ||
-                                !contractDetails.EventDate ||
                                 !contractDetails.EventAddress ||
                                 !contractDetails.ClientFirstName ||
                                 !contractDetails.ClientLastName

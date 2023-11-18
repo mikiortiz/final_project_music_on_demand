@@ -82,14 +82,7 @@ const ListContract: React.FC = () => {
             const contractDetails = userContract.contract;
 
             return (
-              <Grid
-                item
-                key={index}
-                xs={12}
-                sm={6}
-                md={6}
-                lg={6}
-              >
+              <Grid item key={index} xs={12} sm={6} md={6} lg={6}>
                 {contractDetails.eventName && (
                   <Card
                     sx={{ background: "rgba(0, 0, 0, 0.8)", color: "white" }}

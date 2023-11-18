@@ -11,6 +11,12 @@ import CharityEvents from "/images/eventsImgs/CharityEvents.jpg";
 import PartiesandFestivals from "/images/eventsImgs/PartiesandFestivals.jpg";
 import ReligiousEvents from "/images/eventsImgs/ReligiousEvents.jpg";
 
+export interface EventTypeContract {
+  eventName: string;
+  price: number;
+  hours: number;
+}
+
 export const eventTypes = [
   { name: "Bodas", image: Wedding },
   { name: "Fiestas de Cumpleaños", image: BirthdayParties },

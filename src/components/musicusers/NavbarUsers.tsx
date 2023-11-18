@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { logoutUser } from "../../redux/reducers/UserLoginSlice";
 import { useNavigate } from "react-router-dom";
 
-const UserWelcome: React.FC = () => {
+const UserNavbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.userLogin.user);
@@ -100,6 +100,34 @@ const UserWelcome: React.FC = () => {
             {user && (
               <div>
                 <Button
+                  onClick={() => navigate("/userwelcome")}
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    mr: 5,
+                    height: 40,
+                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    color: "white",
+                    borderColor: "black",
+                  }}
+                >
+                  Djs sercanos
+                </Button>
+                <Button
+                  onClick={() => navigate("/listcontracts")}
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    mr: 5,
+                    height: 40,
+                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    color: "white",
+                    borderColor: "black",
+                  }}
+                >
+                  Mis Contratos
+                </Button>
+                <Button
                   onClick={() => navigate("/usermaphome")}
                   variant="outlined"
                   color="primary"
@@ -144,4 +172,4 @@ const UserWelcome: React.FC = () => {
   );
 };
 
-export default UserWelcome;
+export default UserNavbar;

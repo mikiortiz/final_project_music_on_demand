@@ -13,6 +13,7 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { UserData } from "../../model/UserData";
 import { eventTypes } from "../../model/EventTypes";
 import { useNavigate } from "react-router-dom";
@@ -64,6 +65,10 @@ const UserWelcome = () => {
       setSelectedDjAreas(matchingDjAreas);
     }
   }, [selectedMusicUser, DjsUsers]);
+
+  const handleContractClick = (dj: SupplierData) => {
+    navigate("/contractconfiguration", { state: { selectedDj: dj } });
+  };
 
   return (
     <div
@@ -223,7 +228,7 @@ const UserWelcome = () => {
                   <Grid
                     item
                     xs={8}
-                    sx={{ padding: "0 10px", textAlign: "center" }}
+                    sx={{ padding: "0 10px", textAlign: "center", mt: "-5px" }}
                   >
                     <Typography
                       sx={{
@@ -310,6 +315,37 @@ const UserWelcome = () => {
                         );
                       })}
                     </List>
+                  </Grid>
+                  <Grid
+                    container
+                    sx={{
+                      mt: 1,
+                      borderRadius: 5,
+                      background: "rgba(0, 0, 0, 0.9)",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <Button
+                      onClick={() => handleContractClick(dj)}
+                      variant="outlined"
+                      color="primary"
+                      sx={{
+                        borderRadius: 5,
+                        fontSize: "25px",
+                        width: "100%",
+                        height: "auto",
+                        backgroundColor: "rgba(0, 128, 255, 0.6)",
+                        color: "white",
+                        borderColor: "black",
+                      }}
+                      startIcon={
+                        <SettingsIcon
+                          style={{ fontSize: 48, marginRight: 15 }}
+                        />
+                      } 
+                    >
+                      CONTRATAR Y CONFIGURAR
+                    </Button>
                   </Grid>
                 </Grid>
               ))}

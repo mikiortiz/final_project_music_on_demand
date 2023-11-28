@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AppBar,
@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -50,6 +51,7 @@ const ContractConfiguration: React.FC = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [contractGenres, setContractGenres] = useState<string[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -140,7 +142,6 @@ const ContractConfiguration: React.FC = () => {
     dispatch(setSelectedEvent(event));
     setContractDetails({
       EventHours: "",
-
       EventAddress: "",
       ClientFirstName: "",
       ClientLastName: "",
@@ -156,6 +157,15 @@ const ContractConfiguration: React.FC = () => {
     setShowWarning(false);
     setOpenDialog(false);
   };
+
+  useEffect(() => {
+    if (selectedDj && selectedDj.selectedGenres) {
+      console.log("Géneros del DJ:", selectedDj.selectedGenres);
+      setContractGenres(selectedDj.selectedGenres);
+    }
+  }, [selectedDj]);
+
+  console.log("Géneros que se pasan a ConfigurationPlaylist:", contractGenres);
 
   if (!selectedDj) {
     return <div>Selecciona un DJ para ver los detalles del contrato.</div>;
@@ -183,7 +193,7 @@ const ContractConfiguration: React.FC = () => {
             fontWeight: "bold",
           }}
         >
-          Dj Seleccionado
+          Configuración de Contrato
         </Typography>
         <Toolbar>
           <Grid
@@ -212,12 +222,33 @@ const ContractConfiguration: React.FC = () => {
                 color="secondary"
                 style={{ width: "200px" }}
               >
-                Volver
+                Salir
               </Button>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
+      <Button
+        onClick={() =>
+          navigate("/configurationplaylist", {
+            state: { selectedDj, contractGenres },
+          })
+        }
+        variant="outlined"
+        color="primary"
+        sx={{
+          mt: 2,
+          borderRadius: 5,
+          fontSize: "25px",
+          width: "100%",
+          height: "auto",
+          backgroundColor: "rgba(0, 128, 255, 0.6)",
+          color: "white",
+          borderColor: "black",
+        }}
+      >
+        CONFIGURAR MY PLAYLIST
+      </Button>
       <List>
         <Grid container spacing={2}>
           {selectedDj.selectedEvents?.map(
@@ -251,6 +282,7 @@ const ContractConfiguration: React.FC = () => {
                       <Typography variant="h6">{event.eventName}</Typography>
                       <Typography>{`Precio: ${event.price}`}</Typography>
                       <Typography>{`X Horas: ${event.hours}`}</Typography>
+
                       <Grid
                         container
                         sx={{
@@ -278,6 +310,28 @@ const ContractConfiguration: React.FC = () => {
                           CONTRATAR EVENTO
                         </Button>
                       </Grid>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ textAlign: "center" }}
+                      >
+                        Géneros del DJ:
+                      </Typography>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "5px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {contractGenres.map((genre, genreIndex) => (
+                          <Chip
+                            key={genreIndex}
+                            label={genre}
+                            variant="outlined"
+                          />
+                        ))}
+                      </div>
                     </CardContent>
                   </Card>
                   {selectedEvent && selectedEvent === event && (
@@ -370,6 +424,7 @@ const ContractConfiguration: React.FC = () => {
                             margin="normal"
                             required
                           />
+
                           <Typography
                             sx={{
                               mt: 2,

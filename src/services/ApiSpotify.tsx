@@ -45,14 +45,12 @@ export const getGenreArtists = async (genre: string) => {
   try {
     const accessToken = await getClientCredentialsToken();
 
-    // Parámetros de paginación
-    const limit = 100; // Número máximo de resultados por página
-    let offset = 0; // Índice de la página (inicia en 0)
+    const limit = 100;
+    let offset = 0;
 
-    const uniqueArtistsSet = new Set(); // Conjunto para realizar un seguimiento de artistas únicos
+    const uniqueArtistsSet = new Set();
     const allArtists = [];
 
-    // Realizar solicitudes hasta que se obtengan todos los resultados
     while (true) {
       const genreArtistsURL = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=${limit}&offset=${offset}`;
       console.log("URL de solicitud para artistas:", genreArtistsURL);
@@ -65,17 +63,13 @@ export const getGenreArtists = async (genre: string) => {
 
       console.log("Respuesta de la solicitud para artistas:", response.data);
 
-      // Lista de artistas del género con imágenes y IDs
       const artistsWithImages = response.data.tracks.map(async (track: any) => {
         const artist = track.artists[0];
         const artistName = artist.name;
 
-        // Verificar si el artista ya está en el conjunto de artistas únicos
         if (!uniqueArtistsSet.has(artist.id)) {
-          // Agregar el ID del artista al conjunto
           uniqueArtistsSet.add(artist.id);
 
-          // Obtener detalles del artista, incluyendo imágenes
           const artistDetailsResponse = await axios.get(
             `https://api.spotify.com/v1/artists/${artist.id}`,
             {
@@ -98,22 +92,19 @@ export const getGenreArtists = async (genre: string) => {
           };
         }
 
-        return null; // Retorna null para los artistas duplicados
+        return null;
       });
 
-      // Esperar a que todas las solicitudes asincrónicas se completen
       const resolvedArtists = (await Promise.all(artistsWithImages)).filter(
         (artist) => artist !== null
       );
 
-      // Agregar los artistas de la página actual a la lista completa
       allArtists.push(...resolvedArtists);
 
-      // Verificar si hay más resultados
       if (response.data.next) {
-        offset += limit; // Incrementar el índice de la página
+        offset += limit;
       } else {
-        break; // No hay más resultados, salir del bucle
+        break;
       }
     }
 
@@ -126,8 +117,6 @@ export const getGenreArtists = async (genre: string) => {
     throw error;
   }
 };
-
-// En el archivo ApiSpotify.js
 
 export const getArtistAlbums = async (artistId: string) => {
   try {
@@ -149,8 +138,6 @@ export const getArtistAlbums = async (artistId: string) => {
   }
 };
 
-// En el archivo ApiSpotify.js
-
 export const getAlbumTracks = async (albumId: string) => {
   try {
     const accessToken = await getClientCredentialsToken();
@@ -170,4 +157,3 @@ export const getAlbumTracks = async (albumId: string) => {
     throw error;
   }
 };
-

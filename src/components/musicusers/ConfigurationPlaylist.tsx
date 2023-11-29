@@ -5,7 +5,6 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import {
@@ -16,6 +15,7 @@ import {
   Grid,
   Chip,
   Avatar,
+  TextField,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -24,12 +24,12 @@ import {
   getAlbumTracks,
 } from "../../services/ApiSpotify";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AlbumIcon from "@mui/icons-material/Album";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -63,6 +63,8 @@ const ContractConfiguration: React.FC = () => {
   const [selectedAlbumTracks, setSelectedAlbumTracks] = React.useState<any[]>(
     []
   );
+  const [loadingArtists, setLoadingArtists] = React.useState(false);
+  const [loadingAlbums, setLoadingAlbums] = React.useState(false);
 
   const handleExpandClick = (index: number) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -89,23 +91,24 @@ const ContractConfiguration: React.FC = () => {
   const handleGenreSelect = async (genre: string) => {
     setSelectedGenre(genre);
     setSelectedArtist(null);
-    setAlbums([]);
     setSearchTerm("");
+    setAlbums([]);
 
     try {
+      setLoadingArtists(true);
       const genreArtists = await getGenreArtists(genre);
+      setLoadingArtists(false);
 
-      // Filtrar artistas existentes para evitar duplicados
       const uniqueNewArtists = genreArtists.filter(
         (newArtist) =>
           !artists.some((existingArtist) => existingArtist.id === newArtist.id)
       );
 
-      // Actualizar el estado solo con los nuevos artistas del género
       if (uniqueNewArtists.length > 0) {
         setArtists(uniqueNewArtists);
       }
     } catch (error) {
+      setLoadingArtists(false);
       console.error(`Error al obtener artistas del género ${genre}:`, error);
     }
   };
@@ -113,10 +116,15 @@ const ContractConfiguration: React.FC = () => {
   const handleArtistSelect = async (artist: any) => {
     setSelectedArtist(artist);
 
+    console.log("Información del artista:", artist);
+
     try {
+      setLoadingAlbums(true);
       const artistAlbums = await getArtistAlbums(artist.id);
+      setLoadingAlbums(false);
       setAlbums(artistAlbums);
     } catch (error) {
+      setLoadingAlbums(false);
       console.error(
         `Error al obtener álbumes del artista ${artist.name}:`,
         error
@@ -225,6 +233,7 @@ const ContractConfiguration: React.FC = () => {
                       variant="outlined"
                       onClick={() => handleGenreSelect(genre)}
                       sx={{
+                        fontStyle: "italic",
                         background: "rgba(0, 0, 0, 0.7)",
                         color: "white",
                         fontSize: -30,
@@ -236,31 +245,66 @@ const ContractConfiguration: React.FC = () => {
                     />
                   ))}
                 </div>
+                {loadingArtists && (
+                  <div style={{ textAlign: "center", marginTop: 20 }}>
+                    <CircularProgress />
+                    <Typography variant="body2" sx={{ marginTop: 1 }}>
+                      Cargando artistas...
+                    </Typography>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </Grid>
           {selectedGenre && (
             <Grid item xs={12} sm={12} md={12}>
-              <Card>
+              <Card
+                sx={{
+                  background: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  mt: "-13px",
+                }}
+              >
                 <CardContent>
-                  <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-                    Género Seleccionado: {selectedGenre}
+                  <Typography
+                    sx={{
+                      mt: -2,
+                      fontSize: 40,
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {selectedGenre}
                   </Typography>
                   {artists.length > 0 && (
                     <div>
-                      <Typography variant="subtitle1">
-                        Artistas del Género:
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        Busca Tu Artista Preferido
                       </Typography>
-                      <input
-                        type="text"
-                        placeholder="Buscar artistas..."
+                      <TextField
+                        variant="filled"
+                        label="Buscar artista..."
+                        name="EventHours"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{
+                        fullWidth
+                        margin="normal"
+                        required
+                        autoComplete="off"
+                        sx={{
+                          borderRadius: 2,
+                          backgroundColor: "white",
                           width: "100%",
                           padding: "8px",
                           boxSizing: "border-box",
-                          marginBottom: "10px",
                         }}
                       />
                       <Grid
@@ -281,25 +325,27 @@ const ContractConfiguration: React.FC = () => {
                           .slice(0, 4)
                           .map((artist, index) => (
                             <Grid item key={index} xs={12} sm={6} md={3}>
-                              <li onClick={() => handleArtistSelect(artist)}>
+                              <li>
                                 <Card
                                   sx={{
                                     maxWidth: 345,
                                     margin: "10px",
-                                    height: "110%", // Agrega esta línea para establecer la misma altura
+                                    height: "110%",
                                     display: "flex",
                                     flexDirection: "column",
+                                    boxShadow:
+                                      "0 10px 18px rgba(255, 255, 255, 0.7)",
                                   }}
-                                  onClick={() => handleArtistSelect(artist)}
                                 >
                                   <CardHeader
                                     sx={{ textAlign: "center" }}
                                     title={artist.name}
                                     subheader={`Género: ${selectedGenre}`}
+                                    style={{ height: 50 }}
                                   />
                                   <CardMedia
                                     component="img"
-                                    height="194"
+                                    height="250px"
                                     image={
                                       artist.imageUrl ||
                                       "/static/images/default-artist-image.jpg"
@@ -309,83 +355,41 @@ const ContractConfiguration: React.FC = () => {
                                   <CardContent>
                                     <Typography
                                       variant="subtitle1"
-                                      sx={{ textAlign: "center", fontSize: 13 }}
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: 13,
+                                        mr: -26,
+                                        mt: -1,
+                                      }}
                                     >
-                                      en esta seccion podras dar me gusta al
-                                      artista y seleccionar albunes y canciones
+                                      ALBUNES
                                     </Typography>
                                   </CardContent>
                                   <CardActions disableSpacing>
-                                    <IconButton aria-label="add to favorites">
-                                      <FavoriteIcon />
+                                    <IconButton
+                                      aria-label="add to favorites"
+                                      sx={{ mt: -5 }}
+                                    >
+                                      <FavoriteIcon
+                                        sx={{ fontSize: "2.5rem" }}
+                                      />
                                     </IconButton>
-                                    <IconButton aria-label="share">
-                                      <ShareIcon />
-                                    </IconButton>
+
                                     <ExpandMore
                                       expand={expandedIndex === index}
                                       onClick={() => handleExpandClick(index)}
                                       aria-expanded={expandedIndex === index}
                                       aria-label="show more"
+                                      sx={{ mt: -5 }}
                                     >
-                                      <ExpandMoreIcon />
+                                      <AlbumIcon
+                                        sx={{ fontSize: "3rem" }}
+                                        onClick={() =>
+                                          handleArtistSelect(artist)
+                                        }
+                                      />
                                     </ExpandMore>
                                   </CardActions>
-                                  <Collapse
-                                    in={expandedIndex === index}
-                                    timeout="auto"
-                                    unmountOnExit
-                                  >
-                                    <CardContent>
-                                      {selectedArtist &&
-                                        selectedArtist.id === artist.id && (
-                                          <div>
-                                            <Typography variant="subtitle1">
-                                              Álbumes del Artista:
-                                            </Typography>
-                                            <ul>
-                                              {albums.map((album, index) => (
-                                                <Button
-                                                  key={index}
-                                                  onClick={() =>
-                                                    handleAlbumSelect(album)
-                                                  }
-                                                  sx={{
-                                                    width: "118%",
-                                                    ml: -5,
-                                                    mt: 1,
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "10px",
-                                                    padding: "10px",
-                                                    borderRadius: "5px",
-                                                    background:
-                                                      "rgba(0, 0, 0, 0.7)",
-                                                    color: "black",
-                                                  }}
-                                                >
-                                                  <img
-                                                    src={
-                                                      album.images[0]?.url ||
-                                                      "/path/to/default-image.jpg"
-                                                    }
-                                                    alt={album.name}
-                                                    style={{
-                                                      width: "50px",
-                                                      height: "50px",
-                                                      borderRadius: "5px",
-                                                    }}
-                                                  />
-                                                  <span style={{ flex: 1 }}>
-                                                    {album.name}
-                                                  </span>
-                                                </Button>
-                                              ))}
-                                            </ul>
-                                          </div>
-                                        )}
-                                    </CardContent>
-                                  </Collapse>
                                 </Card>
                               </li>
                             </Grid>
@@ -393,6 +397,112 @@ const ContractConfiguration: React.FC = () => {
                       </Grid>
                     </div>
                   )}
+                  {loadingAlbums && (
+                    <div style={{ textAlign: "center", marginTop: 20 }}>
+                      <CircularProgress />
+                      <Typography variant="body2" sx={{ marginTop: 1 }}>
+                        Cargando álbumes...
+                      </Typography>
+                    </div>
+                  )}
+                  {selectedArtist && (
+                    <div>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontSize: 30,
+                          textAlign: "center",
+                          mt: 2,
+                          mb: 2,
+                          fontWeight: "bold",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        Álbunes De {selectedArtist.name}
+                      </Typography>
+
+                      <Grid
+                        container
+                        spacing={2}
+                        sx={{ marginLeft: "-25px", padding: 3 }}
+                      >
+                        {albums.map((album, index) => (
+                          <Grid item key={index} xs={12} sm={6} md={4} lg={2}>
+                            <Card
+                              onClick={() => handleAlbumSelect(album)}
+                              sx={{
+                                cursor: "pointer",
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                background: "rgba(0, 0, 0, 1)",
+                                color: "white",
+                                transition: "transform 0.4s, box-shadow 0.4s",
+                                margin: "10px",
+                                "&:hover": {
+                                  transform: "scale(1.3)",
+                                  boxShadow:
+                                    "0 20px 40px rgba(255, 255, 255, 0.7)",
+                                },
+                              }}
+                            >
+                              <CardMedia
+                                component="img"
+                                height="140"
+                                image={
+                                  album.images[0]?.url ||
+                                  "/path/to/default-image.jpg"
+                                }
+                                alt={album.name}
+                                sx={{
+                                  width: "100%",
+                                  borderTopLeftRadius: "5px",
+                                  borderTopRightRadius: "5px",
+                                }}
+                              />
+                              <CardContent>
+                                <Typography
+                                  variant="subtitle1"
+                                  sx={{ fontWeight: "bold" }}
+                                >
+                                  {album.name}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontStyle: "italic", fontSize: 10 }}
+                                >
+                                  Tipo de Álbum: {album.album_type}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontStyle: "italic", fontSize: 10 }}
+                                >
+                                  Número total de pistas: {album.total_tracks}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontStyle: "italic", fontSize: 10 }}
+                                >
+                                  Fecha de lanzamiento: {album.release_date} (
+                                  {album.release_date_precision})
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontStyle: "italic", fontSize: 10 }}
+                                >
+                                  Artistas:{" "}
+                                  {album.artists
+                                    .map((artist: { name: any }) => artist.name)
+                                    .join(", ")}
+                                </Typography>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </div>
+                  )}
+
                   {selectedAlbum && (
                     <Dialog
                       open={dialogOpen}

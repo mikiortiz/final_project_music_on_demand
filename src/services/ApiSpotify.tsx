@@ -53,15 +53,12 @@ export const getGenreArtists = async (genre: string) => {
 
     while (true) {
       const genreArtistsURL = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=${limit}&offset=${offset}`;
-      console.log("URL de solicitud para artistas:", genreArtistsURL);
 
       const response = await axios.get(genreArtistsURL, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      console.log("Respuesta de la solicitud para artistas:", response.data);
 
       const artistsWithImages = response.data.tracks.map(async (track: any) => {
         const artist = track.artists[0];
@@ -82,8 +79,6 @@ export const getGenreArtists = async (genre: string) => {
           const artistDetails = artistDetailsResponse.data;
           const images = artistDetails.images;
           const imageUrl = images && images.length > 0 ? images[0].url : null;
-
-          console.log(`Imagen para ${artistName}: ${imageUrl}`);
 
           return {
             id: artist.id,

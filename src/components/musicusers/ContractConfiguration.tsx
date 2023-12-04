@@ -28,9 +28,6 @@ import { RootState } from "../../model/RootStateTypes";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 
-const startDate = dayjs("2023-01-01");
-const endDate = dayjs();
-
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,16 +77,20 @@ const ContractConfiguration: React.FC = () => {
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
-          userImg: selectedDj.customAvatarUrl,
-          userFirstName: selectedDj.userFirstName,
-          userLastName: selectedDj.userLastName,
-          userEmail: selectedDj.userEmail,
+          DjImg: selectedDj.customAvatarUrl,
+          DjFirstName: selectedDj.userFirstName,
+          DjLastName: selectedDj.userLastName,
+          DjEmail: selectedDj.userEmail,
+          DjGenres: contractGenres,
         },
         totalCost: totalCost,
       };
 
       dispatch(
-        addContract({ email: musicUser.userEmail, contract: contractData })
+        addContract({
+          MusicUserEmail: musicUser.userEmail,
+          contract: contractData,
+        })
       );
 
       setOpenDialog(false);
@@ -114,16 +115,20 @@ const ContractConfiguration: React.FC = () => {
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
-          userImg: selectedDj.customAvatarUrl,
-          userFirstName: selectedDj.userFirstName,
-          userLastName: selectedDj.userLastName,
-          userEmail: selectedDj.userEmail,
+          DjImg: selectedDj.customAvatarUrl,
+          DjFirstName: selectedDj.userFirstName,
+          DjLastName: selectedDj.userLastName,
+          DjEmail: selectedDj.userEmail,
+          DjGenres: contractGenres,
         },
         totalCost: totalCost,
       };
 
       dispatch(
-        addContract({ email: musicUser.userEmail, contract: contractData })
+        addContract({
+          MusicUserEmail: musicUser.userEmail,
+          contract: contractData,
+        })
       );
 
       setOpenDialog(false);
@@ -160,12 +165,9 @@ const ContractConfiguration: React.FC = () => {
 
   useEffect(() => {
     if (selectedDj && selectedDj.selectedGenres) {
-      console.log("Géneros del DJ:", selectedDj.selectedGenres);
       setContractGenres(selectedDj.selectedGenres);
     }
   }, [selectedDj]);
-
-  console.log("Géneros que se pasan a ConfigurationPlaylist:", contractGenres);
 
   if (!selectedDj) {
     return <div>Selecciona un DJ para ver los detalles del contrato.</div>;
@@ -217,6 +219,20 @@ const ContractConfiguration: React.FC = () => {
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>
               <Button
+                onClick={() => navigate("/listcontracts")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+              >
+                Configurar Mis Playlists
+              </Button>
+              <Button
                 onClick={() => navigate("/userwelcome")}
                 variant="contained"
                 color="secondary"
@@ -228,27 +244,7 @@ const ContractConfiguration: React.FC = () => {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Button
-        onClick={() =>
-          navigate("/configurationplaylist", {
-            state: { selectedDj, contractGenres },
-          })
-        }
-        variant="outlined"
-        color="primary"
-        sx={{
-          mt: 2,
-          borderRadius: 5,
-          fontSize: "25px",
-          width: "100%",
-          height: "auto",
-          backgroundColor: "rgba(0, 128, 255, 0.6)",
-          color: "white",
-          borderColor: "black",
-        }}
-      >
-        CONFIGURAR MY PLAYLIST
-      </Button>
+
       <List>
         <Grid container spacing={2}>
           {selectedDj.selectedEvents?.map(
@@ -310,6 +306,7 @@ const ContractConfiguration: React.FC = () => {
                           CONTRATAR EVENTO
                         </Button>
                       </Grid>
+
                       <Typography
                         variant="subtitle1"
                         sx={{ textAlign: "center" }}
@@ -334,6 +331,7 @@ const ContractConfiguration: React.FC = () => {
                       </div>
                     </CardContent>
                   </Card>
+
                   {selectedEvent && selectedEvent === event && (
                     <Dialog
                       open={openDialog}
@@ -369,6 +367,7 @@ const ContractConfiguration: React.FC = () => {
                       >
                         Detalles del Contrato
                       </DialogTitle>
+
                       <DialogContent>
                         <form onSubmit={handleFormSubmit}>
                           <TextField
@@ -386,9 +385,9 @@ const ContractConfiguration: React.FC = () => {
                             <DatePicker
                               label="Fecha del evento"
                               value={selectedDate}
-                              onChange={(date) => setSelectedDate(date)}
-                              minDate={startDate}
-                              maxDate={endDate}
+                              onChange={(date) => setSelectedDate(dayjs(date))}
+                              minDate={dayjs()}
+                              maxDate={dayjs().add(1, "year")}
                               views={["year", "month", "day"]}
                               sx={{ width: "100%" }}
                             />
@@ -424,7 +423,6 @@ const ContractConfiguration: React.FC = () => {
                             margin="normal"
                             required
                           />
-
                           <Typography
                             sx={{
                               mt: 2,

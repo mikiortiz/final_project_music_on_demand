@@ -12,12 +12,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
 } from "@mui/material";
 import NavbarUser from "./NavbarUsers";
 import { eventTypes } from "../../model/EventTypes";
-import { deleteContract } from "../../redux/reducers/ContractSlice";
+import {
+  deleteContract,
+  removeSelectedSong,
+} from "../../redux/reducers/ContractSlice";
 import { RootState } from "../../model/RootStateTypes";
 import { useNavigate } from "react-router-dom";
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 
 const ListContract: React.FC = () => {
   const navigate = useNavigate();
@@ -87,7 +96,6 @@ const ListContract: React.FC = () => {
             const contractDetails = userContract.contract;
             const currentContractId = userContract.ContractId;
 
-            // Filtrar las canciones seleccionadas para el contrato actual
             const selectedSongsForContract = selectedsong.find(
               (contract) => contract.ContractId === currentContractId
             )?.selectedSongs;
@@ -180,25 +188,6 @@ const ListContract: React.FC = () => {
                         <Typography>{`Duración del evento: ${contractDetails.EventHours} horas`}</Typography>
                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
-
-                        {selectedSongsForContract &&
-                        selectedSongsForContract.length > 0 ? (
-                          <div>
-                            {selectedSongsForContract.map(
-                              (song: any, songIndex: number) => (
-                                <Typography key={songIndex}>
-                                  Canción {songIndex + 1}: {song.name}
-                                </Typography>
-                              )
-                            )}
-                          </div>
-                        ) : (
-                          <div>
-                            <Typography>
-                              No hay canciones seleccionadas
-                            </Typography>
-                          </div>
-                        )}
                       </Grid>
                       <Button
                         variant="contained"
@@ -235,6 +224,62 @@ const ListContract: React.FC = () => {
                     >
                       CONFIGURAR MIS PLAYLISTS
                     </Button>
+
+                    {selectedSongsForContract &&
+                    selectedSongsForContract.length > 0 ? (
+                      // Resto del código ...
+
+                      <List>
+                        {selectedSongsForContract.map(
+                          (song: any, songIndex: number) => (
+                            <ListItem
+                              key={songIndex}
+                              sx={{
+                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                borderRadius: 5,
+                                mb: 1,
+                              }}
+                            >
+                              <Typography>{`Artista: ${song.artists[0].name}`}</Typography>
+                              <ListItemText
+                                primary={`${songIndex + 1}: ${song.name}`}
+                                sx={{ textAlign: "center", color: "white" }}
+                              />
+                              <ListItemSecondaryAction>
+                                <IconButton
+                                  edge="end"
+                                  aria-label="remove"
+                                  onClick={() =>
+                                    dispatch(
+                                      removeSelectedSong({
+                                        contractId: currentContractId,
+                                        selectedSong: song,
+                                      })
+                                    )
+                                  }
+                                >
+                                  <PlaylistRemoveIcon sx={{ color: "white" }} />
+                                </IconButton>
+                              </ListItemSecondaryAction>
+                            </ListItem>
+                          )
+                        )}
+                      </List>
+                    ) : (
+                      <div
+                        style={{
+                          marginBottom: 40,
+                          marginTop: -25,
+                          backgroundColor: "red",
+                          color: "white",
+                          borderRadius: "5px",
+                          padding: "10px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Typography>No hay canciones seleccionadas</Typography>
+                      </div>
+                    )}
                   </Card>
                 )}
               </Grid>

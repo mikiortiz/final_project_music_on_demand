@@ -23,6 +23,7 @@ import {
   Slider,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -283,6 +284,21 @@ const ContractDetailsPage: React.FC = () => {
               <Typography variant="h5">{`${DjFirstName} ${DjLastName}`}</Typography>
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>
+              <Button
+                onClick={() => navigate("/listcontracts")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+                startIcon={<ArrowBackIcon />}
+              >
+                Atrás
+              </Button>
               <Button
                 onClick={() => navigate("/userwelcome")}
                 variant="contained"

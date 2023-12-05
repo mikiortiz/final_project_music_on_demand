@@ -224,12 +224,23 @@ const ListContract: React.FC = () => {
                     >
                       CONFIGURAR MIS PLAYLISTS
                     </Button>
+                    <div
+                      style={{
+                        marginBottom: 40,
+                        marginTop: -35,
+                        backgroundColor: "black",
+                        color: "white",
+                        borderRadius: "5px",
+                        padding: "10px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography>Mi Playlist</Typography>
+                    </div>
 
                     {selectedSongsForContract &&
                     selectedSongsForContract.length > 0 ? (
-                      // Resto del código ...
-
-                      <List>
+                      <List sx={{ mt: "-43px" }}>
                         {selectedSongsForContract.map(
                           (song: any, songIndex: number) => (
                             <ListItem
@@ -277,7 +288,7 @@ const ListContract: React.FC = () => {
                           textAlign: "center",
                         }}
                       >
-                        <Typography>No hay canciones seleccionadas</Typography>
+                        <Typography>No hay canciones aquí</Typography>
                       </div>
                     )}
                   </Card>

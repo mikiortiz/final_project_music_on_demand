@@ -281,7 +281,15 @@ const ContractDetailsPage: React.FC = () => {
                   marginRight: 2,
                 }}
               />
-              <Typography variant="h5">{`${DjFirstName} ${DjLastName}`}</Typography>
+              <Grid container sx={{ ml: 20, mt: -6 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ marginRight: 1, mt: -3, mr: -9 }}
+                >
+                  DJ
+                </Typography>
+                <Typography variant="h5">{`${DjFirstName} ${DjLastName}`}</Typography>
+              </Grid>
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>
               <Button
@@ -388,7 +396,6 @@ const ContractDetailsPage: React.FC = () => {
             <CardContent>
               <Typography
                 sx={{
-                  mt: -2,
                   fontSize: 40,
                   textAlign: "center",
                   fontWeight: "bold",
@@ -401,6 +408,7 @@ const ContractDetailsPage: React.FC = () => {
                 <Typography
                   variant="h6"
                   sx={{
+                    mb: -2,
                     textAlign: "center",
                     fontWeight: "bold",
                     fontStyle: "italic",
@@ -426,6 +434,16 @@ const ContractDetailsPage: React.FC = () => {
                     boxSizing: "border-box",
                   }}
                 />
+                <Typography
+                  sx={{
+                    fontSize: 40,
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontStyle: "italic",
+                  }}
+                >
+                  Artistas Sugeridos
+                </Typography>
                 <Grid
                   container
                   spacing={4}
@@ -466,38 +484,49 @@ const ContractDetailsPage: React.FC = () => {
                               height="250px"
                               image={artist.imageUrl || logomusic}
                               alt={artist.name}
+                              onClick={() => {
+                                handleArtistSelect(artist);
+                              }}
+                              sx={{ cursor: "pointer" }}
                             />
-                            <CardContent>
-                              <Typography
-                                variant="subtitle1"
-                                sx={{
-                                  textAlign: "center",
-                                  fontSize: 13,
-                                  mr: -26,
-                                  mt: -1,
-                                }}
-                              >
-                                ALBUMES
-                              </Typography>
-                            </CardContent>
-                            <CardActions disableSpacing>
-                              <IconButton
-                                aria-label="add to favorites"
-                                sx={{ mt: -5 }}
-                              >
-                                <FavoriteIcon sx={{ fontSize: "2.5rem" }} />
-                              </IconButton>
-
-                              <IconButton
-                                onClick={() => {
-                                  handleArtistSelect(artist);
-                                }}
-                                aria-label="show more"
-                                sx={{ mt: -5 }}
-                              >
-                                <AlbumIcon sx={{ fontSize: "3rem" }} />
-                              </IconButton>
-                            </CardActions>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
+                            >
+                              <CardContent>
+                                <Typography
+                                  variant="subtitle1"
+                                  sx={{
+                                    textAlign: "center",
+                                    fontSize: 13,
+                                    mt: -1,
+                                    ml: 26,
+                                  }}
+                                >
+                                  ALBUMES
+                                </Typography>
+                              </CardContent>
+                              <CardActions disableSpacing>
+                                <IconButton
+                                  aria-label="add to favorites"
+                                  sx={{ mt: -5 }}
+                                >
+                                  <FavoriteIcon sx={{ fontSize: "2.5rem" }} />
+                                </IconButton>
+                                <IconButton
+                                  onClick={() => {
+                                    handleArtistSelect(artist);
+                                  }}
+                                  aria-label="show more"
+                                  sx={{ mt: -5, ml: 19 }}
+                                >
+                                  <AlbumIcon sx={{ fontSize: "3rem" }} />
+                                </IconButton>
+                              </CardActions>
+                            </div>
                           </Card>
                         </li>
                       </Grid>
@@ -525,12 +554,12 @@ const ContractDetailsPage: React.FC = () => {
               fontSize: 30,
               textAlign: "center",
               mt: 2,
-              mb: 2,
+              mb: -5,
               fontWeight: "bold",
               fontStyle: "italic",
             }}
           >
-            Álbunes De {selectedArtist.name}
+            Álbumes De {selectedArtist.name}
           </Typography>
 
           <Grid container spacing={2} sx={{ marginLeft: "-25px", padding: 3 }}>
@@ -694,14 +723,12 @@ const ContractDetailsPage: React.FC = () => {
                             )}
                           </IconButton>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} sx={{ mr: 5, ml: -5 }}>
                           <Typography
                             variant="body1"
                             style={{
                               fontSize: 20,
                               textAlign: "center",
-                              marginTop: -20,
-                              marginBottom: -15,
                               fontWeight: "lighter",
                               fontStyle: "italic",
                               color: "white",

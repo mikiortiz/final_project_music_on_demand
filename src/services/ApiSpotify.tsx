@@ -34,7 +34,6 @@ export const getAvailableGenres = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // Lista de géneros musicales
     return response.data.genres;
   } catch (error) {
     console.error("Error al obtener los géneros musicales de Spotify:", error);
@@ -42,4 +41,114 @@ export const getAvailableGenres = async () => {
   }
 };
 
+export const getGenreArtists = async (genre: string) => {
+  try {
+    const accessToken = await getClientCredentialsToken();
 
+    const limit = 100;
+    let offset = 0;
+
+    const uniqueArtistsSet = new Set();
+    const allArtists = [];
+
+    while (true) {
+      const genreArtistsURL = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=${limit}&offset=${offset}`;
+
+      const response = await axios.get(genreArtistsURL, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const artistsWithImages = response.data.tracks.map(async (track: any) => {
+        const artist = track.artists[0];
+        const artistName = artist.name;
+
+        if (!uniqueArtistsSet.has(artist.id)) {
+          uniqueArtistsSet.add(artist.id);
+
+          const artistDetailsResponse = await axios.get(
+            `https://api.spotify.com/v1/artists/${artist.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          const artistDetails = artistDetailsResponse.data;
+          const images = artistDetails.images;
+          const imageUrl = images && images.length > 0 ? images[0].url : null;
+
+          return {
+            id: artist.id,
+            name: artistName,
+            imageUrl: imageUrl,
+          };
+        }
+
+        return null;
+      });
+
+      const resolvedArtists = (await Promise.all(artistsWithImages)).filter(
+        (artist) => artist !== null
+      );
+
+      allArtists.push(...resolvedArtists);
+
+      if (response.data.next) {
+        offset += limit;
+      } else {
+        break;
+      }
+    }
+
+    return allArtists;
+  } catch (error) {
+    console.error(
+      `Error al obtener artistas del género ${genre} de Spotify:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const getArtistAlbums = async (artistId: string) => {
+  try {
+    const accessToken = await getClientCredentialsToken();
+
+    const response = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}/albums`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data.items;
+  } catch (error) {
+    console.error(`Error al obtener álbumes del artista ${artistId}:`, error);
+    throw error;
+  }
+};
+
+export const getAlbumTracks = async (albumId: string) => {
+  try {
+    const accessToken = await getClientCredentialsToken();
+
+    const response = await axios.get(
+      `https://api.spotify.com/v1/albums/${albumId}/tracks`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data.items;
+  } catch (error) {
+    console.error(`Error al obtener pistas del álbum ${albumId}:`, error);
+    throw error;
+  }
+};

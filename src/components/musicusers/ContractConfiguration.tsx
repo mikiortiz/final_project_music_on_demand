@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AppBar,
@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -26,9 +27,6 @@ import { EventTypeContract } from "../../model/EventTypes";
 import { RootState } from "../../model/RootStateTypes";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-
-const startDate = dayjs("2023-01-01");
-const endDate = dayjs();
 
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
@@ -50,6 +48,7 @@ const ContractConfiguration: React.FC = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [contractGenres, setContractGenres] = useState<string[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -78,16 +77,20 @@ const ContractConfiguration: React.FC = () => {
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
-          userImg: selectedDj.customAvatarUrl,
-          userFirstName: selectedDj.userFirstName,
-          userLastName: selectedDj.userLastName,
-          userEmail: selectedDj.userEmail,
+          DjImg: selectedDj.customAvatarUrl,
+          DjFirstName: selectedDj.userFirstName,
+          DjLastName: selectedDj.userLastName,
+          DjEmail: selectedDj.userEmail,
+          DjGenres: contractGenres,
         },
         totalCost: totalCost,
       };
 
       dispatch(
-        addContract({ email: musicUser.userEmail, contract: contractData })
+        addContract({
+          MusicUserEmail: musicUser.userEmail,
+          contract: contractData,
+        })
       );
 
       setOpenDialog(false);
@@ -112,16 +115,20 @@ const ContractConfiguration: React.FC = () => {
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
-          userImg: selectedDj.customAvatarUrl,
-          userFirstName: selectedDj.userFirstName,
-          userLastName: selectedDj.userLastName,
-          userEmail: selectedDj.userEmail,
+          DjImg: selectedDj.customAvatarUrl,
+          DjFirstName: selectedDj.userFirstName,
+          DjLastName: selectedDj.userLastName,
+          DjEmail: selectedDj.userEmail,
+          DjGenres: contractGenres,
         },
         totalCost: totalCost,
       };
 
       dispatch(
-        addContract({ email: musicUser.userEmail, contract: contractData })
+        addContract({
+          MusicUserEmail: musicUser.userEmail,
+          contract: contractData,
+        })
       );
 
       setOpenDialog(false);
@@ -140,7 +147,6 @@ const ContractConfiguration: React.FC = () => {
     dispatch(setSelectedEvent(event));
     setContractDetails({
       EventHours: "",
-
       EventAddress: "",
       ClientFirstName: "",
       ClientLastName: "",
@@ -156,6 +162,12 @@ const ContractConfiguration: React.FC = () => {
     setShowWarning(false);
     setOpenDialog(false);
   };
+
+  useEffect(() => {
+    if (selectedDj && selectedDj.selectedGenres) {
+      setContractGenres(selectedDj.selectedGenres);
+    }
+  }, [selectedDj]);
 
   if (!selectedDj) {
     return <div>Selecciona un DJ para ver los detalles del contrato.</div>;
@@ -183,7 +195,7 @@ const ContractConfiguration: React.FC = () => {
             fontWeight: "bold",
           }}
         >
-          Dj Seleccionado
+          Configuración de Contrato
         </Typography>
         <Toolbar>
           <Grid
@@ -207,17 +219,32 @@ const ContractConfiguration: React.FC = () => {
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>
               <Button
+                onClick={() => navigate("/listcontracts")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+              >
+                Configurar Mis Playlists
+              </Button>
+              <Button
                 onClick={() => navigate("/userwelcome")}
                 variant="contained"
                 color="secondary"
                 style={{ width: "200px" }}
               >
-                Volver
+                Salir
               </Button>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
+
       <List>
         <Grid container spacing={2}>
           {selectedDj.selectedEvents?.map(
@@ -251,6 +278,7 @@ const ContractConfiguration: React.FC = () => {
                       <Typography variant="h6">{event.eventName}</Typography>
                       <Typography>{`Precio: ${event.price}`}</Typography>
                       <Typography>{`X Horas: ${event.hours}`}</Typography>
+
                       <Grid
                         container
                         sx={{
@@ -278,8 +306,32 @@ const ContractConfiguration: React.FC = () => {
                           CONTRATAR EVENTO
                         </Button>
                       </Grid>
+
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ textAlign: "center" }}
+                      >
+                        Géneros del DJ:
+                      </Typography>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "5px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {contractGenres.map((genre, genreIndex) => (
+                          <Chip
+                            key={genreIndex}
+                            label={genre}
+                            variant="outlined"
+                          />
+                        ))}
+                      </div>
                     </CardContent>
                   </Card>
+
                   {selectedEvent && selectedEvent === event && (
                     <Dialog
                       open={openDialog}
@@ -315,6 +367,7 @@ const ContractConfiguration: React.FC = () => {
                       >
                         Detalles del Contrato
                       </DialogTitle>
+
                       <DialogContent>
                         <form onSubmit={handleFormSubmit}>
                           <TextField
@@ -332,9 +385,9 @@ const ContractConfiguration: React.FC = () => {
                             <DatePicker
                               label="Fecha del evento"
                               value={selectedDate}
-                              onChange={(date) => setSelectedDate(date)}
-                              minDate={startDate}
-                              maxDate={endDate}
+                              onChange={(date) => setSelectedDate(dayjs(date))}
+                              minDate={dayjs()}
+                              maxDate={dayjs().add(1, "year")}
                               views={["year", "month", "day"]}
                               sx={{ width: "100%" }}
                             />
@@ -433,7 +486,8 @@ const ContractConfiguration: React.FC = () => {
                                 !contractDetails.EventHours ||
                                 !contractDetails.EventAddress ||
                                 !contractDetails.ClientFirstName ||
-                                !contractDetails.ClientLastName
+                                !contractDetails.ClientLastName ||
+                                !selectedDate
                               }
                               onClick={handleFormSubmit}
                             >

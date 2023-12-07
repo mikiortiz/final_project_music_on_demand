@@ -1,5 +1,5 @@
 import { EventTypeContract } from "./EventTypes";
-import { SupplierData as Supplier } from "./SupplierData";
+import { SupplierData as Supplier, SupplierData } from "./SupplierData";
 import { UserData as MusicUser } from "./UserData";
 
 // Definicón, tipos de usuarios
@@ -17,6 +17,7 @@ export interface RootState {
     userType: UserType | null;
   };
   contract: {
+    selectedDj: SupplierData | null;
     selectedEvent: EventTypeContract | null;
     contracts: any[];
   };

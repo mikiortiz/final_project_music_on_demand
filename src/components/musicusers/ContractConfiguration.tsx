@@ -486,7 +486,8 @@ const ContractConfiguration: React.FC = () => {
                                 !contractDetails.EventHours ||
                                 !contractDetails.EventAddress ||
                                 !contractDetails.ClientFirstName ||
-                                !contractDetails.ClientLastName
+                                !contractDetails.ClientLastName ||
+                                !selectedDate
                               }
                               onClick={handleFormSubmit}
                             >

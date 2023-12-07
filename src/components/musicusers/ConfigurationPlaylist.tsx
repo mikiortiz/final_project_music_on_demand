@@ -26,7 +26,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import AlbumIcon from "@mui/icons-material/Album";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
@@ -503,19 +502,13 @@ const ContractDetailsPage: React.FC = () => {
                                     textAlign: "center",
                                     fontSize: 13,
                                     mt: -1,
-                                    ml: 26,
+                                    ml: 18,
                                   }}
                                 >
                                   ALBUMES
                                 </Typography>
                               </CardContent>
                               <CardActions disableSpacing>
-                                <IconButton
-                                  aria-label="add to favorites"
-                                  sx={{ mt: -5 }}
-                                >
-                                  <FavoriteIcon sx={{ fontSize: "2.5rem" }} />
-                                </IconButton>
                                 <IconButton
                                   onClick={() => {
                                     handleArtistSelect(artist);

@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const UserWelcome = () => {
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const MusicUsers = useSelector(
     (state: RootState) => state.registered.MusicUsers
   );

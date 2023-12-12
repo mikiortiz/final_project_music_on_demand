@@ -27,14 +27,17 @@ import { EventTypeContract } from "../../model/EventTypes";
 import { RootState } from "../../model/RootStateTypes";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
+import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
 
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const selectedDj = location.state?.selectedDj;
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const musicUser = user;
   const { selectedEvent } = useSelector((state: RootState) => state.contract);
-  const musicUser = useSelector((state: RootState) => state.userLogin.user);
 
   const [contractDetails, setContractDetails] = useState({
     EventHours: "",
@@ -50,9 +53,64 @@ const ContractConfiguration: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [contractGenres, setContractGenres] = useState<string[]>([]);
 
+  const [startEventTime, setStartEventTime] = useState<string>("");
+  const [endEventTime, setEndEventTime] = useState<string>("");
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setContractDetails({ ...contractDetails, [name]: value });
+  };
+
+  const calculateEventHours = (startTime: string, endTime: string) => {
+    // Calcular la diferencia entre la hora de inicio y la hora de finalización
+    const start = dayjs(startTime, "HH:mm");
+    let end = dayjs(endTime, "HH:mm");
+
+    // Verificar si la hora de finalización es anterior a la hora de inicio (día siguiente)
+    if (end.isBefore(start)) {
+      end = end.add(1, "day");
+    }
+
+    const diffInMinutes = end.diff(start, "minutes");
+
+    const durationHours = Math.floor(diffInMinutes / 60);
+    const durationMinutes = diffInMinutes % 60;
+
+    setContractDetails({
+      ...contractDetails,
+      EventHours: `${durationHours}:${String(durationMinutes).padStart(
+        2,
+        "0"
+      )} Hs`,
+    });
+  };
+
+  const handleStartTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const startTime = event.target.value;
+    setStartEventTime(startTime);
+    if (startTime && endEventTime) {
+      calculateEventHours(startTime, endEventTime);
+    }
+  };
+
+  const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const endTime = event.target.value;
+    console.log("Hora de finalización:", endTime);
+
+    // Verificar que tanto la hora de inicio como la de finalización sean válidas
+    const validStartTime = dayjs(startEventTime, "HH:mm", true).isValid();
+    const validEndTime = dayjs(endTime, "HH:mm", true).isValid();
+
+    console.log("Hora de inicio válida:", validStartTime);
+    console.log("Hora de finalización válida:", validEndTime);
+
+    setEndEventTime(endTime);
+
+    if (startEventTime && validStartTime && validEndTime) {
+      calculateEventHours(startEventTime, endTime);
+    }
   };
 
   const handleFormSubmit = (event: React.FormEvent) => {
@@ -62,17 +120,17 @@ const ContractConfiguration: React.FC = () => {
 
       if (hours < selectedEvent.hours) {
         setShowWarning(true);
-        setWarningMessage(
-          `Este contrato puede ser rechazado por DJ ${selectedDj.userFirstName} ${selectedDj.userLastName}. 
-          Las horas ingresadas no están dentro del paquete estipulado (${selectedEvent.hours} HS X ${selectedEvent.price}). 
-          ¿Deseas continuar?`
-        );
+        setWarningMessage(`Este contrato puede ser rechazado por DJ ${selectedDj.userFirstName} ${selectedDj.userLastName}. 
+        Las horas ingresadas no están dentro del paquete estipulado (${selectedEvent.hours} HS X ${selectedEvent.price}). 
+        ¿Deseas continuar?`);
         return;
       }
 
       const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
 
       const contractData = {
+        startEventTime: startEventTime,
+        endEventTime: endEventTime,
         ...contractDetails,
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
@@ -94,6 +152,8 @@ const ContractConfiguration: React.FC = () => {
       );
 
       setOpenDialog(false);
+      setStartEventTime("");
+      setEndEventTime("");
       setContractDetails({
         EventHours: "",
         EventAddress: "",
@@ -111,6 +171,8 @@ const ContractConfiguration: React.FC = () => {
       const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
 
       const contractData = {
+        startEventTime: startEventTime,
+        endEventTime: endEventTime,
         ...contractDetails,
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
@@ -132,6 +194,8 @@ const ContractConfiguration: React.FC = () => {
       );
 
       setOpenDialog(false);
+      setStartEventTime("");
+      setEndEventTime("");
       setContractDetails({
         EventHours: "",
         EventAddress: "",
@@ -161,6 +225,8 @@ const ContractConfiguration: React.FC = () => {
   const handleCloseDialog = () => {
     setShowWarning(false);
     setOpenDialog(false);
+    setStartEventTime("");
+    setEndEventTime("");
   };
 
   useEffect(() => {
@@ -372,29 +438,6 @@ const ContractConfiguration: React.FC = () => {
                         <form onSubmit={handleFormSubmit}>
                           <TextField
                             variant="filled"
-                            label="Horas de contratación"
-                            name="EventHours"
-                            value={contractDetails.EventHours}
-                            onChange={handleInputChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
-
-                          <Grid item marginTop={2} xs={12}>
-                            <DatePicker
-                              label="Fecha del evento"
-                              value={selectedDate}
-                              onChange={(date) => setSelectedDate(dayjs(date))}
-                              minDate={dayjs()}
-                              maxDate={dayjs().add(1, "year")}
-                              views={["year", "month", "day"]}
-                              sx={{ width: "100%" }}
-                            />
-                          </Grid>
-
-                          <TextField
-                            variant="filled"
                             label="Domicilio"
                             name="EventAddress"
                             value={contractDetails.EventAddress}
@@ -423,6 +466,42 @@ const ContractConfiguration: React.FC = () => {
                             margin="normal"
                             required
                           />
+                          <Grid item marginTop={2} xs={12}>
+                            <DatePicker
+                              label="Fecha del evento"
+                              value={selectedDate}
+                              onChange={(date) => setSelectedDate(dayjs(date))}
+                              minDate={dayjs()}
+                              maxDate={dayjs().add(1, "year")}
+                              views={["year", "month", "day"]}
+                              sx={{ width: "100%" }}
+                            />
+                          </Grid>
+                          <TextField
+                            variant="filled"
+                            label="Hora de inicio"
+                            type="time"
+                            name="startTime"
+                            value={startEventTime}
+                            onChange={handleStartTimeChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                          />
+                          <TextField
+                            variant="filled"
+                            label="Hora de finalización"
+                            type="time"
+                            name="endTime"
+                            value={endEventTime}
+                            onChange={handleEndTimeChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                          />
+
+                          <Typography variant="subtitle1">{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
+
                           <Typography
                             sx={{
                               mt: 2,

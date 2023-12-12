@@ -11,7 +11,7 @@ import { Event } from "../../model/SupplierData";
 const TypesEvents = () => {
   const [selectedCards, setSelectedCards] = useState<Event[]>([]);
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const userEmail = user?.userEmail;
   const DjsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
 

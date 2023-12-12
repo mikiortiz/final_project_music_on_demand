@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGenres } from "../../redux/reducers/RegisteredFormSlice";
-import { setShowWelcomeMessage } from "../../redux/reducers/UserLoginSlice";
 import { RootState } from "../../model/RootStateTypes";
 import { getAvailableGenres } from "../../services/ApiSpotify";
 import {
@@ -23,7 +22,7 @@ const SupplierWelcome = () => {
   const [genres, setGenres] = useState<string[]>([]);
   const { enqueueSnackbar } = useSnackbar();
 
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const userEmail = user?.userEmail;
 
   const selectedGenres = useSelector(
@@ -32,8 +31,8 @@ const SupplierWelcome = () => {
         ?.selectedGenres || []
   );
 
-  const hasShownWelcomeMessage = useSelector(
-    (state: RootState) => state.userLogin.hasShownWelcomeMessage
+  const hasShownWelcomeMessage = JSON.parse(
+    localStorage.getItem("hasShownWelcomeMessage") || "false"
   );
 
   useEffect(() => {
@@ -84,7 +83,7 @@ const SupplierWelcome = () => {
   };
 
   const handleCloseWelcomeSnackbar = () => {
-    dispatch(setShowWelcomeMessage(false));
+    localStorage.setItem("hasShownWelcomeMessage", JSON.stringify(false));
   };
 
   return (

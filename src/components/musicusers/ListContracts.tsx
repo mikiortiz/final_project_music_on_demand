@@ -31,9 +31,8 @@ import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 const ListContract: React.FC = () => {
   const navigate = useNavigate();
   const contracts = useSelector((state: RootState) => state.contract.contracts);
-  const musicUserEmail = useSelector(
-    (state: RootState) => state.userLogin.user?.userEmail
-  );
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const musicUserEmail = user?.userEmail;
 
   const selectedsong = useSelector(
     (state: RootState) => state.contract.contracts

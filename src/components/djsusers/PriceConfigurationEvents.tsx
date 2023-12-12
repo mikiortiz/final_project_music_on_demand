@@ -31,7 +31,7 @@ const PriceConfigurationEvents = () => {
   };
 
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const selectedEvents = useSelector((state: RootState) => {
     const userEmail = user?.userEmail;
     return userEmail

@@ -24,9 +24,8 @@ const DjAreas = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const dispatch = useDispatch();
 
-  const userEmail = useSelector(
-    (state: RootState) => state.userLogin.user?.userEmail
-  );
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const userEmail = user?.userEmail;
 
   const areas = useSelector((state: RootState) => {
     const user = state.registered.DjsUsers.find(

@@ -1,6 +1,4 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../model/RootStateTypes";
 import {
   AppBar,
   Toolbar,
@@ -13,13 +11,11 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { logoutUser } from "../../redux/reducers/UserLoginSlice";
 import { useNavigate } from "react-router-dom";
 
 const UserNavbar: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "null");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,9 +27,9 @@ const UserNavbar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logoutUser());
     navigate("/");
-    handleMenuClose(); // Cerrar el menú al hacer logout
+    handleMenuClose();
+    localStorage.removeItem("currentUser");
   };
 
   return (

@@ -1,10 +1,9 @@
 import React, { useState, useRef } from "react";
 import GoogleMapReact from "google-map-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
 import { addArea } from "../../redux/reducers/RegisteredFormSlice";
-import { RootState } from "../../model/RootStateTypes";
 
 const MapComponentHome: React.FC = () => {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ const MapComponentHome: React.FC = () => {
   });
 
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.userLogin.user);
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);

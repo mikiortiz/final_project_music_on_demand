@@ -182,9 +182,11 @@ const ListContract: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid sx={{ mt: 1 }}>
-                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
-                        <Typography>{`Duración del evento: ${contractDetails.EventHours} horas`}</Typography>
+                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
+                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime}`}</Typography>
+                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime}`}</Typography>
+                        <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
                       </Grid>

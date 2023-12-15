@@ -30,12 +30,6 @@ import dayjs, { Dayjs } from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
-interface ContractDetails {
-  EventDate: any;
-  startEventTime: any;
-  endEventTime: any;
-}
-
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,12 +55,6 @@ const ContractConfiguration: React.FC = () => {
 
   const [startEventTime, setStartEventTime] = useState<string>("");
   const [endEventTime, setEndEventTime] = useState<string>("");
-
-  const [filteredContractsDetails, setFilteredContractsDetails] = useState<
-    ContractDetails[]
-  >([]);
-
-  const contracts = useSelector((state: RootState) => state.contract.contracts);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -107,64 +95,21 @@ const ContractConfiguration: React.FC = () => {
     }
   };
 
-  const checkOverlap = (newStartTime: Dayjs, newEndTime: Dayjs): boolean => {
-    // Verificar superposición con contratos existentes
-    return filteredContractsDetails.some((contract) => {
-      const existingStartTime = dayjs(
-        `${contract.EventDate} ${contract.startEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-      const existingEndTime = dayjs(
-        `${contract.EventDate} ${contract.endEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-
-      return (
-        (newStartTime.isBefore(existingStartTime) &&
-          newEndTime.isAfter(existingStartTime)) ||
-        (newStartTime.isAfter(existingStartTime) &&
-          newEndTime.isBefore(existingEndTime)) ||
-        (newStartTime.isBefore(existingEndTime) &&
-          newEndTime.isAfter(existingEndTime))
-      );
-    });
-  };
-
-  // ...
-
   const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const endTime = event.target.value;
+    console.log("Hora de finalización:", endTime);
 
     // Verificar que tanto la hora de inicio como la de finalización sean válidas
     const validStartTime = dayjs(startEventTime, "HH:mm", true).isValid();
     const validEndTime = dayjs(endTime, "HH:mm", true).isValid();
 
+    console.log("Hora de inicio válida:", validStartTime);
+    console.log("Hora de finalización válida:", validEndTime);
+
     setEndEventTime(endTime);
 
     if (startEventTime && validStartTime && validEndTime) {
       calculateEventHours(startEventTime, endTime);
-
-      // Verificar superposición con contratos existentes al ingresar la hora de finalización
-      const newStartTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${startEventTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-      const newEndTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${endTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-
-      const hasOverlap = checkOverlap(newStartTime, newEndTime);
-
-      if (hasOverlap) {
-        setShowWarning(true);
-        setContractDetails({
-          ...contractDetails,
-          EventHours:
-            "Estos horarios ya están reservados en esta fecha. Por favor, selecciona otros horarios.",
-        });
-        return;
-      }
     }
   };
 
@@ -201,7 +146,6 @@ const ContractConfiguration: React.FC = () => {
 
       dispatch(
         addContract({
-          DjEmail: selectedDj.userEmail,
           MusicUserEmail: musicUser.userEmail,
           contract: contractData,
         })
@@ -284,30 +228,6 @@ const ContractConfiguration: React.FC = () => {
     setStartEventTime("");
     setEndEventTime("");
   };
-
-  useEffect(() => {
-    console.log("Contratos:", contracts);
-
-    // Filtra los contratos del DJ seleccionado
-    const contratosDelDjSeleccionado = contracts.filter((contract) => {
-      return contract?.DjEmail === selectedDj?.userEmail;
-    });
-
-    // Almacena los detalles necesarios de los contratos filtrados
-    const contractsDetails: ContractDetails[] = contratosDelDjSeleccionado.map(
-      (contract) => ({
-        EventDate: contract.contract?.EventDate,
-        startEventTime: contract.contract?.startEventTime,
-        endEventTime: contract.contract?.endEventTime,
-      })
-    );
-
-    setFilteredContractsDetails(contractsDetails);
-
-    console.log("Contratos del DJ seleccionado:", contratosDelDjSeleccionado);
-  }, [contracts, selectedDj]);
-
-  console.log("Detalles de los contratos filtrados:", filteredContractsDetails);
 
   useEffect(() => {
     if (selectedDj && selectedDj.selectedGenres) {
@@ -580,11 +500,7 @@ const ContractConfiguration: React.FC = () => {
                             required
                           />
 
-                          <Typography variant="subtitle1">
-                            {showWarning
-                              ? contractDetails.EventHours
-                              : `Duración del evento: ${contractDetails.EventHours}`}
-                          </Typography>
+                          <Typography variant="subtitle1">{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
 
                           <Typography
                             sx={{
@@ -646,7 +562,6 @@ const ContractConfiguration: React.FC = () => {
                               variant="outlined"
                               color="primary"
                               disabled={
-                                showWarning ||
                                 !contractDetails.EventHours ||
                                 !contractDetails.EventAddress ||
                                 !contractDetails.ClientFirstName ||

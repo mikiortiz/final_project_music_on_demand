@@ -29,23 +29,23 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
       ShowWindowDialog("Login incompleto");
       return;
     }
-  
-    const user = users.find((u) => u.userEmail === email && u.userPassword === password);
-    const supplier = suppliers.find((s) => s.userEmail === email && s.userPassword === password);
-  
+
+    const user = users.find(
+      (u) => u.userEmail === email && u.userPassword === password
+    );
+    const supplier = suppliers.find(
+      (s) => s.userEmail === email && s.userPassword === password
+    );
+
     if (user) {
-      // Se guardar el usuario en localStorage
       const userToStore = { ...user, userType: "user" };
       localStorage.setItem("currentUser", JSON.stringify(userToStore));
-      console.log("Usuario almacenado en localStorage:", userToStore);
-  
+
       navigate("/usermaphome");
     } else if (supplier) {
-      // Se guardar el usuario en localStorage
       const supplierToStore = { ...supplier, userType: "supplier" };
       localStorage.setItem("currentUser", JSON.stringify(supplierToStore));
-      console.log("Usuario almacenado en localStorage:", supplierToStore);
-  
+
       navigate("/supplierwelcome");
     } else {
       ShowWindowDialog("Los datos ingresados son incorrectos");
@@ -91,7 +91,6 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
           backgroundColor: "rgba(240, 240, 240, 1)",
         }}
       >
-        
         <Typography variant="h4" color="primary" gutterBottom>
           Iniciar Sesión
         </Typography>

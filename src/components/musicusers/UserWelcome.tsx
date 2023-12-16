@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../model/RootStateTypes";
 import { SupplierData } from "../../model/SupplierData";
@@ -12,8 +12,13 @@ import {
   List,
   ListItem,
   Typography,
+  Badge,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
+import MenuIcon from "@mui/icons-material/Menu";
 import { UserData } from "../../model/UserData";
 import { eventTypes } from "../../model/EventTypes";
 import { useNavigate } from "react-router-dom";
@@ -31,8 +36,17 @@ const UserWelcome = () => {
   );
 
   const [selectedDjAreas, setSelectedDjAreas] = useState<Area[]>([]);
+  const [selectedDjContractsCount, setSelectedDjContractsCount] = useState<
+    Record<string, number>
+  >({});
+  const [eventContractsCount, setEventContractsCount] = useState<
+    Record<string, number>
+  >({});
 
   const DjsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
+  const userContracts = useSelector(
+    (state: RootState) => state.contract.contracts
+  );
 
   const isMarkerInArea = (marker: { lat: any; lng: any }, area: Area) => {
     const radius = area.radius || 0;
@@ -47,10 +61,8 @@ const UserWelcome = () => {
 
   useEffect(() => {
     if (selectedMusicUser && selectedMusicUser.area) {
-      // Obtén las coordenadas del marcador del MusicUser
       const musicUserMarker: Area[] = selectedMusicUser.area;
 
-      // Encuentrar áreas de DJ que coinciden con las coordenadas del MusicUser
       const matchingDjAreas = DjsUsers.reduce(
         (acc: Area[], djUser: SupplierData) => {
           const areas =
@@ -63,11 +75,43 @@ const UserWelcome = () => {
       );
 
       setSelectedDjAreas(matchingDjAreas);
+
+      const djContractsCount: Record<string, number> = {};
+      userContracts.forEach((userContract) => {
+        const djEmail = userContract.contract.djInfo?.DjEmail;
+        if (djEmail) {
+          djContractsCount[djEmail] = (djContractsCount[djEmail] || 0) + 1;
+        }
+      });
+      setSelectedDjContractsCount(djContractsCount);
+
+      const eventContractsCount: Record<string, number> = {};
+      userContracts.forEach((userContract) => {
+        const eventName = userContract.contract.eventName;
+        eventContractsCount[eventName] =
+          (eventContractsCount[eventName] || 0) + 1;
+      });
+      setEventContractsCount(eventContractsCount);
     }
-  }, [selectedMusicUser, DjsUsers]);
+  }, [selectedMusicUser, DjsUsers, userContracts]);
 
   const handleContractClick = (dj: SupplierData) => {
     navigate("/contractconfiguration", { state: { selectedDj: dj } });
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedEvent, setSelectedEvent] = React.useState<SupplierData | null>(
+    null
+  );
+
+  const handleMenuClick = (event: any, eventItem: SupplierData) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedEvent(eventItem);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedEvent(null);
   };
 
   return (
@@ -131,7 +175,9 @@ const UserWelcome = () => {
                   sx={{ padding: "10px" }}
                 >
                   <Grid item xs={4}>
-                    <Typography
+                    <Grid
+                      container
+                      alignItems="center"
                       sx={{
                         mt: "-5px",
                         borderRadius: "7px",
@@ -143,8 +189,72 @@ const UserWelcome = () => {
                         padding: "10px",
                       }}
                     >
-                      {dj.userFirstName} {dj.userLastName}
-                    </Typography>
+                      <Grid item>
+                        <Typography variant="h6">
+                          {dj.userFirstName} {dj.userLastName}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item sx={{ marginLeft: "auto" }}>
+                        <Typography
+                          sx={{
+                            marginBottom: -4,
+                            marginTop: 1,
+                            marginLeft: -11,
+                            fontSize: "15px",
+                          }}
+                        >
+                          Recomendado
+                        </Typography>
+                        {selectedDjContractsCount[dj.userEmail] > 0 && (
+                          <Badge
+                            badgeContent={
+                              selectedDjContractsCount[dj.userEmail] || 0
+                            }
+                            color="primary"
+                            sx={{
+                              fontFamily: "cursive",
+                              color: "white",
+                              marginLeft: 5,
+                            }}
+                          >
+                            <IconButton
+                              color="inherit"
+                              onClick={(event) => handleMenuClick(event, dj)}
+                            >
+                              <MenuIcon />
+                            </IconButton>
+                          </Badge>
+                        )}
+                      </Grid>
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                       
+                      >
+                        {selectedEvent &&
+                          selectedEvent.selectedEvents?.map(
+                            (event: any, index: any) => (
+                              <MenuItem
+                                key={`${event.eventName}-${index}`}
+                                onClick={() => handleContractClick(dj)}
+                                
+                              >
+                                {event.eventName}
+                                <Badge
+                                  badgeContent={
+                                    eventContractsCount[event.eventName] || 0
+                                  }
+                                  color="primary"
+                                  sx={{ marginLeft: 2 }}
+                                ></Badge>
+                              </MenuItem>
+                            )
+                          )}
+                      </Menu>
+                    </Grid>
+
                     <CardMedia
                       component="img"
                       height="140"
@@ -342,7 +452,7 @@ const UserWelcome = () => {
                         <SettingsIcon
                           style={{ fontSize: 48, marginRight: 15 }}
                         />
-                      } 
+                      }
                     >
                       CONTRATAR Y CONFIGURAR
                     </Button>

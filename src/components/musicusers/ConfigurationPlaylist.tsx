@@ -260,7 +260,7 @@ const ContractDetailsPage: React.FC = () => {
             fontWeight: "bold",
           }}
         >
-          Dj Seleccionado
+          Configurá Tu Playlist
         </Typography>
         <Toolbar>
           <Grid
@@ -280,14 +280,14 @@ const ContractDetailsPage: React.FC = () => {
                   marginRight: 2,
                 }}
               />
-              <Grid container sx={{ ml: 20, mt: -6 }}>
+              <Grid container sx={{ ml: 15, mt: -6 }}>
                 <Typography
                   variant="h6"
-                  sx={{ marginRight: 1, mt: -3, mr: -9 }}
+                  sx={{ marginRight: 1, mr: -9 }}
                 >
-                  DJ
+                  DJ Seleccionado
                 </Typography>
-                <Typography variant="h5">{`${DjFirstName} ${DjLastName}`}</Typography>
+                <Typography variant="h5" sx={{ml: -10}}>{`${DjFirstName} ${DjLastName}`}</Typography>
               </Grid>
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>

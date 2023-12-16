@@ -10,8 +10,12 @@ import SocialMeetingsImg from "/images/eventsImgs/SocialMeetingsImg.jpg";
 import CharityEvents from "/images/eventsImgs/CharityEvents.jpg";
 import PartiesandFestivals from "/images/eventsImgs/PartiesandFestivals.jpg";
 import ReligiousEvents from "/images/eventsImgs/ReligiousEvents.jpg";
+import { Dayjs } from "dayjs";
 
 export interface EventTypeContract {
+  endEventTime: any;
+  startEventTime: any;
+  EventDate: string | number | Dayjs | Date | null | undefined;
   eventName: string;
   price: number;
   hours: number;

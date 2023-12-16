@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, IconButton, Grid } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Button, TextField, Typography, Grid } from "@mui/material";
 import { FormControl } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser, setShowWelcomeMessage } from "../redux/reducers/UserLoginSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "../model/RootStateTypes";
 import { SupplierData } from "../model/SupplierData";
 import { UserData } from "../model/UserData";
@@ -16,7 +14,7 @@ interface Props {
 const LoginForm: React.FC<Props> = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const users = useSelector(
     (state: RootState) => state.registered.MusicUsers
@@ -24,8 +22,6 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
   const suppliers = useSelector(
     (state: RootState) => state.registered.DjsUsers
   ) as SupplierData[];
-
-  const navigate = useNavigate();
 
   // función de inicio de sesión
   const handleLogin = () => {
@@ -42,11 +38,14 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
     );
 
     if (user) {
-      dispatch(setUser({ ...user, userType: "user" }));
+      const userToStore = { ...user, userType: "user" };
+      localStorage.setItem("currentUser", JSON.stringify(userToStore));
+
       navigate("/usermaphome");
     } else if (supplier) {
-      dispatch(setUser({ ...supplier, userType: "supplier" }));
-      dispatch(setShowWelcomeMessage(true));
+      const supplierToStore = { ...supplier, userType: "supplier" };
+      localStorage.setItem("currentUser", JSON.stringify(supplierToStore));
+
       navigate("/supplierwelcome");
     } else {
       ShowWindowDialog("Los datos ingresados son incorrectos");
@@ -59,7 +58,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
 
   return (
     <Grid
-    item
+      item
       xs={12}
       style={{
         marginTop: "-225px",
@@ -92,19 +91,6 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
           backgroundColor: "rgba(240, 240, 240, 1)",
         }}
       >
-        <IconButton
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
         <Typography variant="h4" color="primary" gutterBottom>
           Iniciar Sesión
         </Typography>

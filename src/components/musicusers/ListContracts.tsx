@@ -31,9 +31,8 @@ import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 const ListContract: React.FC = () => {
   const navigate = useNavigate();
   const contracts = useSelector((state: RootState) => state.contract.contracts);
-  const musicUserEmail = useSelector(
-    (state: RootState) => state.userLogin.user?.userEmail
-  );
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const musicUserEmail = user?.userEmail;
 
   const selectedsong = useSelector(
     (state: RootState) => state.contract.contracts
@@ -101,7 +100,7 @@ const ListContract: React.FC = () => {
             )?.selectedSongs;
 
             return (
-              <Grid item key={index} xs={12} sm={6} md={6} lg={6}>
+              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
                 {contractDetails.eventName && (
                   <Card
                     sx={{ background: "rgba(0, 0, 0, 0.8)", color: "white" }}
@@ -183,9 +182,32 @@ const ListContract: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid sx={{ mt: 1 }}>
-                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
+                        {contractDetails.warning && (
+                          <Grid
+                            container
+                            justifyContent="center"
+                            alignItems="center"
+                            sx={{
+                              backgroundColor: "black",
+                              color: "red",
+                              borderRadius: "5px",
+                              border: 1,
+                              padding: "10px",
+                              textAlign: "center",
+                            }}
+                          >
+                            {contractDetails.warning && (
+                              <Typography sx={{fontSize: "13px"}}>
+                                {contractDetails.warning}
+                              </Typography>
+                            )}
+                          </Grid>
+                        )}
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
-                        <Typography>{`Duración del evento: ${contractDetails.EventHours} horas`}</Typography>
+                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
+                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime}`}</Typography>
+                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime}`}</Typography>
+                        <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
                       </Grid>

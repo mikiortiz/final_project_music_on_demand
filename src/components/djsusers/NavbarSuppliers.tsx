@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -14,19 +14,19 @@ import {
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import { logoutUser } from "../../redux/reducers/UserLoginSlice";
 import { RootState } from "../../model/RootStateTypes";
 
 const SupplierNavbar = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.userLogin.user);
   const djsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [totalSelectedEvents, setTotalSelectedEvents] = useState(0);
   const [totalSelectedGenres, setTotalSelectedGenres] = useState(0);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
     if (user) {
       const currentUser = djsUsers.find(
         (djUser) => djUser.userEmail === user.userEmail
@@ -40,7 +40,7 @@ const SupplierNavbar = () => {
         setTotalSelectedGenres(currentUserGenres.length);
       }
     }
-  }, [user, djsUsers]);
+  }, [djsUsers]);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -51,9 +51,13 @@ const SupplierNavbar = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logoutUser());
     navigate("/");
+    handleMenuClose();
+    localStorage.removeItem("currentUser");
   };
+
+  const storedUser = localStorage.getItem("currentUser");
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   return (
     <AppBar
@@ -68,16 +72,20 @@ const SupplierNavbar = () => {
       <Toolbar>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            {user && (
-              <Grid container alignItems="center">
-                <Avatar
-                  src={user.customAvatarUrl}
-                  alt="User Avatar"
-                  sx={{ width: 50, height: 50 }}
-                />
-                <Typography variant="subtitle1" sx={{ marginLeft: 1 }}>
-                  {user.userFirstName} {user.userLastName}
-                </Typography>
+            {localStorage.getItem("currentUser") && (
+              <Grid item>
+                {user && (
+                  <Grid container alignItems="center">
+                    <Avatar
+                      src={user.customAvatarUrl}
+                      alt="User Avatar"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Typography variant="subtitle1" sx={{ marginLeft: 1 }}>
+                      {user.userFirstName} {user.userLastName}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             )}
           </Grid>

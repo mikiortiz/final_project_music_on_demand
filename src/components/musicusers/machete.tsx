@@ -30,12 +30,6 @@ import dayjs, { Dayjs } from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
-interface ContractDetails {
-  EventDate: any;
-  startEventTime: any;
-  endEventTime: any;
-}
-
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,18 +56,13 @@ const ContractConfiguration: React.FC = () => {
   const [startEventTime, setStartEventTime] = useState<string>("");
   const [endEventTime, setEndEventTime] = useState<string>("");
 
-  const [filteredContractsDetails, setFilteredContractsDetails] = useState<
-    ContractDetails[]
-  >([]);
-
-  const contracts = useSelector((state: RootState) => state.contract.contracts);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setContractDetails({ ...contractDetails, [name]: value });
   };
 
   const calculateEventHours = (startTime: string, endTime: string) => {
+    // Calcular la diferencia entre la hora de inicio y la hora de finalización
     const start = dayjs(startTime, "HH:mm");
     let end = dayjs(endTime, "HH:mm");
 
@@ -101,92 +90,26 @@ const ContractConfiguration: React.FC = () => {
   ) => {
     const startTime = event.target.value;
     setStartEventTime(startTime);
-
-    setEndEventTime("");
-
     if (startTime && endEventTime) {
       calculateEventHours(startTime, endEventTime);
     }
   };
 
-  const checkOverlap = (
-    newStartTime: Dayjs,
-    newEndTime: Dayjs
-  ): { overlap: boolean; occupiedRanges: string } => {
-    // Verificar superposición con contratos existentes
-    const overlappingContracts = filteredContractsDetails.filter((contract) => {
-      const existingStartTime = dayjs(
-        `${contract.EventDate} ${contract.startEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-      const existingEndTime = dayjs(
-        `${contract.EventDate} ${contract.endEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-
-      return (
-        (newStartTime.isBefore(existingStartTime) &&
-          newEndTime.isAfter(existingStartTime)) ||
-        (newStartTime.isAfter(existingStartTime) &&
-          newEndTime.isBefore(existingEndTime)) ||
-        (newStartTime.isBefore(existingEndTime) &&
-          newEndTime.isAfter(existingEndTime)) ||
-        (newStartTime.isSame(existingStartTime) &&
-          newEndTime.isSame(existingEndTime))
-      );
-    });
-
-    if (overlappingContracts.length > 0) {
-      // Construccion de horarios ocupados
-      const occupiedRanges = overlappingContracts
-        .map(
-          (contract) => `${contract.startEventTime} - ${contract.endEventTime}`
-        )
-        .join(", ");
-
-      return { overlap: true, occupiedRanges };
-    }
-
-    return { overlap: false, occupiedRanges: "" };
-  };
-
   const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const endTime = event.target.value;
+    console.log("Hora de finalización:", endTime);
 
-    // Verificar que tanto la hora de inicio y finalización sean válidas
+    // Verificar que tanto la hora de inicio como la de finalización sean válidas
     const validStartTime = dayjs(startEventTime, "HH:mm", true).isValid();
     const validEndTime = dayjs(endTime, "HH:mm", true).isValid();
+
+    console.log("Hora de inicio válida:", validStartTime);
+    console.log("Hora de finalización válida:", validEndTime);
 
     setEndEventTime(endTime);
 
     if (startEventTime && validStartTime && validEndTime) {
       calculateEventHours(startEventTime, endTime);
-
-      // Al ingresar la hora de finalización verificamos superposición con contratos existentes
-      const newStartTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${startEventTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-      const newEndTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${endTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-
-      const { overlap, occupiedRanges } = checkOverlap(
-        newStartTime,
-        newEndTime
-      );
-
-      if (overlap) {
-        setShowWarning(true);
-        setWarningMessage(
-          `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
-        );
-        return;
-      } else {
-        setShowWarning(false);
-        setWarningMessage("");
-      }
     }
   };
 
@@ -223,7 +146,6 @@ const ContractConfiguration: React.FC = () => {
 
       dispatch(
         addContract({
-          DjEmail: selectedDj.userEmail,
           MusicUserEmail: musicUser.userEmail,
           contract: contractData,
         })
@@ -262,7 +184,6 @@ const ContractConfiguration: React.FC = () => {
           DjGenres: contractGenres,
         },
         totalCost: totalCost,
-        warning: warningMessage,
       };
 
       dispatch(
@@ -307,24 +228,6 @@ const ContractConfiguration: React.FC = () => {
     setStartEventTime("");
     setEndEventTime("");
   };
-
-  useEffect(() => {
-    console.log("Contratos:", contracts);
-
-    const contratosDelDjSeleccionado = contracts.filter((contract) => {
-      return contract?.DjEmail === selectedDj?.userEmail;
-    });
-
-    const contractsDetails: ContractDetails[] = contratosDelDjSeleccionado.map(
-      (contract) => ({
-        EventDate: contract.contract?.EventDate,
-        startEventTime: contract.contract?.startEventTime,
-        endEventTime: contract.contract?.endEventTime,
-      })
-    );
-
-    setFilteredContractsDetails(contractsDetails);
-  }, [contracts, selectedDj]);
 
   useEffect(() => {
     if (selectedDj && selectedDj.selectedGenres) {
@@ -424,9 +327,7 @@ const ContractConfiguration: React.FC = () => {
                   sm={6}
                   md={6}
                 >
-                  <Card
-                    sx={{ background: "rgba(0, 0, 0, 0.7)", color: "white" }}
-                  >
+                  <Card>
                     <CardContent>
                       {eventType && eventType.image && (
                         <Avatar
@@ -491,10 +392,6 @@ const ContractConfiguration: React.FC = () => {
                             key={genreIndex}
                             label={genre}
                             variant="outlined"
-                            sx={{
-                              background: "rgba(0, 0, 0, 0.8)",
-                              color: "white",
-                            }}
                           />
                         ))}
                       </div>
@@ -603,9 +500,7 @@ const ContractConfiguration: React.FC = () => {
                             required
                           />
 
-                          <Typography variant="subtitle1">
-                            Duración del evento: {contractDetails.EventHours}
-                          </Typography>
+                          <Typography variant="subtitle1">{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
 
                           <Typography
                             sx={{
@@ -658,7 +553,6 @@ const ContractConfiguration: React.FC = () => {
                               </Button>
                             </DialogActions>
                           )}
-
                           <DialogActions>
                             <Button onClick={handleCloseDialog} color="primary">
                               CERRAR
@@ -668,7 +562,6 @@ const ContractConfiguration: React.FC = () => {
                               variant="outlined"
                               color="primary"
                               disabled={
-                                showWarning ||
                                 !contractDetails.EventHours ||
                                 !contractDetails.EventAddress ||
                                 !contractDetails.ClientFirstName ||

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, TextField, Typography, Grid } from "@mui/material";
 import { FormControl } from "@mui/material";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import { useSelector } from "react-redux";
 import { RootState } from "../model/RootStateTypes";
 import { SupplierData } from "../model/SupplierData";
@@ -12,8 +14,6 @@ interface Props {
 }
 
 const LoginForm: React.FC<Props> = ({ onClose }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const users = useSelector(
@@ -23,8 +23,26 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
     (state: RootState) => state.registered.DjsUsers
   ) as SupplierData[];
 
-  // función de inicio de sesión
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: yup.object({
+      email: yup
+        .string()
+        .email("Ingresa un correo electrónico válido")
+        .required("Correo electrónico es obligatorio"),
+      password: yup.string().required("Contraseña es obligatoria"),
+    }),
+    onSubmit: () => {
+      handleLogin();
+    },
+  });
+
   const handleLogin = () => {
+    const { email, password } = formik.values;
+
     if (email.trim() === "" || password.trim() === "") {
       ShowWindowDialog("Login incompleto");
       return;
@@ -94,50 +112,66 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
         <Typography variant="h4" color="primary" gutterBottom>
           Iniciar Sesión
         </Typography>
-        <FormControl style={{ width: "100%" }}>
-          <Typography>Email</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
-            size="small"
-            margin="normal"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ backgroundColor: "white", marginBottom: "1rem" }}
-          />
-          <Typography>Contraseña</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
-            size="small"
-            margin="normal"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ backgroundColor: "white", marginBottom: "1rem" }}
-          />
+        <Grid sx={{ width: "90%" }}>
+          <form onSubmit={formik.handleSubmit}>
+            <FormControl style={{ width: "100%" }}>
+              <Typography>Email</Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+                type="email"
+                {...formik.getFieldProps("email")}
+                sx={{ backgroundColor: "white", marginBottom: "1rem" }}
+                error={
+                  formik.touched.email &&
+                  Boolean(formik.errors.email)
+                }
+                helperText={
+                  formik.touched.email && formik.errors.email
+                }
+              />
+              <Typography>Contraseña</Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="normal"
+                type="password"
+                {...formik.getFieldProps("password")}
+                sx={{ backgroundColor: "white", marginBottom: "1rem" }}
+                error={
+                  formik.touched.password &&
+                  Boolean(formik.errors.password)
+                }
+                helperText={
+                  formik.touched.password && formik.errors.password
+                }
+              />
 
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleLogin}
-            style={{ marginTop: 3, height: "60px" }}
-          >
-            Iniciar Sesión
-          </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{ marginTop: 3, height: "60px" }}
+              >
+                Iniciar Sesión
+              </Button>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            onClick={onClose}
-            style={{ marginTop: 25, height: "60px" }}
-          >
-            Registrarse aquí
-          </Button>
-        </FormControl>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={onClose}
+                style={{ marginTop: 25, height: "60px" }}
+              >
+                Registrarse aquí
+              </Button>
+            </FormControl>
+          </form>
+        </Grid>
       </Grid>
     </Grid>
   );

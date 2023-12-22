@@ -124,6 +124,13 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                 type="email"
                 {...formik.getFieldProps("email")}
                 sx={{ backgroundColor: "white", marginBottom: "1rem" }}
+                error={
+                  formik.touched.email &&
+                  Boolean(formik.errors.email)
+                }
+                helperText={
+                  formik.touched.email && formik.errors.email
+                }
               />
               <Typography>Contraseña</Typography>
               <TextField
@@ -134,6 +141,13 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                 type="password"
                 {...formik.getFieldProps("password")}
                 sx={{ backgroundColor: "white", marginBottom: "1rem" }}
+                error={
+                  formik.touched.password &&
+                  Boolean(formik.errors.password)
+                }
+                helperText={
+                  formik.touched.password && formik.errors.password
+                }
               />
 
               <Button

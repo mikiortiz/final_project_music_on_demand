@@ -50,7 +50,8 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
       .number()
       .positive("La edad debe ser un número positivo")
       .integer("La edad debe ser un número entero")
-      .required("Edad es obligatoria"),
+      .required("Edad es obligatoria")
+      .min(18, "Debes ser mayor de 18 años"),
     customUserAvatarUrl: yup
       .string()
       .url("Ingresa una URL válida")
@@ -106,7 +107,6 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
 
       dispatch(addUser(values));
 
-      // Restablecemos los datos locales y muestra de mensajes
       formik.resetForm();
       setDialogText("Registrado exitosamente");
       setDialogTitle("Éxito");
@@ -295,11 +295,14 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 fullWidth
                 variant="outlined"
                 size="small"
-                required
                 sx={{ bgcolor: "Window", borderRadius: "10px", mt: 2 }}
                 {...formik.getFieldProps("userEmail")}
                 autoComplete="off"
                 type="email"
+                error={
+                  formik.touched.userEmail && Boolean(formik.errors.userEmail)
+                }
+                helperText={formik.touched.userEmail && formik.errors.userEmail}
               />
               <Typography sx={{ color: "white", mt: 1 }}>
                 Ingrese una URL para su Avatar de Presentación
@@ -309,10 +312,17 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 fullWidth
                 variant="outlined"
                 size="small"
-                required
                 sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 {...formik.getFieldProps("customUserAvatarUrl")}
                 autoComplete="off"
+                error={
+                  formik.touched.customUserAvatarUrl &&
+                  Boolean(formik.errors.customUserAvatarUrl)
+                }
+                helperText={
+                  formik.touched.customUserAvatarUrl &&
+                  formik.errors.customUserAvatarUrl
+                }
               />
 
               <Typography sx={{ color: "white", mt: 1 }}>
@@ -323,11 +333,17 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
                 fullWidth
                 variant="outlined"
                 size="small"
-                required
                 sx={{ bgcolor: "Window", borderRadius: "10px" }}
                 {...formik.getFieldProps("userPassword")}
                 type="password"
                 autoComplete="off"
+                error={
+                  formik.touched.userPassword &&
+                  Boolean(formik.errors.userPassword)
+                }
+                helperText={
+                  formik.touched.userPassword && formik.errors.userPassword
+                }
               />
 
               <Button

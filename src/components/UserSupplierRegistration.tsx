@@ -61,7 +61,8 @@ const UserSupplierRegistration = () => {
         .number()
         .positive("La edad debe ser un número positivo")
         .integer("La edad debe ser un número entero")
-        .required("Edad es obligatoria"),
+        .required("Edad es obligatoria")
+        .min(18, "Debes ser mayor de 18 años"),
       userPassword: yup
         .string()
         .min(4, "La contraseña debe tener al menos 4 caracteres")
@@ -98,18 +99,14 @@ const UserSupplierRegistration = () => {
         return;
       }
 
-      // Despacha la acción y muestra la carga útil
+      
       const newSupplier = { ...values };
-      console.log(
-        "Despachando la acción addSupplier con la carga útil:",
-        newSupplier
-      );
+      
       dispatch(addSupplier(newSupplier));
 
-      // Resetear el formulario
       formik.resetForm();
 
-      // Mostrar mensaje de éxito
+      
       setCardText("Registrado éxitosamente");
       setDialogTitle("Éxito");
       setDialogBackgroundColor("green");
@@ -311,6 +308,14 @@ const UserSupplierRegistration = () => {
                     sx={{ bgcolor: "white", borderRadius: "10px" }}
                     {...formik.getFieldProps("userFirstName")}
                     autoComplete="off"
+                    error={
+                      formik.touched.userFirstName &&
+                      Boolean(formik.errors.userFirstName)
+                    }
+                    helperText={
+                      formik.touched.userFirstName &&
+                      formik.errors.userFirstName
+                    }
                   />
 
                   <Typography sx={{ color: "white", mt: 1 }}>
@@ -324,6 +329,13 @@ const UserSupplierRegistration = () => {
                     sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     {...formik.getFieldProps("userLastName")}
                     autoComplete="off"
+                    error={
+                      formik.touched.userLastName &&
+                      Boolean(formik.errors.userLastName)
+                    }
+                    helperText={
+                      formik.touched.userLastName && formik.errors.userLastName
+                    }
                   />
 
                   <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
@@ -335,6 +347,10 @@ const UserSupplierRegistration = () => {
                     sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     {...formik.getFieldProps("userAge")}
                     autoComplete="off"
+                    error={
+                      formik.touched.userAge && Boolean(formik.errors.userAge)
+                    }
+                    helperText={formik.touched.userAge && formik.errors.userAge}
                   />
 
                   <Typography sx={{ color: "white", mt: 1 }}>
@@ -348,6 +364,14 @@ const UserSupplierRegistration = () => {
                     sx={{ bgcolor: "Window", borderRadius: "10px" }}
                     {...formik.getFieldProps("userContactNumber")}
                     autoComplete="off"
+                    error={
+                      formik.touched.userContactNumber &&
+                      Boolean(formik.errors.userContactNumber)
+                    }
+                    helperText={
+                      formik.touched.userContactNumber &&
+                      formik.errors.userContactNumber
+                    }
                   />
 
                   <Grid
@@ -406,11 +430,16 @@ const UserSupplierRegistration = () => {
                     fullWidth
                     variant="outlined"
                     size="small"
-                    required
                     sx={{ bgcolor: "Window", borderRadius: "10px", mt: 2 }}
                     {...formik.getFieldProps("userEmail")}
                     autoComplete="off"
-                    type="email"
+                    error={
+                      formik.touched.userEmail &&
+                      Boolean(formik.errors.userEmail)
+                    }
+                    helperText={
+                      formik.touched.userEmail && formik.errors.userEmail
+                    }
                   />
 
                   <Typography sx={{ color: "white", mt: -1 }}>
@@ -421,10 +450,17 @@ const UserSupplierRegistration = () => {
                     fullWidth
                     variant="outlined"
                     size="small"
-                    required
                     sx={{ bgcolor: "Window", borderRadius: "10px", mt: -2 }}
                     {...formik.getFieldProps("customAvatarUrl")}
                     autoComplete="off"
+                    error={
+                      formik.touched.customAvatarUrl &&
+                      Boolean(formik.errors.customAvatarUrl)
+                    }
+                    helperText={
+                      formik.touched.customAvatarUrl &&
+                      formik.errors.customAvatarUrl
+                    }
                   />
 
                   <Typography sx={{ color: "white", mt: -1 }}>
@@ -435,11 +471,17 @@ const UserSupplierRegistration = () => {
                     fullWidth
                     variant="outlined"
                     size="small"
-                    required
                     sx={{ bgcolor: "Window", borderRadius: "10px", mt: -2 }}
                     {...formik.getFieldProps("userPassword")}
                     type="password"
                     autoComplete="off"
+                    error={
+                      formik.touched.userPassword &&
+                      Boolean(formik.errors.userPassword)
+                    }
+                    helperText={
+                      formik.touched.userPassword && formik.errors.userPassword
+                    }
                   />
 
                   <Button

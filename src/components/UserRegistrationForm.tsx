@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../model/RootStateTypes";
 import { addUser } from "../redux/reducers/RegisteredFormSlice";
@@ -17,84 +19,83 @@ import {
   Grid,
 } from "@mui/material";
 
-import { fetchRandomUserData } from "../services/ApiUsers";
-import { UserData } from "../model/UserData";
-
 const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
-  // Obtenemos la función de despacho de Redux
   const dispatch = useDispatch();
-  // Estados locales para gestionar datos del formulario y la interfaz de usuario
-  const [userEmail, setUserEmail] = useState("");
-  const [userFirstName, setUserFirstName] = useState("");
-  const [userLastName, setUserLastName] = useState("");
-  const [userAge, setUserAge] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const [customUserAvatarUrl, setCustomUserAvatarUrl] = useState("");
-  const [userContactNumber, setUserContactNumber] = useState("");
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogText, setDialogText] = useState("");
-  const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
-  const [dialogTextColor, setDialogTextColor] = useState("black");
-
-  const [openCardDialog, setOpenCardDialog] = useState(false);
-  // Efecto de carga de datos aleatorios
-  useEffect(() => {
-    const loadRandomUserData = async () => {
-      const userData = await fetchRandomUserData();
-      if (userData) {
-        console.log(userData), setUserEmail(userData.email);
-        setUserFirstName(userData.name.first);
-        setUserLastName(userData.name.last);
-        setUserAge(userData.dob.age);
-        setUserContactNumber(userData.cell);
-        setCustomUserAvatarUrl(userData.picture.large);
-      }
-    };
-
-    loadRandomUserData();
-  }, []);
-  // Selectores de datos del estado global de Redux
   const registeredSuppliers = useSelector(
     (state: RootState) => state.registered.DjsUsers
   );
   const registeredUsers = useSelector(
     (state: RootState) => state.registered.MusicUsers
   );
-  // Verificaciones
-  const isUserAdult = () => {
-    return parseInt(userAge) >= 18;
-  };
 
-  const isValidAvatarURL = (url: string) => {
-    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-    return urlPattern.test(url);
-  };
-  //Función que maneja el envío del formulario
-  const handleSubmitFormUsers = () => {
-    const isEmailUsed =
-      (registeredSuppliers &&
-        registeredSuppliers.some(
-          (supplier: { userEmail: string }) => supplier.userEmail === userEmail
-        )) ||
-      (registeredUsers &&
-        registeredUsers.some(
-          (user: { userEmail: string }) => user.userEmail === userEmail
-        ));
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogText, setDialogText] = useState("");
+  const [dialogBackgroundColor, setDialogBackgroundColor] = useState("white");
+  const [dialogTextColor, setDialogTextColor] = useState("black");
+  const [openCardDialog, setOpenCardDialog] = useState(false);
 
-    if (isEmailUsed) {
-      setDialogTitle("Error de Registro");
-      setDialogText(
-        "Este correo electrónico ya está registrado, por favor, elija otro correo electrónico."
-      );
-      setDialogBackgroundColor("white");
-      setDialogTextColor("black");
-      setShowDialog(true);
-      return;
-    }
-    if (userEmail && userAge && userPassword && customUserAvatarUrl) {
-      // Validaciones adicionales del formulario
-      if (!isUserAdult()) {
+  const validationSchema = yup.object({
+    userEmail: yup
+      .string()
+      .email("Ingresa un correo electrónico válido")
+      .required("Correo electrónico es obligatorio"),
+    userPassword: yup
+      .string()
+      .min(4, "La contraseña debe tener al menos 4 caracteres")
+      .required("Contraseña es obligatoria"),
+    userFirstName: yup.string().required("Nombre es obligatorio"),
+    userLastName: yup.string().required("Apellido es obligatorio"),
+    userAge: yup
+      .number()
+      .positive("La edad debe ser un número positivo")
+      .integer("La edad debe ser un número entero")
+      .required("Edad es obligatoria"),
+    customUserAvatarUrl: yup
+      .string()
+      .url("Ingresa una URL válida")
+      .required("URL de avatar es obligatoria"),
+    userContactNumber: yup
+      .string()
+      .min(6, "El número de contacto debe tener al menos 6 caracteres")
+      .required("Número de contacto es obligatorio"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      userEmail: "",
+      userPassword: "",
+      userFirstName: "",
+      userLastName: "",
+      userAge: "",
+      customUserAvatarUrl: "",
+      userContactNumber: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      const isEmailUsed =
+        (registeredSuppliers &&
+          registeredSuppliers.some(
+            (supplier: { userEmail: string }) =>
+              supplier.userEmail === values.userEmail
+          )) ||
+        (registeredUsers &&
+          registeredUsers.some(
+            (user: { userEmail: string }) => user.userEmail === values.userEmail
+          ));
+
+      if (isEmailUsed) {
+        setDialogTitle("Error de Registro");
+        setDialogText(
+          "Este correo electrónico ya está registrado, por favor, elija otro correo electrónico."
+        );
+        setDialogBackgroundColor("white");
+        setDialogTextColor("black");
+        setShowDialog(true);
+        return;
+      }
+
+      if (!isUserAdult(values.userAge)) {
         setDialogTitle("Error de Registro");
         setDialogText("Debes ser Mayor de 18 Años para Registrarte.");
         setDialogBackgroundColor("white");
@@ -103,92 +104,20 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
         return;
       }
 
-      if (userFirstName === "") {
-        setDialogTitle("Error de Registro");
-        setDialogText("Nombre es un campo obligatorio.");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
+      dispatch(addUser(values));
 
-      if (userLastName === "") {
-        setDialogTitle("Error de Registro");
-        setDialogText("Apellido es un campo obligatorio.");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
-
-      if (userContactNumber === "" || userContactNumber.length < 6) {
-        setDialogTitle("Error de Registro");
-        setDialogText("Número de Contacto es inválido.");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
-
-      if (userPassword.length < 4) {
-        setDialogTitle("Error de Registro");
-        setDialogText("La Contraseña debe tener al menos 4 caracteres.");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
-
-      if (!userEmail.includes("@")) {
-        setDialogTitle("Error de Registro");
-        setDialogText("Emai Existente, Verifique su correo electronico");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
-
-      if (!isValidAvatarURL(customUserAvatarUrl)) {
-        setDialogTitle("Error de Registro");
-        setDialogText("La URL de la imagen de avatar no es válida.");
-        setDialogBackgroundColor("white");
-        setDialogTextColor("black");
-        setShowDialog(true);
-        return;
-      }
-      // Creación del objeto con los datos del usuario de tipo UserData
-      const musicUserData: UserData = {
-        userEmail,
-        userFirstName,
-        userLastName,
-        userAge,
-        userPassword,
-        customUserAvatarUrl,
-        userContactNumber,
-        selectedGenres: [],
-      };
-      // Despachamos acción para agregar un usuario
-      dispatch(addUser(musicUserData));
-      // Reestablecemoslos datos locales y muestra de mensajes
-      setUserEmail("");
-      setUserFirstName("");
-      setUserLastName("");
-      setUserAge("");
-      setUserPassword("");
-      setCustomUserAvatarUrl("");
-      setUserContactNumber("");
+      // Restablecemos los datos locales y muestra de mensajes
+      formik.resetForm();
       setDialogText("Registrado exitosamente");
       setDialogTitle("Éxito");
       setDialogBackgroundColor("green");
       setDialogTextColor("white");
       setShowDialog(true);
-    } else {
-      setDialogTitle("Error");
-      setDialogText("Por favor, completa todos los campos obligatorios.");
-      setDialogBackgroundColor("white");
-      setDialogTextColor("black");
-      setShowDialog(true);
-    }
+    },
+  });
+
+  const isUserAdult = (age: string) => {
+    return parseInt(age) >= 18;
   };
 
   const handleCloseDialog = () => {
@@ -245,235 +174,255 @@ const UserRegistrationForm = ({ onClose }: { onClose: () => void }) => {
         }}
       >
         <Grid item xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
-          <FormControl fullWidth>
-            <Typography sx={{ color: "white" }}>Nombre</Typography>
-            <TextField
-              placeholder="Nombre"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={userFirstName}
-              onChange={(e) => setUserFirstName(e.target.value)}
-              autoComplete="off"
-            />
-            <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
-            <TextField
-              placeholder="Apellido"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={userLastName}
-              onChange={(e) => setUserLastName(e.target.value)}
-              autoComplete="off"
-            />
-            <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
-            <TextField
-              placeholder="Edad"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={userAge}
-              onChange={(e) => setUserAge(e.target.value)}
-              autoComplete="off"
-            />
-            <Typography sx={{ color: "white", mt: 1 }}>
-              Número de Contacto
-            </Typography>
-            <TextField
-              placeholder="Número de Contacto"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={userContactNumber}
-              onChange={(e) => setUserContactNumber(e.target.value)}
-              autoComplete="off"
-            />
-            <Grid
-              container
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                borderRadius: "5px",
-                marginTop: "5px",
-              }}
-            >
-              <Typography
-                variant="h5"
-                align="center"
-                color="white"
-                marginTop={9}
-                marginRight={"40px"}
-              >
-                Tu Avatar
+          <form onSubmit={formik.handleSubmit}>
+            <FormControl fullWidth>
+              <Typography sx={{ color: "white" }}>Nombre</Typography>
+              <TextField
+                placeholder="Nombre"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("userFirstName")}
+                autoComplete="off"
+                error={
+                  formik.touched.userFirstName &&
+                  Boolean(formik.errors.userFirstName)
+                }
+                helperText={
+                  formik.touched.userFirstName && formik.errors.userFirstName
+                }
+              />
+              <Typography sx={{ color: "white", mt: 1 }}>Apellido</Typography>
+              <TextField
+                placeholder="Apellido"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("userLastName")}
+                autoComplete="off"
+                error={
+                  formik.touched.userLastName &&
+                  Boolean(formik.errors.userLastName)
+                }
+                helperText={
+                  formik.touched.userLastName && formik.errors.userLastName
+                }
+              />
+              <Typography sx={{ color: "white", mt: 1 }}>Edad</Typography>
+              <TextField
+                placeholder="Edad"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("userAge")}
+                autoComplete="off"
+                error={formik.touched.userAge && Boolean(formik.errors.userAge)}
+                helperText={formik.touched.userAge && formik.errors.userAge}
+              />
+              <Typography sx={{ color: "white", mt: 1 }}>
+                Número de Contacto
               </Typography>
-              <Grid item xs={12} sm={4} md={4}>
-                <Avatar
-                  alt="Avatar"
-                  src={customUserAvatarUrl}
-                  sx={{
-                    width: 150,
-                    height: 150,
-                    marginTop: "5px",
-                  }}
-                />
+              <TextField
+                placeholder="Número de Contacto"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("userContactNumber")}
+                autoComplete="off"
+                error={
+                  formik.touched.userContactNumber &&
+                  Boolean(formik.errors.userContactNumber)
+                }
+                helperText={
+                  formik.touched.userContactNumber &&
+                  formik.errors.userContactNumber
+                }
+              />
+              <Grid
+                container
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  borderRadius: "5px",
+                  marginTop: "5px",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  align="center"
+                  color="white"
+                  marginTop={9}
+                  marginRight={"40px"}
+                >
+                  Tu Avatar
+                </Typography>
+                <Grid item xs={12} sm={4} md={4}>
+                  <Avatar
+                    alt="Avatar"
+                    src={formik.values.customUserAvatarUrl}
+                    sx={{
+                      width: 150,
+                      height: 150,
+                      marginTop: "5px",
+                    }}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </FormControl>
+            </FormControl>
+          </form>
         </Grid>
 
         <Grid item xs={6} sm={6} md={6} sx={{ marginLeft: 1 }}>
-          <FormControl fullWidth>
-            <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
-            <TextField
-              placeholder="Email"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px", mt: 2 }}
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
-              autoComplete="off"
-              type="email"
-            />
-            <Typography sx={{ color: "white", mt: 1 }}>
-              Ingrese una URL para su Avatar de Presentación
-            </Typography>
-            <TextField
-              placeholder="URL de la Imagen de Avatar"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={customUserAvatarUrl}
-              onChange={(e) => setCustomUserAvatarUrl(e.target.value)}
-              autoComplete="off"
-            />
+          <form onSubmit={formik.handleSubmit}>
+            <FormControl fullWidth>
+              <Typography sx={{ color: "white", mb: -2 }}>Email</Typography>
+              <TextField
+                placeholder="Email"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px", mt: 2 }}
+                {...formik.getFieldProps("userEmail")}
+                autoComplete="off"
+                type="email"
+              />
+              <Typography sx={{ color: "white", mt: 1 }}>
+                Ingrese una URL para su Avatar de Presentación
+              </Typography>
+              <TextField
+                placeholder="URL de la Imagen de Avatar"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("customUserAvatarUrl")}
+                autoComplete="off"
+              />
 
-            <Typography sx={{ color: "white", mt: 1 }}>
-              Ingrese una Contraseña
-            </Typography>
-            <TextField
-              placeholder="Contraseña"
-              fullWidth
-              variant="outlined"
-              size="small"
-              required
-              sx={{ bgcolor: "Window", borderRadius: "10px" }}
-              value={userPassword}
-              onChange={(e) => setUserPassword(e.target.value)}
-              type="password"
-              autoComplete="off"
-            />
+              <Typography sx={{ color: "white", mt: 1 }}>
+                Ingrese una Contraseña
+              </Typography>
+              <TextField
+                placeholder="Contraseña"
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                sx={{ bgcolor: "Window", borderRadius: "10px" }}
+                {...formik.getFieldProps("userPassword")}
+                type="password"
+                autoComplete="off"
+              />
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{
-                borderRadius: "10px",
-                mt: 4,
-                width: "auto",
-                height: "60px",
-              }}
-              onClick={handleSubmitFormUsers}
-            >
-              Regístrate
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{
-                borderRadius: "10px",
-                mt: 4,
-                width: "auto",
-                height: "60px",
-              }}
-              onClick={handleCloseForm}
-            >
-              Volver
-            </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: "10px",
+                  mt: 4,
+                  width: "auto",
+                  height: "60px",
+                }}
+              >
+                Regístrate
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: "10px",
+                  mt: 4,
+                  width: "auto",
+                  height: "60px",
+                }}
+                onClick={handleCloseForm}
+              >
+                Volver
+              </Button>
 
-            <Dialog
-              open={showDialog}
-              onClose={() => setShowDialog(false)}
-              PaperProps={{
-                sx: {
-                  backgroundColor: dialogBackgroundColor,
-                },
-              }}
-            >
-              <DialogTitle sx={{ color: dialogTextColor }}>
-                {dialogTitle}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText
-                  sx={{
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {dialogText}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleCloseDialog}
-                  color="primary"
-                  sx={{ color: "black" }}
-                >
-                  Cerrar
-                </Button>
-              </DialogActions>
-            </Dialog>
+              <Dialog
+                open={showDialog}
+                onClose={() => setShowDialog(false)}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: dialogBackgroundColor,
+                  },
+                }}
+              >
+                <DialogTitle sx={{ color: dialogTextColor }}>
+                  {dialogTitle}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText
+                    sx={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {dialogText}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleCloseDialog}
+                    color="primary"
+                    sx={{ color: "black" }}
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+              </Dialog>
 
-            <Dialog
-              open={openCardDialog}
-              onClose={handleCloseCardDialog}
-              PaperProps={{
-                sx: {
-                  backgroundColor: dialogBackgroundColor,
-                },
-              }}
-            >
-              <DialogTitle sx={{ color: dialogTextColor }}>
-                {dialogTitle}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText
-                  sx={{
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                  }}
-                ></DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleCloseCardDialog}
-                  color="primary"
-                  sx={{ color: "black" }}
-                >
-                  Cerrar
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </FormControl>
+              <Dialog
+                open={openCardDialog}
+                onClose={handleCloseCardDialog}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: dialogBackgroundColor,
+                  },
+                }}
+              >
+                <DialogTitle sx={{ color: dialogTextColor }}>
+                  {dialogTitle}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText
+                    sx={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                    }}
+                  ></DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleCloseCardDialog}
+                    color="primary"
+                    sx={{ color: "black" }}
+                  >
+                    Cerrar
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </FormControl>
+          </form>
         </Grid>
       </Grid>
     </Grid>

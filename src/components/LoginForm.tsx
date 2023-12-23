@@ -288,7 +288,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
           >
             Iniciar Sesión
           </Typography>
-          <Grid sx={{ width: "90%" }}>
+          <Grid sx={{ width: "90%", position: "absolute", mt: 5 }}>
             <form onSubmit={formik.handleSubmit}>
               <FormControl style={{ width: "100%" }}>
                 <Typography mb={-2}>Email</Typography>

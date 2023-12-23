@@ -150,132 +150,6 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <IconButton
-            onClick={openModal}
-            color="primary"
-            sx={{
-              position: "absolute",
-              top: 10,
-              right: -10,
-              zIndex: 2,
-            }}
-          >
-            <RecentActorsIcon sx={{ fontSize: 40, mt: -5 }} />
-            <Typography sx={{ position: "absolute", mt: 5 }}>
-              Usuarios
-            </Typography>
-          </IconButton>
-
-          <Modal
-            open={isModalOpen}
-            onClose={closeModal}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                marginLeft: -1,
-                transform: "translate(-50%, -50%)",
-                width: "auto",
-                bgcolor: "background.paper",
-                borderRadius: 2,
-                boxShadow: 24,
-                p: 4,
-                backgroundColor: "#0072B9",
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              <IconButton
-                onClick={closeModal}
-                sx={{
-                  width: "25px",
-                  height: "25px",
-                  border: 1,
-                  color: "white",
-                  position: "absolute",
-                  top: 5,
-                  right: 5,
-                  zIndex: 2,
-                }}
-              >
-                <CloseIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              <Typography
-                id="modal-title"
-                component="h2"
-                sx={{
-                  padding: 1,
-                  mt: -2,
-                  fontSize: 18,
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: 2,
-                }}
-              >
-                En esta sección podrás elegir un usuario de prueba para ingresar
-              </Typography>
-              <Typography
-                id="modal-title"
-                variant="h6"
-                component="h2"
-                sx={{ mb: -2, textDecoration: "underline" }}
-              >
-                Usuarios / Djs Users
-              </Typography>
-              <ul style={{ listStyle: "none" }}>
-                {djUsers.map((djUser) => (
-                  <li
-                    key={djUser.userEmail}
-                    onClick={() => handleUserSelection(djUser)}
-                    style={{
-                      marginLeft: -40,
-                      padding: 8,
-                      cursor: "pointer",
-                      marginBottom: 10,
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontSize: 12 }}
-                    >{`Email: ( ${djUser.userEmail}), Contraseña: (${djUser.userPassword})`}</Typography>
-                  </li>
-                ))}
-              </ul>
-
-              <Typography
-                id="modal-title"
-                variant="h6"
-                component="h2"
-                sx={{ mt: 4, mb: -2, textDecoration: "underline" }}
-              >
-                Usuarios / Music Users
-              </Typography>
-              <ul style={{ listStyle: "none" }}>
-                {musicUsers.map((musicUser) => (
-                  <li
-                    key={musicUser.userEmail}
-                    onClick={() => handleUserSelection(musicUser)}
-                    style={{
-                      marginLeft: -40,
-                      padding: 8,
-                      cursor: "pointer",
-                      marginBottom: 10,
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontSize: 12 }}
-                    >{`Email: (${musicUser.userEmail}), Contraseña: (${musicUser.userPassword})`}</Typography>
-                  </li>
-                ))}
-              </ul>
-            </Box>
-          </Modal>
           <Typography
             variant="h4"
             gutterBottom
@@ -371,6 +245,197 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                 >
                   Registrarse aquí
                 </Button>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  style={{
+                    marginTop: 60,
+                    color: "white",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 10px 18px rgba(255, 255, 255, 0.7)",
+                    borderRadius: 50,
+                    width: "200px",
+                    marginLeft: 100,
+                  }}
+                  sx={{
+                    transition: "transform 0.3s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.2)",
+                    },
+                  }}
+                >
+                  <IconButton
+                    onClick={openModal}
+                    sx={{
+                      color: "white",
+                      zIndex: 2,
+                    }}
+                  >
+                    <RecentActorsIcon sx={{ fontSize: 40 }} />
+                    <Typography sx={{ fontSize: 15, ml: 1}}>Usuarios de Prueva</Typography>
+                  </IconButton>
+                </Grid>
+
+                <Modal
+                  open={isModalOpen}
+                  onClose={closeModal}
+                  aria-labelledby="modal-title"
+                  aria-describedby="modal-description"
+                >
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginLeft: -1,
+                      transform: "translate(-50%, -50%)",
+                      width: "auto",
+                      bgcolor: "background.paper",
+                      borderRadius: 2,
+                      boxShadow: 24,
+                      p: 4,
+                      backgroundColor: "#0072B9",
+                      color: "white",
+                      textAlign: "center",
+                    }}
+                  >
+                    <IconButton
+                      onClick={closeModal}
+                      sx={{
+                        width: "25px",
+                        height: "25px",
+                        border: 1,
+                        color: "white",
+                        position: "absolute",
+                        top: 5,
+                        right: 5,
+                        zIndex: 2,
+                      }}
+                    >
+                      <CloseIcon sx={{ fontSize: 18 }} />
+                    </IconButton>
+                    <Typography
+                      id="modal-title"
+                      component="h2"
+                      sx={{
+                        padding: 1,
+                        mt: -2,
+                        fontSize: 15,
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        borderRadius: 2,
+                      }}
+                    >
+                      " En esta sección podrás elegir un usuario de prueba para
+                      ingresar "
+                    </Typography>
+                    <Typography
+                      id="modal-title"
+                      variant="h6"
+                      component="h2"
+                      sx={{ mb: -2, textDecoration: "underline" }}
+                    >
+                      Djs Users
+                    </Typography>
+                    <ul style={{ listStyle: "none" }}>
+                      {djUsers.map((djUser) => (
+                        <Grid
+                          sx={{
+                            transition: "transform 0.3s ease-in-out",
+                            "&:hover": {
+                              transform: "scale(1.1)",
+                            },
+                          }}
+                        >
+                          <li
+                            key={djUser.userEmail}
+                            onClick={() => handleUserSelection(djUser)}
+                            style={{
+                              zIndex: 9999,
+                              marginLeft: -40,
+                              padding: 8,
+                              cursor: "pointer",
+                              marginBottom: 10,
+                              backgroundColor: "rgba(0, 0, 0, 0.7)",
+                              borderRadius: 10,
+                              marginTop: -4,
+                            }}
+                          >
+                            <Grid
+                              sx={{
+                                transition: "transform 0.6s ease-in-out",
+                                "&:hover": {
+                                  transform: "scale(1.5)",
+                                },
+                              }}
+                            >
+                              <Typography
+                                sx={{ fontSize: 15 }}
+                              >{`EMAIL: ${djUser.userEmail}`}</Typography>
+                              <Typography
+                                sx={{ fontSize: 15 }}
+                              >{`CONTRASEÑA: ${djUser.userPassword}`}</Typography>
+                            </Grid>
+                          </li>
+                        </Grid>
+                      ))}
+                    </ul>
+
+                    <Typography
+                      id="modal-title"
+                      variant="h6"
+                      component="h2"
+                      sx={{ mt: -2, mb: -2, textDecoration: "underline" }}
+                    >
+                      Music Users
+                    </Typography>
+                    <ul style={{ listStyle: "none" }}>
+                      {musicUsers.map((musicUser) => (
+                        <Grid
+                          sx={{
+                            transition: "transform 0.3s ease-in-out",
+                            "&:hover": {
+                              transform: "scale(1.1)",
+                            },
+                          }}
+                        >
+                          <li
+                            key={musicUser.userEmail}
+                            onClick={() => handleUserSelection(musicUser)}
+                            style={{
+                              marginLeft: -40,
+                              padding: 8,
+                              cursor: "pointer",
+                              marginBottom: 10,
+                              backgroundColor: "rgba(0, 0, 0, 0.7)",
+                              borderRadius: 10,
+                              marginTop: -4,
+                            }}
+                          >
+                            <Grid
+                              sx={{
+                                transition: "transform 0.6s ease-in-out",
+                                "&:hover": {
+                                  transform: "scale(1.5)",
+                                },
+                              }}
+                            >
+                              <Typography
+                                sx={{ fontSize: 15 }}
+                              >{`EMAIL: ${musicUser.userEmail}`}</Typography>
+                              <Typography
+                                sx={{ fontSize: 15 }}
+                              >{`CONTRASEÑA: ${musicUser.userPassword}`}</Typography>
+                            </Grid>
+                          </li>
+                        </Grid>
+                      ))}
+                    </ul>
+                  </Box>
+                </Modal>
               </FormControl>
             </form>
           </Grid>

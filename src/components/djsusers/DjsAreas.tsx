@@ -79,7 +79,6 @@ const DjAreas = () => {
         radius: radius,
       };
 
-      // Despachamos la acción addArea con el email del usuario y el área definida
       if (userEmail) {
         dispatch(
           addArea({

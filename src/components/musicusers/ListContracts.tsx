@@ -197,19 +197,19 @@ const ListContract: React.FC = () => {
                             }}
                           >
                             {contractDetails.warning && (
-                              <Typography sx={{fontSize: "13px"}}>
+                              <Typography sx={{ fontSize: "13px" }}>
                                 {contractDetails.warning}
                               </Typography>
                             )}
                           </Grid>
                         )}
+                        <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
                         <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
-                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime}`}</Typography>
-                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime}`}</Typography>
+                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime} Hs`}</Typography>
+                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime} Hs`}</Typography>
                         <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
-                        <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
-                        <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
+                        <Typography>{`Costo Total: $ ${contractDetails.totalCost}`}</Typography>
                       </Grid>
                       <Button
                         variant="contained"

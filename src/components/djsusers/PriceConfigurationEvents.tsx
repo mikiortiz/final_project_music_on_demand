@@ -124,7 +124,7 @@ const PriceConfigurationEvents = () => {
             </Grid>
             <Grid item xs={4} sm={4} md={4}>
               <ListItemText
-                primary={`Precio - ${event.price}, Horas - ${event.hours || 0}`}
+                primary={`Precio - $ ${event.price}, Horas - ${event.hours || 0}`}
               />
             </Grid>
 

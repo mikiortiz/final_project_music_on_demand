@@ -176,12 +176,12 @@ const ListContract: React.FC = () => {
                             )}
                           </Grid>
                         )}
+                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
                         <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
-                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime}`}</Typography>
-                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime}`}</Typography>
-                        <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
-                        <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
+                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime} Hs`}</Typography>
+                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime} Hs`}</Typography>
+                        <Typography>{`Duración del evento: ${contractDetails.EventHours} Hs`}</Typography>
                         <Typography>{`Costo Total: ${contractDetails.totalCost}`}</Typography>
                       </Grid>
                       <Button
@@ -248,6 +248,12 @@ const ListContract: React.FC = () => {
                       >
                         <Typography>
                           No hay canciones seleccionadas aquí
+                        </Typography>
+                        <Typography>
+                          "El evento dependerá de tu gusto musical"
+                        </Typography>
+                        <Typography>
+                          !!! A DARLE ¡¡¡
                         </Typography>
                       </div>
                     )}

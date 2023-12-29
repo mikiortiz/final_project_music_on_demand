@@ -278,8 +278,8 @@ const ContractDetailsPage: React.FC = () => {
                 }}
               />
               <Grid container sx={{ ml: 15, mt: -6 }}>
-                <Typography variant="h6" sx={{ marginRight: 1, mr: -9 }}>
-                  DJ Seleccionado
+                <Typography variant="h6" sx={{ marginRight: 1, mr: -9, mt: -3}}>
+                  DJ Seleccionado:
                 </Typography>
                 <Typography
                   variant="h5"

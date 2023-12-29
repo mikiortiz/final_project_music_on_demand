@@ -1,5 +1,4 @@
-<a href="https://postimg.cc/2brTyksZ" target="_blank"><img src="https://i.postimg.cc/fL0PHk5B/Project-Name-Music-World-1.png" alt="Project-Name-Music-World-1.png" width="100%" /></a>
-
+[![Project-Name-Music-World.png](https://i.postimg.cc/KYvtxQLq/Project-Name-Music-World.png)](https://postimg.cc/21M1xQ0h)
 
 | índice    |
 | --------- |

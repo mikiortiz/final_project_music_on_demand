@@ -231,7 +231,6 @@ const UserWelcome = () => {
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleMenuClose}
-                       
                       >
                         {selectedEvent &&
                           selectedEvent.selectedEvents?.map(
@@ -239,7 +238,6 @@ const UserWelcome = () => {
                               <MenuItem
                                 key={`${event.eventName}-${index}`}
                                 onClick={() => handleContractClick(dj)}
-                                
                               >
                                 {event.eventName}
                                 <Badge

@@ -25,7 +25,6 @@ const MapComponentHome: React.FC = () => {
     };
     setNewPosition(clickedPosition);
 
-    // Mueve el marcador a la nueva posición
     if (markerRef.current && mapRef.current) {
       markerRef.current.setPosition(clickedPosition);
     }

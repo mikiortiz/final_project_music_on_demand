@@ -41,7 +41,6 @@ const TypesEvents = () => {
               hours: "",
             },
           ];
-      // Despacho la acción setSelectedEvents con el email del usuario y los eventos seleccionados
       dispatch(
         setSelectedEvents({ email: userEmail, events: updatedSelectedCards })
       );

@@ -107,7 +107,7 @@ const UserNavbar: React.FC = () => {
                     borderColor: "black",
                   }}
                 >
-                  Djs sercanos
+                  Djs cercanos
                 </Button>
                 <Button
                   onClick={() => navigate("/listcontracts")}
@@ -160,6 +160,30 @@ const UserNavbar: React.FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
+            <MenuItem
+              onClick={() => {
+                navigate("/userwelcome");
+                handleMenuClose();
+              }}
+            >
+              Djs cercanos
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/listcontracts");
+                handleMenuClose();
+              }}
+            >
+              Mis Contratos
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/usermaphome");
+                handleMenuClose();
+              }}
+            >
+              Mi Ubicación
+            </MenuItem>
             <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
           </Menu>
         </Hidden>

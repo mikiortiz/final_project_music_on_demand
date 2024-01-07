@@ -10,6 +10,7 @@ import UserWelcome from "./components/musicusers/UserWelcome";
 import ContractConfiguration from "./components/musicusers/ContractConfiguration";
 import ListContracts from "./components/musicusers/ListContracts";
 import ConfigurationPlaylist from "./components/musicusers/ConfigurationPlaylist";
+import DjContracts from "./components/djsusers/DjContracts";
 
 function App() {
   return (
@@ -27,9 +28,16 @@ function App() {
             />
             <Route path="/DjsArea" element={<DjsArea />} />
             <Route path="/userwelcome" element={<UserWelcome />} />
-            <Route path="/contractconfiguration" element={<ContractConfiguration />} />
+            <Route
+              path="/contractconfiguration"
+              element={<ContractConfiguration />}
+            />
             <Route path="/listcontracts" element={<ListContracts />} />
-            <Route path="/configurationplaylist" element={<ConfigurationPlaylist />} />
+            <Route
+              path="/configurationplaylist"
+              element={<ConfigurationPlaylist />}
+            />
+            <Route path="/DjContracts" element={<DjContracts />} />
           </Routes>
         </div>
       </Router>

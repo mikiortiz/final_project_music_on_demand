@@ -209,6 +209,7 @@ const ContractConfiguration: React.FC = () => {
         startEventTime: startEventTime,
         endEventTime: endEventTime,
         ...contractDetails,
+        ClientImg: musicUser.customUserAvatarUrl,
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
@@ -237,6 +238,7 @@ const ContractConfiguration: React.FC = () => {
         EventAddress: "",
         ClientFirstName: "",
         ClientLastName: "",
+
         eventName: selectedEvent.eventName,
       });
     }
@@ -252,6 +254,7 @@ const ContractConfiguration: React.FC = () => {
         startEventTime: startEventTime,
         endEventTime: endEventTime,
         ...contractDetails,
+        ClientImg: musicUser.customUserAvatarUrl,
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
@@ -267,6 +270,7 @@ const ContractConfiguration: React.FC = () => {
 
       dispatch(
         addContract({
+          DjEmail: selectedDj.userEmail,
           MusicUserEmail: musicUser.userEmail,
           contract: contractData,
         })
@@ -280,6 +284,7 @@ const ContractConfiguration: React.FC = () => {
         EventAddress: "",
         ClientFirstName: "",
         ClientLastName: "",
+
         eventName: selectedEvent.eventName,
       });
       setShowWarning(false);

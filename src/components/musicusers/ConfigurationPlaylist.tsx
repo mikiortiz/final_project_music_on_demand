@@ -74,12 +74,10 @@ const ContractDetailsPage: React.FC = () => {
           setLoadingAlbums(true);
           const albumTracks = await getAlbumTracks(selectedAlbum.id);
 
-          // Obtener las canciones seleccionadas del estado de Redux
           const selectedSongsFromState =
             contracts.find((contract) => contract.ContractId === contractId)
               ?.selectedSongs || [];
 
-          // Marcar las canciones seleccionadas previamente
           const updatedAlbumTracks = albumTracks.map((track: any) => {
             const isSongSelected = selectedSongsFromState.some(
               (selectedSong: any) => selectedSong.id === track.id
@@ -212,7 +210,6 @@ const ContractDetailsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    // Actualizamos el estado local de las canciones al abrir el diálogo
     if (dialogOpen) {
       const selectedSongsFromState =
         contracts.find((contract) => contract.ContractId === contractId)
@@ -281,13 +278,13 @@ const ContractDetailsPage: React.FC = () => {
                 }}
               />
               <Grid container sx={{ ml: 15, mt: -6 }}>
-                <Typography
-                  variant="h6"
-                  sx={{ marginRight: 1, mr: -9 }}
-                >
-                  DJ Seleccionado
+                <Typography variant="h6" sx={{ marginRight: 1, mr: -9, mt: -3}}>
+                  DJ Seleccionado:
                 </Typography>
-                <Typography variant="h5" sx={{ml: -10}}>{`${DjFirstName} ${DjLastName}`}</Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ ml: -10 }}
+                >{`${DjFirstName} ${DjLastName}`}</Typography>
               </Grid>
             </Grid>
             <Grid container item justifyContent="flex-end" xs={6}>

@@ -18,10 +18,12 @@ import { RootState } from "../../model/RootStateTypes";
 
 const SupplierNavbar = () => {
   const navigate = useNavigate();
+  const contracts = useSelector((state: RootState) => state.contract.contracts);
   const djsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [totalSelectedEvents, setTotalSelectedEvents] = useState(0);
   const [totalSelectedGenres, setTotalSelectedGenres] = useState(0);
+  const [totalContracts, setTotalContracts] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -38,9 +40,14 @@ const SupplierNavbar = () => {
 
         const currentUserGenres = currentUser.selectedGenres || [];
         setTotalSelectedGenres(currentUserGenres.length);
+
+        const currentUserContracts = contracts.filter(
+          (contract) => contract.DjEmail === user.userEmail
+        );
+        setTotalContracts(currentUserContracts.length);
       }
     }
-  }, [djsUsers]);
+  }, [contracts, djsUsers]);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -96,6 +103,26 @@ const SupplierNavbar = () => {
               </Button>
             </Hidden>
             <Hidden mdDown>
+              <Button
+                onClick={() => navigate("/DjContracts")}
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mr: 5,
+                  height: 40,
+                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  color: "white",
+                  borderColor: "black",
+                }}
+              >
+                Contrataciones
+                <Badge
+                  badgeContent={totalContracts}
+                  color="secondary"
+                  sx={{ position: "absolute", top: 2, right: 2 }}
+                />
+              </Button>
+
               <Button
                 onClick={() => navigate("/supplierwelcome")}
                 variant="outlined"
@@ -163,7 +190,7 @@ const SupplierNavbar = () => {
                   borderColor: "black",
                 }}
               >
-                Areas de Trabajo
+                Áreas de Trabajo
               </Button>
 
               <Button
@@ -227,7 +254,7 @@ const SupplierNavbar = () => {
                 handleMenuClose();
               }}
             >
-              Areas de Trabajo
+              Áreas de Trabajo
             </MenuItem>
             <MenuItem
               onClick={() => {

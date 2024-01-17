@@ -250,6 +250,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                   item
                   xs={12}
                   style={{
+                    backgroundColor: "black",
                     marginTop: 60,
                     color: "white",
                     display: "flex",

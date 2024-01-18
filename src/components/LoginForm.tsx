@@ -172,6 +172,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                   size="small"
                   margin="normal"
                   type="email"
+                  autoComplete="username"
                   {...formik.getFieldProps("email")}
                   sx={{ backgroundColor: "white", marginBottom: "1rem" }}
                   error={formik.touched.email && Boolean(formik.errors.email)}
@@ -189,6 +190,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                   size="small"
                   margin="normal"
                   type="password"
+                  autoComplete="current-password"
                   {...formik.getFieldProps("password")}
                   sx={{ backgroundColor: "white", marginBottom: "1rem" }}
                   error={
@@ -277,7 +279,9 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                     }}
                   >
                     <RecentActorsIcon sx={{ fontSize: 40 }} />
-                    <Typography sx={{ fontSize: 15, ml: 1}}>Usuarios de Prueva</Typography>
+                    <Typography sx={{ fontSize: 15, ml: 1 }}>
+                      Usuarios de Prueva
+                    </Typography>
                   </IconButton>
                 </Grid>
 
@@ -344,6 +348,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                     <ul style={{ listStyle: "none" }}>
                       {djUsers.map((djUser) => (
                         <Grid
+                          key={djUser.userEmail}
                           sx={{
                             transition: "transform 0.3s ease-in-out",
                             "&:hover": {
@@ -352,7 +357,6 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                           }}
                         >
                           <li
-                            key={djUser.userEmail}
                             onClick={() => handleUserSelection(djUser)}
                             style={{
                               zIndex: 9999,
@@ -396,6 +400,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                     <ul style={{ listStyle: "none" }}>
                       {musicUsers.map((musicUser) => (
                         <Grid
+                          key={musicUser.userEmail}
                           sx={{
                             transition: "transform 0.3s ease-in-out",
                             "&:hover": {

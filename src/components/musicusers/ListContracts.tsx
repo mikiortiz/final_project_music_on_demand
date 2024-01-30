@@ -205,9 +205,9 @@ const ListContract: React.FC = () => {
                         )}
                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
-                        <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
-                        <Typography>{`Hora de inicio: ${contractDetails.startEventTime} Hs`}</Typography>
-                        <Typography>{`Hora de finalización: ${contractDetails.endEventTime} Hs`}</Typography>
+                        <Typography>{`Fecha del evento: ${contractDetails.eventDate}`}</Typography>
+                        <Typography>{`Hora de inicio: ${contractDetails.startTime} Hs`}</Typography>
+                        <Typography>{`Hora de finalización: ${contractDetails.endTime} Hs`}</Typography>
                         <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
                         <Typography>{`Costo Total: $ ${contractDetails.totalCost}`}</Typography>
                       </Grid>

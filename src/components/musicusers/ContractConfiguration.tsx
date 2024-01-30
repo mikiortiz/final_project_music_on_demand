@@ -16,25 +16,24 @@ import {
   DialogContent,
   DialogActions,
   Chip,
+  FormControl,
+  FormHelperText,
 } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   setSelectedEvent,
   addContract,
 } from "../../redux/reducers/ContractSlice";
-import { eventTypes } from "../../model/EventTypes";
-import { EventTypeContract } from "../../model/EventTypes";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { eventTypes, EventTypeContract } from "../../model/EventTypes";
+import { FormState, ContractDetails } from "../../model/typeContract";
 import { RootState } from "../../model/RootStateTypes";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
-
-interface ContractDetails {
-  EventDate: any;
-  startEventTime: any;
-  endEventTime: any;
-}
 
 const ContractConfiguration: React.FC = () => {
   const navigate = useNavigate();
@@ -43,159 +42,25 @@ const ContractConfiguration: React.FC = () => {
   const selectedDj = location.state?.selectedDj;
   const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const musicUser = user;
-  const { selectedEvent } = useSelector((state: RootState) => state.contract);
 
-  const [contractDetails, setContractDetails] = useState({
-    EventHours: "",
-    EventAddress: "",
-    ClientFirstName: "",
-    ClientLastName: "",
-    eventName: "",
-  });
+  const contracts = useSelector((state: RootState) => state.contract.contracts);
+  const { selectedEvent } = useSelector((state: RootState) => state.contract);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [contractGenres, setContractGenres] = useState<string[]>([]);
-
-  const [startEventTime, setStartEventTime] = useState<string>("");
-  const [endEventTime, setEndEventTime] = useState<string>("");
-
   const [filteredContractsDetails, setFilteredContractsDetails] = useState<
     ContractDetails[]
   >([]);
 
-  const contracts = useSelector((state: RootState) => state.contract.contracts);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setContractDetails({ ...contractDetails, [name]: value });
-  };
-
-  const calculateEventHours = (startTime: string, endTime: string) => {
-    const start = dayjs(startTime, "HH:mm");
-    let end = dayjs(endTime, "HH:mm");
-
-    // Verificar si la hora de finalización es anterior a la hora de inicio (día siguiente)
-    if (end.isBefore(start)) {
-      end = end.add(1, "day");
-    }
-
-    const diffInMinutes = end.diff(start, "minutes");
-
-    const durationHours = Math.floor(diffInMinutes / 60);
-    const durationMinutes = diffInMinutes % 60;
-
-    setContractDetails({
-      ...contractDetails,
-      EventHours: `${durationHours}:${String(durationMinutes).padStart(
-        2,
-        "0"
-      )} Hs`,
-    });
-  };
-
-  const handleStartTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const startTime = event.target.value;
-    setStartEventTime(startTime);
-
-    setEndEventTime("");
-
-    if (startTime && endEventTime) {
-      calculateEventHours(startTime, endEventTime);
-    }
-  };
-
-  const checkOverlap = (
-    newStartTime: Dayjs,
-    newEndTime: Dayjs
-  ): { overlap: boolean; occupiedRanges: string } => {
-    // Verificar superposición con contratos existentes
-    const overlappingContracts = filteredContractsDetails.filter((contract) => {
-      const existingStartTime = dayjs(
-        `${contract.EventDate} ${contract.startEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-      const existingEndTime = dayjs(
-        `${contract.EventDate} ${contract.endEventTime}`,
-        "DD/MM/YYYY HH:mm"
-      );
-
-      return (
-        (newStartTime.isBefore(existingStartTime) &&
-          newEndTime.isAfter(existingStartTime)) ||
-        (newStartTime.isAfter(existingStartTime) &&
-          newEndTime.isBefore(existingEndTime)) ||
-        (newStartTime.isBefore(existingEndTime) &&
-          newEndTime.isAfter(existingEndTime)) ||
-        (newStartTime.isSame(existingStartTime) &&
-          newEndTime.isSame(existingEndTime))
-      );
-    });
-
-    if (overlappingContracts.length > 0) {
-      // Construccion de horarios ocupados
-      const occupiedRanges = overlappingContracts
-        .map(
-          (contract) => `${contract.startEventTime} - ${contract.endEventTime}`
-        )
-        .join(", ");
-
-      return { overlap: true, occupiedRanges };
-    }
-
-    return { overlap: false, occupiedRanges: "" };
-  };
-
-  const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const endTime = event.target.value;
-
-    // Verificar que tanto la hora de inicio y finalización sean válidas
-    const validStartTime = dayjs(startEventTime, "HH:mm", true).isValid();
-    const validEndTime = dayjs(endTime, "HH:mm", true).isValid();
-
-    setEndEventTime(endTime);
-
-    if (startEventTime && validStartTime && validEndTime) {
-      calculateEventHours(startEventTime, endTime);
-
-      // Al ingresar la hora de finalización verificamos superposición con contratos existentes
-      const newStartTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${startEventTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-      const newEndTime = dayjs(
-        `${selectedDate?.format("YYYY-MM-DD")} ${endTime}`,
-        "YYYY-MM-DD HH:mm"
-      );
-
-      const { overlap, occupiedRanges } = checkOverlap(
-        newStartTime,
-        newEndTime
-      );
-
-      if (overlap) {
-        setShowWarning(true);
-        setWarningMessage(
-          `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
-        );
-        return;
-      } else {
-        setShowWarning(false);
-        setWarningMessage("");
-      }
-    }
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleFormSubmit = () => {
     if (selectedEvent && selectedDj) {
-      const hours = parseFloat(contractDetails.EventHours);
+      const hours = parseFloat(formik.values.EventHours);
+      const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
 
-      if (hours < selectedEvent.hours) {
+      if (hours < selectedEvent.hours && !formik.isValid) {
         setShowWarning(true);
         setWarningMessage(`Este contrato puede ser rechazado por DJ ${selectedDj.userFirstName} ${selectedDj.userLastName}. 
         Las horas ingresadas no están dentro del paquete estipulado (${selectedEvent.hours} HS X ${selectedEvent.price}). 
@@ -203,14 +68,34 @@ const ContractConfiguration: React.FC = () => {
         return;
       }
 
-      const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
+      const startTime = formik.values.startTime
+        ? dayjs(
+            `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.startTime}`,
+            "YYYY-MM-DD HH:mm"
+          )
+        : null;
+
+      const endTime = formik.values.endTime
+        ? dayjs(
+            `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.endTime}`,
+            "YYYY-MM-DD HH:mm"
+          )
+        : null;
+
+      if (startTime && endTime) {
+        const { overlap, occupiedRanges } = checkOverlap(startTime, endTime);
+        if (overlap) {
+          setShowWarning(true);
+          setWarningMessage(
+            `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
+          );
+          return;
+        }
+      }
 
       const contractData = {
-        startEventTime: startEventTime,
-        endEventTime: endEventTime,
-        ...contractDetails,
+        ...formik.values,
         ClientImg: musicUser.customUserAvatarUrl,
-        EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
         djInfo: {
           DjImg: selectedDj.customAvatarUrl,
@@ -231,29 +116,159 @@ const ContractConfiguration: React.FC = () => {
       );
 
       setOpenDialog(false);
-      setStartEventTime("");
-      setEndEventTime("");
-      setContractDetails({
-        EventHours: "",
+      formik.setValues({
         EventAddress: "",
         ClientFirstName: "",
         ClientLastName: "",
-
+        startTime: null,
+        endTime: null,
+        eventDate: null,
+        EventHours: "",
         eventName: selectedEvent.eventName,
       });
+      setShowWarning(false);
+    }
+  };
+
+  const validationSchema = Yup.object({
+    EventAddress: Yup.string().required("Este campo es obligatorio"),
+    ClientFirstName: Yup.string().required("Este campo es obligatorio"),
+    ClientLastName: Yup.string().required("Este campo es obligatorio"),
+    startTime: Yup.date()
+      .required("Este campo es obligatorio")
+      .typeError("ingrese una hora válida"),
+    endTime: Yup.date()
+      .required("Este campo es obligatorio")
+      .typeError("ingrese una hora válida"),
+    eventDate: Yup.date().required("Este campo es obligatorio"),
+  });
+
+  const initialFormState: FormState = {
+    EventAddress: "",
+    ClientFirstName: "",
+    ClientLastName: "",
+    startTime: null,
+    endTime: null,
+    eventDate: null,
+    EventHours: "",
+    eventName: "",
+  };
+
+  const formik = useFormik({
+    initialValues: initialFormState,
+    validationSchema: validationSchema,
+    onSubmit: handleFormSubmit,
+  });
+
+  const calculateEventHours = (startTime: Dayjs, endTime: Dayjs) => {
+    const start = dayjs(startTime, "HH:mm");
+    let end = dayjs(endTime, "HH:mm");
+
+    // Verificar si la hora de finalización es anterior a la hora de inicio (día siguiente)
+    if (end.isBefore(start)) {
+      end = end.add(1, "day");
+    }
+
+    const diffInMinutes = end.diff(start, "minutes");
+    const durationHours = Math.floor(diffInMinutes / 60);
+    const durationMinutes = diffInMinutes % 60;
+
+    formik.setFieldValue(
+      "EventHours",
+      `${durationHours}:${String(durationMinutes).padStart(2, "0")} Hs`
+    );
+  };
+
+  const checkOverlap = (
+    newStartTime: Dayjs,
+    newEndTime: Dayjs
+  ): { overlap: boolean; occupiedRanges: string } => {
+    // Verificar superposición con contratos existentes
+    const overlappingContracts = filteredContractsDetails.filter((contract) => {
+      return (
+        (newStartTime.isBefore(contract.startTime) &&
+          newEndTime.isAfter(contract.startTime)) ||
+        (newStartTime.isAfter(contract.startTime) &&
+          newEndTime.isBefore(contract.endTime)) ||
+        (newStartTime.isBefore(contract.endTime) &&
+          newEndTime.isAfter(contract.endTime)) ||
+        (newStartTime.isSame(contract.startTime) &&
+          newEndTime.isSame(contract.endTime))
+      );
+    });
+
+    if (overlappingContracts.length > 0) {
+      // Construcción de horarios ocupados
+      const occupiedRanges = overlappingContracts
+        .map((contract) => `${contract.startTime} - ${contract.endTime}`)
+        .join(", ");
+
+      return { overlap: true, occupiedRanges };
+    }
+
+    return { overlap: false, occupiedRanges: "" };
+  };
+
+  const handleStartTimeChange = (hour: Dayjs | null) => {
+    const startTime = hour;
+
+    formik.setFieldValue("startTime", hour);
+
+    if (startTime && formik.values.endTime) {
+      calculateEventHours(startTime, formik.values.endTime);
+    }
+  };
+
+  const handleEndTimeChange = (hour: Dayjs | null) => {
+    formik.setFieldValue("endTime", hour);
+
+    if (hour) {
+      const startTime = formik.values.startTime;
+      const endTime = hour;
+
+      if (startTime) {
+        calculateEventHours(startTime, endTime);
+      }
+
+      const { overlap, occupiedRanges } = checkOverlap(
+        startTime as Dayjs,
+        endTime
+      );
+
+      if (overlap) {
+        setShowWarning(true);
+        setWarningMessage(
+          `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
+        );
+      } else {
+        setShowWarning(false);
+        setWarningMessage("");
+      }
+    } else {
+      formik.setFieldValue("endTime", hour);
     }
   };
 
   const handleReenviarContrato = () => {
     if (selectedEvent && selectedDj) {
-      const hours = parseFloat(contractDetails.EventHours);
-
+      const hours = parseFloat(formik.values.EventHours);
       const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
 
       const contractData = {
-        startEventTime: startEventTime,
-        endEventTime: endEventTime,
-        ...contractDetails,
+        startEventTime: formik.values.startTime
+          ? dayjs(
+              `${selectedDate?.format("YYYY-MM-DD")} ${
+                formik.values.startTime
+              }`,
+              "HH:mm"
+            )
+          : null,
+        endEventTime: formik.values.endTime
+          ? dayjs(
+              `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.endTime}`,
+              "HH:mm"
+            )
+          : null,
         ClientImg: musicUser.customUserAvatarUrl,
         EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
         eventName: selectedEvent.eventName,
@@ -275,31 +290,25 @@ const ContractConfiguration: React.FC = () => {
           contract: contractData,
         })
       );
-
-      setOpenDialog(false);
-      setStartEventTime("");
-      setEndEventTime("");
-      setContractDetails({
-        EventHours: "",
-        EventAddress: "",
-        ClientFirstName: "",
-        ClientLastName: "",
-
-        eventName: selectedEvent.eventName,
-      });
+      formik.resetForm();
       setShowWarning(false);
+      setOpenDialog(false);
     }
   };
 
   const handleEventSelect = (event: EventTypeContract) => {
     dispatch(setSelectedEvent(event));
-    setContractDetails({
-      EventHours: "",
+    formik.setValues({
       EventAddress: "",
       ClientFirstName: "",
       ClientLastName: "",
-      eventName: event.eventName,
+      startTime: null,
+      endTime: null,
+      eventDate: null,
+      EventHours: "",
+      eventName: "",
     });
+    formik.resetForm();
     setSelectedDate(null);
 
     setShowWarning(false);
@@ -309,22 +318,26 @@ const ContractConfiguration: React.FC = () => {
   const handleCloseDialog = () => {
     setShowWarning(false);
     setOpenDialog(false);
-    setStartEventTime("");
-    setEndEventTime("");
+    formik.setValues({
+      ...formik.values,
+      startTime: null,
+    });
+    formik.setValues({
+      ...formik.values,
+      endTime: null,
+    });
   };
 
   useEffect(() => {
-    console.log("Contratos:", contracts);
-
     const contratosDelDjSeleccionado = contracts.filter((contract) => {
       return contract?.DjEmail === selectedDj?.userEmail;
     });
 
     const contractsDetails: ContractDetails[] = contratosDelDjSeleccionado.map(
       (contract) => ({
-        EventDate: contract.contract?.EventDate,
-        startEventTime: contract.contract?.startEventTime,
-        endEventTime: contract.contract?.endEventTime,
+        eventDate: contract.contract?.eventDate,
+        startTime: contract.contract?.startTime,
+        endTime: contract.contract?.endTime,
       })
     );
 
@@ -543,73 +556,133 @@ const ContractConfiguration: React.FC = () => {
                       </DialogTitle>
 
                       <DialogContent>
-                        <form onSubmit={handleFormSubmit}>
+                        <form onSubmit={formik.handleSubmit}>
                           <TextField
                             variant="filled"
                             label="Domicilio"
+                            value={formik.values.EventAddress}
+                            onChange={formik.handleChange}
                             name="EventAddress"
-                            value={contractDetails.EventAddress}
-                            onChange={handleInputChange}
                             fullWidth
-                            margin="normal"
-                            required
+                            error={
+                              formik.touched.EventAddress &&
+                              Boolean(formik.errors.EventAddress)
+                            }
+                            helperText={
+                              formik.touched.EventAddress &&
+                              formik.errors.EventAddress
+                            }
                           />
                           <TextField
                             variant="filled"
                             label="Nombre del Responsable del Evento"
                             name="ClientFirstName"
-                            value={contractDetails.ClientFirstName}
-                            onChange={handleInputChange}
+                            value={formik.values.ClientFirstName}
+                            onChange={formik.handleChange}
                             fullWidth
                             margin="normal"
-                            required
+                            error={
+                              formik.touched.ClientFirstName &&
+                              Boolean(formik.errors.ClientFirstName)
+                            }
+                            helperText={
+                              formik.touched.ClientFirstName &&
+                              formik.errors.ClientFirstName
+                            }
                           />
                           <TextField
                             variant="filled"
                             label="Apellido del Responsable del Evento"
                             name="ClientLastName"
-                            value={contractDetails.ClientLastName}
-                            onChange={handleInputChange}
+                            value={formik.values.ClientLastName}
+                            onChange={formik.handleChange}
                             fullWidth
                             margin="normal"
-                            required
+                            error={
+                              formik.touched.ClientLastName &&
+                              Boolean(formik.errors.ClientLastName)
+                            }
+                            helperText={
+                              formik.touched.ClientLastName &&
+                              formik.errors.ClientLastName
+                            }
                           />
                           <Grid item marginTop={2} xs={12}>
-                            <DatePicker
-                              label="Fecha del evento"
-                              value={selectedDate}
-                              onChange={(date) => setSelectedDate(dayjs(date))}
-                              minDate={dayjs()}
-                              maxDate={dayjs().add(1, "year")}
-                              views={["year", "month", "day"]}
-                              sx={{ width: "100%" }}
-                            />
+                            <FormControl
+                              fullWidth
+                              error={
+                                formik.touched.eventDate &&
+                                Boolean(formik.errors.eventDate)
+                              }
+                            >
+                              <DatePicker
+                                label="Fecha del evento"
+                                value={formik.values.eventDate || null}
+                                onChange={(date) =>
+                                  formik.setFieldValue("eventDate", date)
+                                }
+                                minDate={dayjs()}
+                                maxDate={dayjs().add(1, "year")}
+                                views={["year", "month", "day"]}
+                                sx={{ width: "100%" }}
+                              />
+                              <FormHelperText>
+                                {formik.touched.eventDate &&
+                                  formik.errors.eventDate}
+                              </FormHelperText>
+                            </FormControl>
                           </Grid>
-                          <TextField
-                            variant="filled"
-                            label="Hora de inicio"
-                            type="time"
-                            name="startTime"
-                            value={startEventTime}
-                            onChange={handleStartTimeChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
-                          <TextField
-                            variant="filled"
-                            label="Hora de finalización"
-                            type="time"
-                            name="endTime"
-                            value={endEventTime}
-                            onChange={handleEndTimeChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
+
+                          <Grid item marginTop={2} xs={12}>
+                            <FormControl fullWidth>
+                              <TimePicker
+                                label="Hora de inicio"
+                                value={formik.values.startTime}
+                                onChange={(newValue) =>
+                                  handleStartTimeChange(newValue)
+                                }
+                                slotProps={{
+                                  textField: {
+                                    fullWidth: true,
+                                    variant: "outlined",
+                                    error:
+                                      formik.touched.startTime &&
+                                      Boolean(formik.errors.startTime),
+                                    helperText:
+                                      formik.touched.startTime &&
+                                      formik.errors.startTime,
+                                  },
+                                }}
+                              />
+                            </FormControl>
+                          </Grid>
+
+                          <Grid item marginTop={2} xs={12}>
+                            <FormControl fullWidth>
+                              <TimePicker
+                                label="Hora de finalización"
+                                value={formik.values.endTime}
+                                onChange={(newValue) =>
+                                  handleEndTimeChange(newValue)
+                                }
+                                slotProps={{
+                                  textField: {
+                                    fullWidth: true,
+                                    variant: "outlined",
+                                    error:
+                                      formik.touched.endTime &&
+                                      Boolean(formik.errors.endTime),
+                                    helperText:
+                                      formik.touched.endTime &&
+                                      formik.errors.endTime,
+                                  },
+                                }}
+                              />
+                            </FormControl>
+                          </Grid>
 
                           <Typography variant="subtitle1">
-                            Duración del evento: {contractDetails.EventHours}
+                            Duración del evento: {formik.values.EventHours}
                           </Typography>
 
                           <Typography
@@ -630,7 +703,7 @@ const ContractConfiguration: React.FC = () => {
                             value={
                               (selectedEvent &&
                                 (selectedEvent.price / selectedEvent.hours) *
-                                  parseFloat(contractDetails.EventHours)) ||
+                                  parseFloat(formik.values.EventHours)) ||
                               0
                             }
                             InputProps={{
@@ -672,15 +745,6 @@ const ContractConfiguration: React.FC = () => {
                               type="submit"
                               variant="outlined"
                               color="primary"
-                              disabled={
-                                showWarning ||
-                                !contractDetails.EventHours ||
-                                !contractDetails.EventAddress ||
-                                !contractDetails.ClientFirstName ||
-                                !contractDetails.ClientLastName ||
-                                !selectedDate
-                              }
-                              onClick={handleFormSubmit}
                             >
                               CONTRATAR
                             </Button>

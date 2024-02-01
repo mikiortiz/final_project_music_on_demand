@@ -176,7 +176,7 @@ const ListContract: React.FC = () => {
                             )}
                           </Grid>
                         )}
-                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
+                        <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
                         <Typography>{`Fecha del evento: ${contractDetails.EventDate}`}</Typography>
                         <Typography>{`Hora de inicio: ${contractDetails.startEventTime} Hs`}</Typography>
@@ -252,9 +252,7 @@ const ListContract: React.FC = () => {
                         <Typography>
                           "El evento dependerá de tu gusto musical"
                         </Typography>
-                        <Typography>
-                          !!! A DARLE ¡¡¡
-                        </Typography>
+                        <Typography>!!! A DARLE ¡¡¡</Typography>
                       </div>
                     )}
                   </Card>

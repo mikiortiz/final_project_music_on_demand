@@ -2,11 +2,11 @@
 
 | índice    |
 | --------- |
-| Descripción del Poyecto  |
-| Características    |
-| Funcionalidad    |
-| Tecnologías Utilizadas    |
-| Desarrolladores Contribuyentes     |
+| [Descripción del Proyecto](#descripción-del-proyecto)  |
+| [Características](#características)    |
+| [Funcionalidad](#funcionalidad)    |
+| [Tecnologías Utilizadas](#tecnologías-utilizadas)    |
+| [Desarrolladores Contribuyentes](#desarrolladores-contribuyentes)     |
 
 ### Descripción del Proyecto:
 
@@ -99,6 +99,8 @@ Las tecnologías utilizadas para el desarrollo de esta web app fueron:
 - Redux Toolkit
 ##### Mapas
 - Google Map React
+##### Manejo de Formularios
+- Formik
 ##### Gestion de Versiones
 - Git
 ### Desarrolladores Contribuyentes

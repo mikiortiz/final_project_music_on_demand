@@ -99,14 +99,12 @@ const UserSupplierRegistration = () => {
         return;
       }
 
-      
       const newSupplier = { ...values };
-      
+
       dispatch(addSupplier(newSupplier));
 
       formik.resetForm();
 
-      
       setCardText("Registrado éxitosamente");
       setDialogTitle("Éxito");
       setDialogBackgroundColor("green");

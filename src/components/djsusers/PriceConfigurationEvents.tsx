@@ -11,6 +11,8 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../model/RootStateTypes";
@@ -40,7 +42,41 @@ const PriceConfigurationEvents = () => {
         )?.selectedEvents || []
       : [];
   });
-  // Establecer los valores iniciales de eventPrices cuando selectedEvents se actualiza
+
+  const validationSchema = yup.object({
+    eventName: yup.string().required("Nombre del evento es obligatorio"),
+    price: yup
+      .number()
+      .required("Precio es obligatorio")
+      .min(0, "Precio no puede ser negativo"),
+    hours: yup.string().required("Horas son obligatorias"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      eventName: "",
+      price: "",
+      hours: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: () => {
+      const userEmail = user?.userEmail;
+      if (userEmail) {
+        const updatedEvents = [
+          ...selectedEvents,
+          {
+            eventName: formik.values.eventName,
+            price: Number(formik.values.price),
+            hours: formik.values.hours,
+          },
+        ];
+        dispatch(
+          setSelectedEvents({ email: userEmail, events: updatedEvents })
+        );
+      }
+    },
+  });
+
   useEffect(() => {
     const initialEventPrices: {
       [key: string]: { price: number; hours: string };

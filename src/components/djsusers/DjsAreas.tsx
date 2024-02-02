@@ -21,7 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { enqueueSnackbar } from "notistack";
 
 const DjAreas = () => {
-  const mapRef = useRef<google.maps.Map | null>(null);
+  const circleRef = useRef<google.maps.Circle | null>(null);
   const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -34,32 +34,50 @@ const DjAreas = () => {
     return user ? user.areas : [];
   });
 
-  const defaultCenter = {
-    lat: -33.58101234209427,
-    lng: -69.0172903733438,
-  };
-
-  const [circle, setCircle] = useState<google.maps.Circle | null>(null);
   const [areaName, setAreaName] = useState<string>("");
   const [isAreaWindowOpen, setIsAreaWindowOpen] = useState(false);
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
+  const [circleCenter, setCircleCenter] =
+    useState<google.maps.LatLngLiteral | null>(null);
 
   useEffect(() => {
-    if (circle && mapRef.current) {
-      const circleCenter = circle.getCenter()!;
-      (mapRef.current as google.maps.Map).panTo({
-        lat: circleCenter.lat(),
-        lng: circleCenter.lng(),
-      });
+    const getCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const currentLocation = { lat: latitude, lng: longitude };
+            setCircleCenter(currentLocation);
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getCurrentLocation();
+  }, []);
+
+  useEffect(() => {
+    if (googleMap && circleCenter) {
+      googleMap.panTo(circleCenter);
     }
-  }, [circle]);
+    if (circleRef.current && circleCenter) {
+      circleRef.current.setCenter(
+        new google.maps.LatLng(circleCenter.lat, circleCenter.lng)
+      );
+    }
+  }, [circleCenter, googleMap]);
 
   const handleSaveArea = () => {
-    if (circle && areaName.trim() !== "") {
-      const radius = circle.getRadius();
+    if (circleRef.current && areaName.trim() !== "") {
+      const radius = circleRef.current.getRadius();
       const center = {
-        lat: circle.getCenter()!.lat(),
-        lng: circle.getCenter()!.lng(),
+        lat: circleRef.current.getCenter()!.lat(),
+        lng: circleRef.current.getCenter()!.lng(),
       };
 
       enqueueSnackbar("Área guardada exitosamente.", {
@@ -80,13 +98,7 @@ const DjAreas = () => {
       };
 
       if (userEmail) {
-        dispatch(
-          addArea({
-            email: userEmail,
-            area: newArea,
-          })
-        );
-
+        dispatch(addArea({ email: userEmail, area: newArea }));
         setAreaName("");
       }
     } else {
@@ -104,20 +116,20 @@ const DjAreas = () => {
       editable: true,
       draggable: true,
       map,
-      center: defaultCenter,
+      center: circleCenter || { lat: 0, lng: 0 },
       radius: 500,
     });
 
-    setCircle(newCircle);
+    circleRef.current = newCircle;
 
     map.addListener("click", (e: any) => {
-      // Obtiengo las coordenadas donde se hizo clic
       const clickedLocation = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng(),
       };
 
       newCircle.setCenter(clickedLocation);
+      setCircleCenter(clickedLocation);
 
       map.panTo(clickedLocation);
     });
@@ -140,11 +152,9 @@ const DjAreas = () => {
         parseFloat(area.lng)
       );
 
-      // Verifica que area.radius sea un número antes de usarlo
       if (typeof area.radius === "number") {
-        circle?.setCenter(newCenter);
-        circle?.setRadius(area.radius);
-        // Centra el mapa en la ubicación del área seleccionada
+        circleRef.current?.setCenter(newCenter);
+        circleRef.current?.setRadius(area.radius);
         googleMap?.panTo(newCenter);
       }
     }
@@ -221,7 +231,7 @@ const DjAreas = () => {
       >
         <GoogleMapReact
           bootstrapURLKeys={{ key: "AIzaSyDIdTqLzVyDVxfFB9rkYCq_X6SoXqS680w" }}
-          defaultCenter={defaultCenter}
+          defaultCenter={circleCenter || { lat: 0, lng: 0 }}
           defaultZoom={13}
           yesIWantToUseGoogleMapApiInternals
           options={{
@@ -229,7 +239,6 @@ const DjAreas = () => {
           }}
           onGoogleApiLoaded={({ map, maps }) => {
             setGoogleMap(map);
-
             maprender(map, maps);
           }}
         ></GoogleMapReact>

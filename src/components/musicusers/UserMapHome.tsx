@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import GoogleMapReact from "google-map-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,27 @@ const MapComponentHome: React.FC = () => {
 
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+
+  useEffect(() => {
+    const getCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const currentLocation = { lat: latitude, lng: longitude };
+            setNewPosition(currentLocation);
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getCurrentLocation();
+  }, []);
 
   const handleMapClick = (e: any) => {
     const clickedPosition = {
@@ -91,7 +112,7 @@ const MapComponentHome: React.FC = () => {
           Una vez que hayas establecido tu ubicación perfecta, desbloquea un
           mundo de posibilidades musicales. Haz clic en "Ver DJs Cercanos a esta
           Ubicación" y sumérgete en un océano de talento. Descubre perfiles,
-          variedad de generos, y elige a los DJs que harán vibrar tus altavoces
+          variedad de géneros, y elige a los DJs que harán vibrar tus altavoces
           y llenarán el aire con notas inolvidables.
         </Typography>
       </Grid>

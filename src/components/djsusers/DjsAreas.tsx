@@ -231,7 +231,7 @@ const DjAreas = () => {
       >
         <GoogleMapReact
           bootstrapURLKeys={{ key: "AIzaSyDIdTqLzVyDVxfFB9rkYCq_X6SoXqS680w" }}
-          defaultCenter={circleCenter || { lat: 0, lng: 0 }}
+          center={circleCenter || { lat: 0, lng: 0 }}
           defaultZoom={13}
           yesIWantToUseGoogleMapApiInternals
           options={{

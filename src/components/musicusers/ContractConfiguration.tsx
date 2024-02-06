@@ -220,12 +220,9 @@ const ContractConfiguration: React.FC = () => {
         })
         .join(", ");
 
-      console.log("Horarios ocupados:", occupiedRanges);
-
       return { overlap: true, occupiedRanges };
     }
 
-    console.log("No hay contratos en la fecha exacta.");
     return { overlap: false, occupiedRanges: "" };
   };
 

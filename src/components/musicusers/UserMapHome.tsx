@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
 import { addArea } from "../../redux/reducers/RegisteredFormSlice";
+import NavbarUser from "./NavbarUsers";
 
 const MapComponentHome: React.FC = () => {
   const navigate = useNavigate();
@@ -70,15 +71,16 @@ const MapComponentHome: React.FC = () => {
         height: "100vh",
         width: "100vw",
         position: "fixed",
-        top: 0,
+        top: 7,
         left: 0,
       }}
     >
+      <NavbarUser />
       <Grid
         zIndex={1}
         item
         xs={12}
-        style={{ position: "absolute", top: 0, left: 0 }}
+        style={{ position: "absolute", top: 57, left: 0 }}
       >
         <Typography
           variant="h4"

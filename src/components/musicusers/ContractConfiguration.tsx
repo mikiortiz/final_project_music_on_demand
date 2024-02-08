@@ -47,13 +47,16 @@ const ContractConfiguration: React.FC = () => {
   const { selectedEvent } = useSelector((state: RootState) => state.contract);
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [showWarning, setShowWarning] = useState(false);
-  const [warningMessage, setWarningMessage] = useState("");
+
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [contractGenres, setContractGenres] = useState<string[]>([]);
   const [filteredContractsDetails, setFilteredContractsDetails] = useState<
     ContractDetails[]
   >([]);
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
+  const [showRefreshMesaje, setShowRefreshMesaje] = useState(false);
+  const [refreshMessage, setRefreshMessage] = useState("");
 
   const handleFormSubmit = () => {
     if (selectedEvent && selectedDj) {
@@ -65,20 +68,22 @@ const ContractConfiguration: React.FC = () => {
         setWarningMessage(`Este contrato puede ser rechazado por DJ ${selectedDj.userFirstName} ${selectedDj.userLastName}. 
         Las horas ingresadas no están dentro del paquete estipulado (${selectedEvent.hours} HS X ${selectedEvent.price}). 
         ¿Deseas continuar?`);
+        setShowRefreshMesaje(true);
+        setRefreshMessage(`refrescar el formulario para generar uno nuevo`);
         return;
       }
 
       const startTime = formik.values.startTime
         ? dayjs(
             `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.startTime}`,
-            "YYYY-MM-DD HH:mm"
+            "HH:mm"
           )
         : null;
 
       const endTime = formik.values.endTime
         ? dayjs(
             `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.endTime}`,
-            "YYYY-MM-DD HH:mm"
+            "HH:mm"
           )
         : null;
 
@@ -87,14 +92,21 @@ const ContractConfiguration: React.FC = () => {
         if (overlap) {
           setShowWarning(true);
           setWarningMessage(
-            `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
+            `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}."Este contrato puede ser rechazado"`
           );
+          setShowRefreshMesaje(true);
+          setRefreshMessage(`refrescar el formulario para generar uno nuevo`);
           return;
         }
       }
 
       const contractData = {
         ...formik.values,
+        startTime: formik.values.startTime?.format("HH:mm"),
+        endTime: formik.values.endTime?.format("HH:mm"),
+        eventDate: formik.values.eventDate
+          ? formik.values.eventDate.format("YYYY-MM-DD")
+          : null,
         ClientImg: musicUser.customUserAvatarUrl,
         eventName: selectedEvent.eventName,
         djInfo: {
@@ -105,6 +117,7 @@ const ContractConfiguration: React.FC = () => {
           DjGenres: contractGenres,
         },
         totalCost: totalCost,
+        warning: warningMessage,
       };
 
       dispatch(
@@ -127,6 +140,7 @@ const ContractConfiguration: React.FC = () => {
         eventName: selectedEvent.eventName,
       });
       setShowWarning(false);
+      setShowRefreshMesaje(false);
     }
   };
 
@@ -183,24 +197,27 @@ const ContractConfiguration: React.FC = () => {
     newStartTime: Dayjs,
     newEndTime: Dayjs
   ): { overlap: boolean; occupiedRanges: string } => {
-    // Verificar superposición con contratos existentes
-    const overlappingContracts = filteredContractsDetails.filter((contract) => {
+    const contractsOnDate = filteredContractsDetails.filter((contract) => {
+      const contractStartTime = dayjs(contract.startTime);
+      const contractEndTime = dayjs(contract.endTime);
+
       return (
-        (newStartTime.isBefore(contract.startTime) &&
-          newEndTime.isAfter(contract.startTime)) ||
-        (newStartTime.isAfter(contract.startTime) &&
-          newEndTime.isBefore(contract.endTime)) ||
-        (newStartTime.isBefore(contract.endTime) &&
-          newEndTime.isAfter(contract.endTime)) ||
-        (newStartTime.isSame(contract.startTime) &&
-          newEndTime.isSame(contract.endTime))
+        formik.values.eventDate &&
+        dayjs(contract.eventDate).isSame(formik.values.eventDate, "day") &&
+        (newStartTime.isBefore(contractEndTime) ||
+          newStartTime.isSame(contractEndTime)) &&
+        (newEndTime.isAfter(contractStartTime) ||
+          newEndTime.isSame(contractStartTime))
       );
     });
 
-    if (overlappingContracts.length > 0) {
-      // Construcción de horarios ocupados
-      const occupiedRanges = overlappingContracts
-        .map((contract) => `${contract.startTime} - ${contract.endTime}`)
+    if (contractsOnDate.length > 0) {
+      const occupiedRanges = contractsOnDate
+        .map((contract) => {
+          const contractStartTime = dayjs(contract.startTime).format("HH:mm");
+          const contractEndTime = dayjs(contract.endTime).format("HH:mm");
+          return `${contractStartTime}Hs a ${contractEndTime}Hs`;
+        })
         .join(", ");
 
       return { overlap: true, occupiedRanges };
@@ -238,61 +255,18 @@ const ContractConfiguration: React.FC = () => {
       if (overlap) {
         setShowWarning(true);
         setWarningMessage(
-          `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}`
+          `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}."Este contrato puede ser rechazado"`
         );
+        setShowRefreshMesaje(true);
+        setRefreshMessage(`Refrescar el formulario para generar uno nuevo`);
       } else {
         setShowWarning(false);
         setWarningMessage("");
+        setShowRefreshMesaje(false);
+        setRefreshMessage("");
       }
     } else {
       formik.setFieldValue("endTime", hour);
-    }
-  };
-
-  const handleReenviarContrato = () => {
-    if (selectedEvent && selectedDj) {
-      const hours = parseFloat(formik.values.EventHours);
-      const totalCost = (selectedEvent.price / selectedEvent.hours) * hours;
-
-      const contractData = {
-        startEventTime: formik.values.startTime
-          ? dayjs(
-              `${selectedDate?.format("YYYY-MM-DD")} ${
-                formik.values.startTime
-              }`,
-              "HH:mm"
-            )
-          : null,
-        endEventTime: formik.values.endTime
-          ? dayjs(
-              `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.endTime}`,
-              "HH:mm"
-            )
-          : null,
-        ClientImg: musicUser.customUserAvatarUrl,
-        EventDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
-        eventName: selectedEvent.eventName,
-        djInfo: {
-          DjImg: selectedDj.customAvatarUrl,
-          DjFirstName: selectedDj.userFirstName,
-          DjLastName: selectedDj.userLastName,
-          DjEmail: selectedDj.userEmail,
-          DjGenres: contractGenres,
-        },
-        totalCost: totalCost,
-        warning: warningMessage,
-      };
-
-      dispatch(
-        addContract({
-          DjEmail: selectedDj.userEmail,
-          MusicUserEmail: musicUser.userEmail,
-          contract: contractData,
-        })
-      );
-      formik.resetForm();
-      setShowWarning(false);
-      setOpenDialog(false);
     }
   };
 
@@ -313,6 +287,7 @@ const ContractConfiguration: React.FC = () => {
 
     setShowWarning(false);
     setOpenDialog(true);
+    setShowRefreshMesaje(false);
   };
 
   const handleCloseDialog = () => {
@@ -326,6 +301,14 @@ const ContractConfiguration: React.FC = () => {
       ...formik.values,
       endTime: null,
     });
+  };
+
+  const handleRefreshForm = () => {
+    formik.resetForm();
+    setShowWarning(false);
+    setWarningMessage("");
+    setShowRefreshMesaje(false);
+    setRefreshMessage("");
   };
 
   useEffect(() => {
@@ -718,7 +701,15 @@ const ContractConfiguration: React.FC = () => {
                               <Typography color="error">
                                 {warningMessage}
                               </Typography>
+                            </DialogActions>
+                          )}
+                          {showRefreshMesaje && (
+                            <DialogActions>
+                              <Typography color="error">
+                                {refreshMessage}
+                              </Typography>
                               <Button
+                                onClick={handleRefreshForm}
                                 variant="contained"
                                 color="secondary"
                                 style={{
@@ -727,12 +718,8 @@ const ContractConfiguration: React.FC = () => {
                                   position: "relative",
                                   display: "inline-block",
                                 }}
-                                onClick={() => {
-                                  setShowWarning(false);
-                                  handleReenviarContrato();
-                                }}
                               >
-                                ENVIAR DE TODAS FORMAS
+                                REFRESCAR FORMULARIO
                               </Button>
                             </DialogActions>
                           )}

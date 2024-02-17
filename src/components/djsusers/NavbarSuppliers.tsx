@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -18,6 +18,7 @@ import { RootState } from "../../model/RootStateTypes";
 
 const SupplierNavbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const contracts = useSelector((state: RootState) => state.contract.contracts);
   const djsUsers = useSelector((state: RootState) => state.registered.DjsUsers);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -66,6 +67,10 @@ const SupplierNavbar = () => {
   const storedUser = localStorage.getItem("currentUser");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <AppBar
       position="static"
@@ -106,13 +111,15 @@ const SupplierNavbar = () => {
               <Button
                 onClick={() => navigate("/DjContracts")}
                 variant="outlined"
-                color="primary"
+                color={isActive("/DjContracts") ? "primary" : "secondary"}
                 sx={{
                   mr: 5,
                   height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  backgroundColor: isActive("/DjContracts")
+                    ? ""
+                    : "rgba(0, 128, 255, 0.6)",
                   color: "white",
-                  borderColor: "black",
+                  borderColor: isActive("/DjContracts") ? "" : "black",
                 }}
               >
                 Contrataciones
@@ -126,13 +133,15 @@ const SupplierNavbar = () => {
               <Button
                 onClick={() => navigate("/supplierwelcome")}
                 variant="outlined"
-                color="primary"
+                color={isActive("/supplierwelcome") ? "primary" : "secondary"}
                 sx={{
                   mr: 5,
                   height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  backgroundColor: isActive("/supplierwelcome")
+                    ? ""
+                    : "rgba(0, 128, 255, 0.6)",
                   color: "white",
-                  borderColor: "black",
+                  borderColor: isActive("/supplierwelcome") ? "" : "black",
                 }}
               >
                 Mis Géneros
@@ -146,13 +155,15 @@ const SupplierNavbar = () => {
               <Button
                 onClick={() => navigate("/typesevents")}
                 variant="outlined"
-                color="primary"
+                color={isActive("/typesevents") ? "primary" : "secondary"}
                 sx={{
                   mr: 5,
                   height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  backgroundColor: isActive("/typesevents")
+                    ? ""
+                    : "rgba(0, 128, 255, 0.6)",
                   color: "white",
-                  borderColor: "black",
+                  borderColor: isActive("/typesevents") ? "" : "black",
                 }}
               >
                 ¿Eventos?
@@ -166,13 +177,21 @@ const SupplierNavbar = () => {
               <Button
                 onClick={() => navigate("/PriceConfigurationEvents")}
                 variant="outlined"
-                color="primary"
+                color={
+                  isActive("/PriceConfigurationEvents")
+                    ? "primary"
+                    : "secondary"
+                }
                 sx={{
                   mr: 5,
                   height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  backgroundColor: isActive("/PriceConfigurationEvents")
+                    ? ""
+                    : "rgba(0, 128, 255, 0.6)",
                   color: "white",
-                  borderColor: "black",
+                  borderColor: isActive("/PriceConfigurationEvents")
+                    ? ""
+                    : "black",
                 }}
               >
                 Mis Tarifas
@@ -181,13 +200,15 @@ const SupplierNavbar = () => {
               <Button
                 onClick={() => navigate("/DjsArea")}
                 variant="outlined"
-                color="primary"
+                color={isActive("/DjsArea") ? "primary" : "secondary"}
                 sx={{
                   mr: 5,
                   height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
+                  backgroundColor: isActive("/DjsArea")
+                    ? ""
+                    : "rgba(0, 128, 255, 0.6)",
                   color: "white",
-                  borderColor: "black",
+                  borderColor: isActive("/DjsArea") ? "" : "black",
                 }}
               >
                 Áreas de Trabajo
@@ -255,6 +276,19 @@ const SupplierNavbar = () => {
               }}
             >
               Áreas de Trabajo
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/DjContracts");
+                handleMenuClose();
+              }}
+            >
+              Contrataciones
+              <Badge
+                badgeContent={totalContracts}
+                color="secondary"
+                sx={{ position: "absolute", top: 5, right: 15 }}
+              />
             </MenuItem>
             <MenuItem
               onClick={() => {

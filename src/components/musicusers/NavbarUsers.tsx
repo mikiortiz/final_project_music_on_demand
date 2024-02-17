@@ -11,10 +11,11 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const UserNavbar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("currentUser") || "null");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -30,6 +31,10 @@ const UserNavbar: React.FC = () => {
     navigate("/");
     handleMenuClose();
     localStorage.removeItem("currentUser");
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -98,13 +103,15 @@ const UserNavbar: React.FC = () => {
                 <Button
                   onClick={() => navigate("/userwelcome")}
                   variant="outlined"
-                  color="primary"
+                  color={isActive("/userwelcome") ? "primary" : "secondary"}
                   sx={{
                     mr: 5,
                     height: 40,
-                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    backgroundColor: isActive("/userwelcome")
+                      ? ""
+                      : "rgba(0, 128, 255, 0.6)",
                     color: "white",
-                    borderColor: "black",
+                    borderColor: isActive("/userwelcome") ? "" : "black",
                   }}
                 >
                   Djs cercanos
@@ -112,13 +119,15 @@ const UserNavbar: React.FC = () => {
                 <Button
                   onClick={() => navigate("/listcontracts")}
                   variant="outlined"
-                  color="primary"
+                  color={isActive("/listcontracts") ? "primary" : "secondary"}
                   sx={{
                     mr: 5,
                     height: 40,
-                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    backgroundColor: isActive("/listcontracts")
+                      ? ""
+                      : "rgba(0, 128, 255, 0.6)",
                     color: "white",
-                    borderColor: "black",
+                    borderColor: isActive("/listcontracts") ? "" : "black",
                   }}
                 >
                   Mis Contratos
@@ -126,13 +135,15 @@ const UserNavbar: React.FC = () => {
                 <Button
                   onClick={() => navigate("/usermaphome")}
                   variant="outlined"
-                  color="primary"
+                  color={isActive("/usermaphome") ? "primary" : "secondary"}
                   sx={{
                     mr: 5,
                     height: 40,
-                    backgroundColor: "rgba(0, 128, 255, 0.6)",
+                    backgroundColor: isActive("/usermaphome")
+                      ? ""
+                      : "rgba(0, 128, 255, 0.6)",
                     color: "white",
-                    borderColor: "black",
+                    borderColor: isActive("/usermaphome") ? "" : "black",
                   }}
                 >
                   Mi Ubicación

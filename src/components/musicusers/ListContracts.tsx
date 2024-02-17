@@ -206,8 +206,12 @@ const ListContract: React.FC = () => {
                         <Typography>{`Cliente responsable: ${contractDetails.ClientFirstName} ${contractDetails.ClientLastName}`}</Typography>
                         <Typography>{`Dirección del evento: ${contractDetails.EventAddress}`}</Typography>
                         <Typography>{`Fecha del evento: ${contractDetails.eventDate}`}</Typography>
-                        <Typography>{`Hora de inicio: ${contractDetails.startTime} Hs`}</Typography>
-                        <Typography>{`Hora de finalización: ${contractDetails.endTime} Hs`}</Typography>
+                        <Typography>{`Hora de inicio: ${
+                          contractDetails.startTime.split(" ")[1]
+                        } Hs`}</Typography>
+                        <Typography>{`Hora de finalización: ${
+                          contractDetails.endTime.split(" ")[1]
+                        } Hs`}</Typography>
                         <Typography>{`Duración del evento: ${contractDetails.EventHours}`}</Typography>
                         <Typography>{`Costo Total: $ ${contractDetails.totalCost}`}</Typography>
                       </Grid>
@@ -216,7 +220,7 @@ const ListContract: React.FC = () => {
                         color="secondary"
                         onClick={() =>
                           dispatch(
-                            deleteContract({ email: userContract.email })
+                            deleteContract({ contractId: currentContractId })
                           )
                         }
                         sx={{ mt: 2, width: "100%" }}

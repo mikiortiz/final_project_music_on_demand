@@ -168,7 +168,7 @@ const MapComponentHome: React.FC = () => {
             background: "rgba(0, 0, 0, 0.8)",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.9)",
             transform: "translate(0%, -175%)",
-            marginTop: "0%",
+            marginTop: "-2%",
             borderRadius: 5,
             zIndex: 1,
             width: "100%",

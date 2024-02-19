@@ -69,21 +69,23 @@ const ContractConfiguration: React.FC = () => {
         Las horas ingresadas no están dentro del paquete estipulado (${selectedEvent.hours} HS X ${selectedEvent.price}). 
         ¿Deseas continuar?`);
         setShowRefreshMesaje(true);
-        setRefreshMessage(`refrescar el formulario para generar uno nuevo`);
+        setRefreshMessage(
+          `refrescar el formulario para generar uno nuevo o contratar con riesgo de rechazo`
+        );
         return;
       }
 
       const startTime = formik.values.startTime
         ? dayjs(
             `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.startTime}`,
-            "HH:mm"
+            "YYYY-MM-DD HH:mm"
           )
         : null;
 
       const endTime = formik.values.endTime
         ? dayjs(
             `${selectedDate?.format("YYYY-MM-DD")} ${formik.values.endTime}`,
-            "HH:mm"
+            "YYYY-MM-DD HH:mm"
           )
         : null;
 
@@ -95,15 +97,17 @@ const ContractConfiguration: React.FC = () => {
             `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}."Este contrato puede ser rechazado"`
           );
           setShowRefreshMesaje(true);
-          setRefreshMessage(`refrescar el formulario para generar uno nuevo`);
+          setRefreshMessage(
+            `refrescar el formulario para generar uno nuevo o contratar con riesgo de rechazo`
+          );
           return;
         }
       }
 
       const contractData = {
         ...formik.values,
-        startTime: formik.values.startTime?.format("HH:mm"),
-        endTime: formik.values.endTime?.format("HH:mm"),
+        startTime: formik.values.startTime?.format("YYYY-MM-DD HH:mm"),
+        endTime: formik.values.endTime?.format("YYYY-MM-DD HH:mm"),
         eventDate: formik.values.eventDate
           ? formik.values.eventDate.format("YYYY-MM-DD")
           : null,
@@ -258,7 +262,9 @@ const ContractConfiguration: React.FC = () => {
           `Estos horarios ya están reservados en esta fecha. Horarios ocupados: ${occupiedRanges}."Este contrato puede ser rechazado"`
         );
         setShowRefreshMesaje(true);
-        setRefreshMessage(`Refrescar el formulario para generar uno nuevo`);
+        setRefreshMessage(
+          `refrescar el formulario para generar uno nuevo o contratar con riesgo de rechazo`
+        );
       } else {
         setShowWarning(false);
         setWarningMessage("");

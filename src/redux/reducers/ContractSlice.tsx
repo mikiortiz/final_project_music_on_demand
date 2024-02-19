@@ -72,11 +72,16 @@ const contractSlice = createSlice({
     },
 
     deleteContract: (state, action: PayloadAction<any>) => {
+      const contractIdToDelete = action.payload.contractId;
       const contractIndex = state.contracts.findIndex(
-        (contract) => contract.email === action.payload.email
+        (contract) => contract.ContractId === contractIdToDelete
       );
       if (contractIndex !== -1) {
         state.contracts.splice(contractIndex, 1);
+      } else {
+        console.error(
+          "No se encontró un contrato para el ID de contrato seleccionado."
+        );
       }
     },
   },

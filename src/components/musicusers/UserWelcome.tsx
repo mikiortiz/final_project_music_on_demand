@@ -48,7 +48,14 @@ const UserWelcome = () => {
     (state: RootState) => state.contract.contracts
   );
 
-  const isMarkerInArea = (marker: { lat: any; lng: any }, area: Area) => {
+  const isMarkerInArea = (
+    marker: { lat: any; lng: any } | undefined,
+    area: Area
+  ) => {
+    if (!marker) {
+      return false;
+    }
+
     const radius = area.radius || 0;
 
     const km = radius / 1000;

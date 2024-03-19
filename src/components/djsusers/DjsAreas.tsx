@@ -76,8 +76,8 @@ const DjAreas = () => {
     if (circleRef.current && areaName.trim() !== "") {
       const radius = circleRef.current.getRadius();
       const center = {
-        lat: circleRef.current.getCenter()!.lat(),
-        lng: circleRef.current.getCenter()!.lng(),
+        lat: circleRef.current.getCenter()?.lat(),
+        lng: circleRef.current.getCenter()?.lng(),
       };
 
       enqueueSnackbar("Área guardada exitosamente.", {
@@ -106,7 +106,7 @@ const DjAreas = () => {
     }
   };
 
-  const maprender = (map: any, maps: any) => {
+  const maprender = (map: google.maps.Map, maps: typeof google.maps) => {
     const newCircle = new maps.Circle({
       strokeColor: "#000000",
       strokeOpacity: 0.8,
@@ -122,7 +122,7 @@ const DjAreas = () => {
 
     circleRef.current = newCircle;
 
-    map.addListener("click", (e: any) => {
+    map.addListener("click", (e: google.maps.MapMouseEvent) => {
       const clickedLocation = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng(),

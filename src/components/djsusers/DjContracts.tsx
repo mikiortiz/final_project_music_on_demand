@@ -212,13 +212,16 @@ const ListContract: React.FC = () => {
                     selectedSongsForContract.length > 0 ? (
                       <List sx={{ mt: "-43px" }}>
                         {selectedSongsForContract.map(
-                          (song: any, songIndex: number) => (
+                          (
+                            song: { name: string; artists: { name: string }[] },
+                            songIndex: number
+                          ) => (
                             <ListItem
                               key={songIndex}
                               sx={{
                                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                                 borderRadius: 5,
-                                mb: 1,
+                                marginBottom: 1,
                               }}
                             >
                               <Typography>{`Artista: ${song.artists[0].name}`}</Typography>

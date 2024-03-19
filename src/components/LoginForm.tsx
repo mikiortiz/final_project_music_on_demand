@@ -252,8 +252,8 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                   item
                   xs={12}
                   style={{
-                    backgroundColor: "black",
-                    marginTop: 60,
+                    backgroundColor: "green",
+                    marginTop: 10,
                     color: "white",
                     display: "flex",
                     flexDirection: "column",
@@ -280,7 +280,7 @@ const LoginForm: React.FC<Props> = ({ onClose }) => {
                   >
                     <RecentActorsIcon sx={{ fontSize: 40 }} />
                     <Typography sx={{ fontSize: 15, ml: 1 }}>
-                      Usuarios de Prueva
+                      Usuarios de Prueba
                     </Typography>
                   </IconButton>
                 </Grid>

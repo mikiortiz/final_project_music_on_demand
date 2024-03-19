@@ -7,6 +7,7 @@
 | [Funcionalidad](#funcionalidad)    |
 | [Tecnologías Utilizadas](#tecnologías-utilizadas)    |
 | [Desarrolladores Contribuyentes](#desarrolladores-contribuyentes)     |
+- [***Interfaz Gráfica del Proyecto*** ( *IR* )](https://brilliant-shortbread-5bb416.netlify.app/)
 
 ### Descripción del Proyecto:
 
@@ -106,7 +107,7 @@ Las tecnologías utilizadas para el desarrollo de esta web app fueron:
 ### Desarrolladores Contribuyentes
 ##### Desarrollado por:
 Miguel Ortiz, Junior Front-End Developer.
-https://www.linkedin.com/in/michel-ortiz-9736b32a5/
+https://www.linkedin.com/in/miguel-ortiz-9736b32a5/
 ##### Code-Review a cargo de:
 Fernando A. Gonzalez, Software Lead Engineer.
 https://www.linkedin.com/in/fernando-a-gonzalez/

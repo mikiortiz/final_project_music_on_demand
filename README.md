@@ -7,12 +7,14 @@
 | [Funcionalidad](#funcionalidad)    |
 | [Tecnologías Utilizadas](#tecnologías-utilizadas)    |
 | [Desarrolladores Contribuyentes](#desarrolladores-contribuyentes)     |
-- [***Interfaz Gráfica del Proyecto*** ( *IR* )](https://brilliant-shortbread-5bb416.netlify.app/)
+
+> [!IMPORTANT]
+> 
+> ### [***Ir a Interfaz Gráfica del Proyecto***](https://brilliant-shortbread-5bb416.netlify.app/) ➔
 
 ### Descripción del Proyecto:
 
-Con este proyecto, se da por concluída la mentoría en Desarrollo de Aplicaciones Web, aplicando todas las tecnologías y conocimientos adquiridos y aprendidos durante la misma. 
-Mediante el presente proyecto se da por concluída la mentoría y se han aplicado los requerimientos mínimos y necesarios para el desarrollo de este tipo de aplicaciones.
+Mediante el presente proyecto se da por concluída la mentoría en Desarrollo de Aplicaciones Web, aplicando todas las tecnologías y conocimientos adquiridos y aprendidos durante la misma.
 
 ### Características:
 

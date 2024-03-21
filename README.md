@@ -1,10 +1,11 @@
 [![Project-Name-Music-World.png](https://i.postimg.cc/KYvtxQLq/Project-Name-Music-World.png)](https://postimg.cc/21M1xQ0h)
 
-| índice    |
+| Índice    |
 | --------- |
 | [Descripción del Proyecto](#descripción-del-proyecto)  |
 | [Características](#características)    |
 | [Funcionalidad](#funcionalidad)    |
+| [Pantallas Responsivas](#pantallas-responsivas) |
 | [Tecnologías Utilizadas](#tecnologías-utilizadas)    |
 | [Desarrolladores Contribuyentes](#desarrolladores-contribuyentes)     |
 
@@ -55,7 +56,7 @@ Aquí se muestran en cards individuales, las contrataciones realizadas por los M
 #### Interfaz de Clientes
 Un usuario y/o empresa, luego de registrarse, se va a encontrar con las siguientes secciones:
 ##### Mi Ubicación
-Para una mayor funcionalidad del sistema, se requiere que el MusicUser indique su locació, para que el sistema pueda tener una referencia de su ubicación, o del evento a contratar.
+Para una mayor funcionalidad del sistema, se requiere que el MusicUser indique su locación, para que el sistema pueda tener una referencia de su ubicación, o del evento a contratar.
 ##### Dj Cercanos
 Con su ubicación ya establecida, el sistema va a desplegar un listado de DjUsers cercanos, y a los cuales éste puede visualizar con una "vista rápida", que muestra su información, y los eventos con las horas y tarifas definidas para c/u.
 Cada card que muestra a los DjUsers, contiene un botón principal para configurar y contratar al mismo. al ser presionado, se muestra en cards individuales los eventos, con otro botón de "Contratar Evento" para completar un formulario de Contrato que contiene:
@@ -83,8 +84,15 @@ Al ingresar a esta opción, se redirige a la biblioteca interactiva de música d
 Al seleccionar un género, automáticamente el sistema solicita a la Api de Spotify un listado de artistas referentes de ese género, y los muestra en cards individuales. Además se permite al usuario buscar algún artista en particular, a través del Campo de Búsqueda.
 Al seleccionar un artista, se desplegará un listado con todos los álbumes del mismo, y si se selecciona un álbum, se desplegará una ventana con el listado de canciones, permitiendo al MusicUser escuchar cada track, y añadirlo al playlist.
 [![Dise-o-sin-t-tulo-1.png](https://i.postimg.cc/gJB3mzxB/Dise-o-sin-t-tulo-1.png)](https://postimg.cc/LYLJVMBz)
+
 Reproductor de canciones:
+
 [![MUSICUSER-Playlist3.png](https://i.postimg.cc/bJ39dXv4/MUSICUSER-Playlist3.png)](https://postimg.cc/FdkLnB3x)
+
+### Pantallas Responsivas 
+Las pantallas de esta aplicación web están diseñadas con enfoque en la responsividad, lo que significa que se adaptan a diferentes tamaños de dispositivos, desde teléfonos móviles hasta computadoras de escritorio. Esto garantiza una experiencia de usuario consistente y agradable independientemente del dispositivo que se esté utilizando.
+[![Dise-o-sin-t-tulo.png](https://i.postimg.cc/RZMCnNfF/Dise-o-sin-t-tulo.png)](https://postimg.cc/HVh1qW6D)
+
 ### Tecnologías Utilizadas
 Las tecnologías utilizadas para el desarrollo de esta web app fueron:
 ##### Lenguaje de Programación Base

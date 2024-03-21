@@ -120,7 +120,7 @@ const MapComponentHome: React.FC = () => {
       </Grid>
       <GoogleMapReact
         bootstrapURLKeys={{
-          key: "AIzaSyDIdTqLzVyDVxfFB9rkYCq_X6SoXqS680w",
+          key: "AIzaSyCSd0sJy7AR6CZx_-0Yh-GnEE8ERHFUDEM",
         }}
         center={newPosition}
         zoom={15}

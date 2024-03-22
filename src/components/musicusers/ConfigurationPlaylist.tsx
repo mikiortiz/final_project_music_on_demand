@@ -248,7 +248,7 @@ const ContractDetailsPage: React.FC = () => {
         overflow: "auto",
       }}
     >
-      <AppBar position="static" color="transparent">
+      
         <Typography
           variant="h4"
           sx={{
@@ -259,61 +259,40 @@ const ContractDetailsPage: React.FC = () => {
         >
           Configurá Tu Playlist
         </Typography>
+        <AppBar position="static" color="transparent">
         <Toolbar>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ paddingLeft: "20px", paddingRight: "20px" }}
-          >
-            <Grid container item alignItems="center" xs={6}>
-              <Avatar
-                alt={`Avatar de ${DjFirstName} ${DjLastName}`}
-                src={DjImg}
-                sx={{
-                  borderRadius: "5px",
-                  height: 60,
-                  width: 100,
-                  marginRight: 2,
-                }}
-              />
-              <Grid container sx={{ ml: 15, mt: -6 }}>
-                <Typography
-                  variant="h6"
-                  sx={{ marginRight: 1, mr: -9, mt: -3 }}
-                >
-                  DJ Seleccionado:
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ ml: -10 }}
-                >{`${DjFirstName} ${DjLastName}`}</Typography>
+          <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item xs={6}>
+              <Grid container alignItems="center">
+                <Avatar
+                  alt={`Avatar de ${DjFirstName} ${DjLastName}`}
+                  src={DjImg}
+                  sx={{ width: 60, height: 60, mr: 1, ml: 7, mt: 1, mb: 1 }}
+                />
+                <Typography variant="h6">DJ Seleccionado:</Typography>
+                <Typography variant="h5">{`${DjFirstName} ${DjLastName}`}</Typography>
               </Grid>
             </Grid>
-            <Grid container item justifyContent="flex-end" xs={6}>
-              <Button
-                onClick={() => navigate("/listcontracts")}
-                variant="outlined"
-                color="primary"
-                sx={{
-                  mr: 5,
-                  height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
-                  color: "white",
-                  borderColor: "black",
-                }}
-                startIcon={<ArrowBackIcon />}
-              >
-                Atrás
-              </Button>
-              <Button
-                onClick={() => navigate("/userwelcome")}
-                variant="contained"
-                color="secondary"
-                style={{ width: "200px" }}
-              >
-                Salir
-              </Button>
+            <Grid item xs={6}>
+              <Grid container justifyContent="flex-end" spacing={1}>
+                <Button
+                  onClick={() => navigate("/listcontracts")}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<ArrowBackIcon />}
+                  sx={{ mr: 2, mt: 1 }}
+                >
+                  Atrás
+                </Button>
+                <Button
+                  onClick={() => navigate("/userwelcome")}
+                  variant="contained"
+                  color="secondary"
+                  sx={{ mr: "27px", mt: 1 }}
+                >
+                  Salir
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Toolbar>
@@ -389,12 +368,13 @@ const ContractDetailsPage: React.FC = () => {
             sx={{
               background: "rgba(0, 0, 0, 0.7)",
               color: "white",
-              mt: "-13px",
+              mt: "-1px",
             }}
           >
             <CardContent>
               <Typography
                 sx={{
+                  mt: -2,
                   fontSize: 40,
                   textAlign: "center",
                   fontWeight: "bold",

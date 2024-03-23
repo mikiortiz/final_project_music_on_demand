@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import Navbar from "./NavbarSuppliers";
 import { eventTypes } from "../../model/EventTypes";
@@ -116,20 +117,31 @@ const TypesEvents = () => {
               color: "white",
               textAlign: "center",
               cursor: "pointer",
+              position: "relative",
             }}
           >
             <CardContent
               sx={{
-                zIndex: 1,
+                zIndex: 999,
                 textAlign: "center",
                 borderBottom: 1,
+                borderColor: "black",
                 height: 10,
                 borderRadius: 2,
                 backgroundColor: selectedCards.some(
                   (event) => event.eventName === eventType.name
                 )
-                  ? "#0072B9"
+                  ? "rgba(63, 81, 181, 0.8)"
                   : "transparent",
+                boxShadow: selectedCards.some(
+                  (event) => event.eventName === eventType.name
+                )
+                  ? "-10px 30px 60px rgba(255, 255, 255, 0.9)"
+                  : "none",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "90%",
               }}
             >
               <Typography
@@ -142,6 +154,22 @@ const TypesEvents = () => {
               >
                 {eventType.name}
               </Typography>
+              {selectedCards.some(
+                (event) => event.eventName === eventType.name
+              ) && (
+                <VerifiedOutlinedIcon
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "5px",
+                    transform: "translateY(-50%)",
+                    zIndex: 2,
+                    color: "lightblue",
+                    fontSize: "32px",
+                    mr: 1,
+                  }}
+                />
+              )}
             </CardContent>
             <CardContent sx={{ height: "90px" }}>
               <Avatar
@@ -149,10 +177,12 @@ const TypesEvents = () => {
                 alt={`${eventType.name} Image`}
                 sx={{
                   ml: "-9px",
-                  mt: "-15px",
+                  mt: "30px",
                   width: "106%",
                   height: "125%",
                   borderRadius: 1,
+                  position: "relative",
+                  zIndex: 1,
                 }}
               />
             </CardContent>

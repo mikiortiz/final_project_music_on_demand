@@ -10,6 +10,10 @@ import {
   Grid,
   Typography,
   IconButton,
+  Card,
+  CardContent,
+  Chip,
+  Box,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -143,133 +147,250 @@ const PriceConfigurationEvents = () => {
         </Typography>
       </div>
 
-      <List sx={{ width: "100%", height: "100%" }}>
+      <Grid container columnSpacing={6}>
         {selectedEvents.map((event, index) => (
-          <ListItem
-            key={`${event.eventName}-${index}`}
-            sx={{
-              background: "rgba(0, 0, 0, 0.7)",
-              color: "white",
-              height: "100%",
-              width: "100%",
-              mt: "1px",
-            }}
-          >
-            <Grid item xs={4} sm={4} md={4}>
-              <ListItemText primary={`${event.eventName}`} />
-            </Grid>
-            <Grid item xs={4} sm={4} md={4}>
-              <ListItemText
-                primary={`Precio - $ ${event.price}, Horas - ${
-                  event.hours || 0
-                }`}
-              />
-            </Grid>
-
-            <TextField
-              autoComplete="off"
-              label=" Ingrese Precio"
-              variant="filled"
-              type="number"
-              value={eventPrices[event.eventName]?.price || ""}
-              onChange={(e) => {
-                const newPrice = parseInt(e.target.value) || 0;
-                setEventPrices((prevEventPrices) => ({
-                  ...prevEventPrices,
-                  [event.eventName]: {
-                    price: newPrice,
-                    hours: prevEventPrices[event.eventName]?.hours || "",
-                  },
-                }));
-              }}
-              style={{
-                marginRight: "20px",
-                backgroundColor: "lightgray",
-                color: "black",
+          <Grid item xs={10} sm={6} md={6} key={`${event.eventName}-${index}`}>
+            <Card
+              sx={{
+                border: "1px solid",
+                borderColor: "black",
+                maxWidth: "580px",
+                background: "rgba(63, 81, 181, 0.8)",
+                color: "white",
+                height: "auto",
+                width: "100%",
+                mt: "15px",
+                mb: "15px",
+                ml: "25px",
+                display: "flex",
+                flexDirection: "column",
+                padding: "10px",
                 borderRadius: 5,
+                position: "relative",
+                mr: 5,
               }}
-            />
-            <TextField
-              autoComplete="off"
-              type="number"
-              label="Ingrese Horas"
-              variant="filled"
-              value={eventPrices[event.eventName]?.hours || ""}
-              onChange={(e) => {
-                const newHours = e.target.value;
-                setEventPrices((prevEventPrices) => ({
-                  ...prevEventPrices,
-                  [event.eventName]: {
-                    price: prevEventPrices[event.eventName]?.price || 0,
-                    hours: newHours,
-                  },
-                }));
-              }}
-              style={{
-                marginRight: "20px",
-                backgroundColor: "lightgray",
-                color: "black",
-                borderRadius: 5,
-              }}
-            />
-            <Grid
-              container
-              sx={{ width: "100px", bgcolor: "blueviolet", borderRadius: 2 }}
             >
-              <IconButton
-                sx={{ color: "white" }}
-                edge="end"
-                aria-label="Eliminar"
-                onClick={() => handleDeleteEvent(event.eventName)}
+              <CardContent
+                sx={{
+                  position: "relative",
+                }}
               >
-                <Typography>Eliminar</Typography>
-                <DeleteIcon />
-              </IconButton>
-            </Grid>
-          </ListItem>
-        ))}
-      </List>
-      <Grid container>
-        <Button
-          variant="outlined"
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            color: "white",
-            borderColor: "white",
-            bottom: 5,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "90%",
-            height: "70px",
-            borderRadius: 1,
-          }}
-          onClick={() => {
-            const userEmail = user?.userEmail;
-            if (userEmail) {
-              const eventsWithPricesAndHours = selectedEvents.map((event) => {
-                const eventName = event.eventName;
-                const eventInfo = eventPrices[eventName] || {
-                  price: 0,
-                  hours: "",
-                };
-                return {
-                  eventName,
-                  price: eventInfo.price,
-                  hours: eventInfo.hours,
-                };
-              });
+                <IconButton
+                  color="secondary"
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "violet",
+                    zIndex: 3,
+                    position: "absolute",
+                    top: 28,
+                    right: 20,
+                    boxShadow: "5px 5px 18px rgba(128, 0, 128, 0.9)",
+                    transition: "transform 0.4s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.6)",
+                      bgcolor: "black",
+                      background: "rgba(0, 0, 0, 0.9)",
+                    },
+                  }}
+                  aria-label="Eliminar"
+                  onClick={() => handleDeleteEvent(event.eventName)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    background: "rgba(0, 0, 0, 0.8)",
+                    textAlign: "center",
+                    borderRadius: 2,
+                    mt: 1,
+                    padding: 1,
+                    boxShadow: "10px 0px 18px rgba(255, 255, 255, 0.9)",
+                    transition: "transform 0.6s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                  }}
+                >
+                  {event.eventName}
+                </Typography>
+              </CardContent>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  position: "relative",
+                  justifyContent: "center",
+                }}
+              >
+                <TextField
+                  autoComplete="off"
+                  label="Ingrese Precio"
+                  variant="filled"
+                  type="number"
+                  value={eventPrices[event.eventName]?.price || ""}
+                  onChange={(e) => {
+                    const newPrice = parseInt(e.target.value) || 0;
+                    setEventPrices((prevEventPrices) => ({
+                      ...prevEventPrices,
+                      [event.eventName]: {
+                        price: newPrice,
+                        hours: prevEventPrices[event.eventName]?.hours || "",
+                      },
+                    }));
+                  }}
+                  sx={{
+                    ml: "20px",
+                    mr: "20px",
+                    backgroundColor: "lightgray",
+                    color: "black",
+                    borderRadius: 1,
+                    transition: "transform 0.3s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                  }}
+                />
+                <TextField
+                  autoComplete="off"
+                  type="number"
+                  label="Ingrese Horas"
+                  variant="filled"
+                  value={eventPrices[event.eventName]?.hours || ""}
+                  onChange={(e) => {
+                    const newHours = e.target.value;
+                    setEventPrices((prevEventPrices) => ({
+                      ...prevEventPrices,
+                      [event.eventName]: {
+                        price: prevEventPrices[event.eventName]?.price || 0,
+                        hours: newHours,
+                      },
+                    }));
+                  }}
+                  sx={{
+                    marginRight: "20px",
+                    backgroundColor: "lightgray",
+                    color: "black",
+                    borderRadius: 1,
+                    transition: "transform 0.3s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                  }}
+                />
+              </div>
 
-              dispatch(
-                setSelectedEvents({
-                  email: userEmail,
-                  events: eventsWithPricesAndHours,
-                })
-              );
-            }
-          }}
-        >
-          Guardar Mis Tarifas
-        </Button>
+              <Box
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50px",
+    background: "rgba(0, 0, 0, 0.8)",
+    textAlign: "center",
+    borderRadius: 2,
+    marginTop: 1,
+    padding: 1,
+    transition: "transform 0.9s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.1)",
+    },
+  }}
+>
+  <div style={{ flex: 1, textAlign: "right", paddingRight: "5px" }}>
+    <Chip
+      label={`Precio - $${event.price}`}
+      sx={{
+        padding: "8px",
+        border: "1px solid",
+        borderColor: "white",
+        background: "rgba(0, 0, 0, 0.8)",
+        color: "white",
+        borderRadius: 10,
+        transition: "transform 0.3s ease-in-out",
+        "&:hover": {
+          transform: "scale(1.1)",
+          boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
+        },
+      }}
+    />
+  </div>
+  <div style={{ flex: 1, textAlign: "left", paddingLeft: "5px" }}>
+    <Chip
+      label={`Horas - ${event.hours || 0}`}
+      sx={{
+        border: "1px solid",
+        borderColor: "white",
+        background: "rgba(0, 0, 0, 0.8)",
+        color: "white",
+        borderRadius: 10,
+        transition: "transform 0.3s ease-in-out",
+        "&:hover": {
+          transform: "scale(1.1)",
+          boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
+        },
+      }}
+    />
+  </div>
+</Box>
+
+
+              <Grid container>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderRadius: 10,
+                    backgroundColor: "rgba(0, 0, 0, 0.9)",
+                    color: "white",
+                    border: "3px solid",
+                    borderColor: "violet",
+                    mb: 2,
+                    ml: "30px",
+                    width: "90%",
+                    height: "70px",
+                    marginTop: "10px",
+                    transition: "transform 0.4s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                      bgcolor: "black",
+                      background: "rgba(0, 0, 0, 0.9)",
+                      boxShadow: "5px 5px 18px rgba(0, 0, 128, 0.9)",
+                    },
+                  }}
+                  onClick={() => {
+                    const userEmail = user?.userEmail;
+                    if (userEmail) {
+                      const eventsWithPricesAndHours = selectedEvents.map(
+                        (event, index) => {
+                          const eventName = event.eventName;
+                          const eventInfo = eventPrices[eventName] || {
+                            price: 0,
+                            hours: "",
+                          };
+                          return {
+                            eventName,
+                            price: eventInfo.price,
+                            hours: eventInfo.hours,
+                          };
+                        }
+                      );
+
+                      dispatch(
+                        setSelectedEvents({
+                          email: userEmail,
+                          events: eventsWithPricesAndHours,
+                        })
+                      );
+                    }
+                  }}
+                >
+                  Guardar Tarifa
+                </Button>
+              </Grid>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </Grid>
   );

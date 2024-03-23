@@ -245,13 +245,15 @@ const DjAreas = () => {
         <Grid
           item
           xs={12}
-          sm={12}
-          md={12}
+          sm={6}
+          md={3}
           style={{
-            position: "absolute",
-            top: "35%",
-            right: 0,
-            zIndex: 2,
+            position: "fixed",
+            bottom: 20,
+            left: 0,
+            width: "100%",
+            marginTop: "auto",
+            zIndex: 999,
           }}
         >
           <Card style={{ background: "rgba(0, 0, 0, 0.7)" }}>

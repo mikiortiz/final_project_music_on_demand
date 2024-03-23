@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import PriceEventsImg from "/images/PriceEventsImg.jpg";
 import Navbar from "./NavbarSuppliers";
 import {
-  List,
-  ListItem,
-  ListItemText,
   TextField,
   Button,
   Grid,
@@ -282,59 +279,60 @@ const PriceConfigurationEvents = () => {
               </div>
 
               <Box
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "50px",
-    background: "rgba(0, 0, 0, 0.8)",
-    textAlign: "center",
-    borderRadius: 2,
-    marginTop: 1,
-    padding: 1,
-    transition: "transform 0.9s ease-in-out",
-    "&:hover": {
-      transform: "scale(1.1)",
-    },
-  }}
->
-  <div style={{ flex: 1, textAlign: "right", paddingRight: "5px" }}>
-    <Chip
-      label={`Precio - $${event.price}`}
-      sx={{
-        padding: "8px",
-        border: "1px solid",
-        borderColor: "white",
-        background: "rgba(0, 0, 0, 0.8)",
-        color: "white",
-        borderRadius: 10,
-        transition: "transform 0.3s ease-in-out",
-        "&:hover": {
-          transform: "scale(1.1)",
-          boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
-        },
-      }}
-    />
-  </div>
-  <div style={{ flex: 1, textAlign: "left", paddingLeft: "5px" }}>
-    <Chip
-      label={`Horas - ${event.hours || 0}`}
-      sx={{
-        border: "1px solid",
-        borderColor: "white",
-        background: "rgba(0, 0, 0, 0.8)",
-        color: "white",
-        borderRadius: 10,
-        transition: "transform 0.3s ease-in-out",
-        "&:hover": {
-          transform: "scale(1.1)",
-          boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
-        },
-      }}
-    />
-  </div>
-</Box>
-
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "50px",
+                  background: "rgba(0, 0, 0, 0.8)",
+                  textAlign: "center",
+                  borderRadius: 2,
+                  marginTop: 1,
+                  padding: 1,
+                  transition: "transform 0.9s ease-in-out",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              >
+                <div
+                  style={{ flex: 1, textAlign: "right", paddingRight: "5px" }}
+                >
+                  <Chip
+                    label={`Precio - $${event.price}`}
+                    sx={{
+                      padding: "8px",
+                      border: "1px solid",
+                      borderColor: "white",
+                      background: "rgba(0, 0, 0, 0.8)",
+                      color: "white",
+                      borderRadius: 10,
+                      transition: "transform 0.3s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                        boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
+                      },
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1, textAlign: "left", paddingLeft: "5px" }}>
+                  <Chip
+                    label={`Horas - ${event.hours || 0}`}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "white",
+                      background: "rgba(0, 0, 0, 0.8)",
+                      color: "white",
+                      borderRadius: 10,
+                      transition: "transform 0.3s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                        boxShadow: "0px 5px 18px rgba(255, 255, 255, 0.3)",
+                      },
+                    }}
+                  />
+                </div>
+              </Box>
 
               <Grid container>
                 <Button
@@ -362,7 +360,7 @@ const PriceConfigurationEvents = () => {
                     const userEmail = user?.userEmail;
                     if (userEmail) {
                       const eventsWithPricesAndHours = selectedEvents.map(
-                        (event, index) => {
+                        (event) => {
                           const eventName = event.eventName;
                           const eventInfo = eventPrices[eventName] || {
                             price: 0,

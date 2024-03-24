@@ -356,65 +356,53 @@ const ContractConfiguration: React.FC = () => {
         overflow: "auto",
       }}
     >
+      <Typography
+        variant="h4"
+        sx={{
+          textAlign: "center",
+          background: "rgba(0, 0, 0, 0.9)",
+          fontWeight: "bold",
+        }}
+      >
+        Configuración de Contrato
+      </Typography>
       <AppBar position="static" color="transparent">
-        <Typography
-          variant="h4"
-          sx={{
-            textAlign: "center",
-            background: "rgba(0, 0, 0, 0.9)",
-            fontWeight: "bold",
-          }}
-        >
-          Configuración de Contrato
-        </Typography>
         <Toolbar>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ paddingLeft: "20px", paddingRight: "20px" }}
-          >
-            <Grid container item alignItems="center" xs={6}>
-              <Avatar
-                alt={`Avatar de ${selectedDj.userFirstName} ${selectedDj.userLastName}`}
-                src={selectedDj.customAvatarUrl}
-                sx={{
-                  borderRadius: "5px",
-                  height: 60,
-                  width: 100,
-                  marginRight: 2,
-                }}
-              />
-              <Typography variant="h5">{`${selectedDj.userFirstName} ${selectedDj.userLastName}`}</Typography>
+          <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item xs={6}>
+              <Grid container alignItems="center">
+                <Avatar
+                  alt={`Avatar de ${selectedDj.userFirstName} ${selectedDj.userLastName}`}
+                  src={selectedDj.customAvatarUrl}
+                  sx={{ width: 60, height: 60, mr: 1, ml: 7, mt: 1, mb: 1 }}
+                />
+                <Typography variant="h6">DJ Seleccionado:</Typography>
+                <Typography variant="h5">{`${selectedDj.userFirstName} ${selectedDj.userLastName}`}</Typography>
+              </Grid>
             </Grid>
-            <Grid container item justifyContent="flex-end" xs={6}>
-              <Button
-                onClick={() => navigate("/listcontracts")}
-                variant="outlined"
-                color="primary"
-                sx={{
-                  mr: 5,
-                  height: 40,
-                  backgroundColor: "rgba(0, 128, 255, 0.6)",
-                  color: "white",
-                  borderColor: "black",
-                }}
-              >
-                Configurar Mis Playlists
-              </Button>
-              <Button
-                onClick={() => navigate("/userwelcome")}
-                variant="contained"
-                color="secondary"
-                style={{ width: "200px" }}
-              >
-                Salir
-              </Button>
+            <Grid item xs={6}>
+              <Grid container justifyContent="flex-end" spacing={1}>
+                <Button
+                  onClick={() => navigate("/listcontracts")}
+                  variant="contained"
+                  color="primary"
+                  sx={{ mr: 2, mt: 1 }}
+                >
+                  Configurar Mis Playlist
+                </Button>
+                <Button
+                  onClick={() => navigate("/userwelcome")}
+                  variant="contained"
+                  color="secondary"
+                  sx={{ mr: 8, mt: 1 }}
+                >
+                  Salir
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-
       <List>
         <Grid container spacing={2}>
           {selectedDj.selectedEvents?.map(

@@ -142,7 +142,7 @@ const UserSupplierRegistration = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
+        height: "98vh",
         backgroundImage: `url(${fondo})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -160,7 +160,6 @@ const UserSupplierRegistration = () => {
           width: "200px",
         }}
       />
-
       <Box
         sx={{
           borderRadius: "10px",
@@ -172,7 +171,7 @@ const UserSupplierRegistration = () => {
           maxWidth: "500px",
           margin: "0 auto",
           position: "absolute",
-          top: "67%",
+          top: "60%",
           transform: "translateY(-50%)",
         }}
       >

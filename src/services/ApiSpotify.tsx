@@ -28,12 +28,12 @@ const getClientCredentialsToken = async () => {
 export const getAvailableGenres = async () => {
   try {
     const accessToken = await getClientCredentialsToken();
-
     const response = await axios.get(GENRE_API_URL, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    console.log('Géneros disponibles:', response.data.genres);
     return response.data.genres;
   } catch (error) {
     console.error("Error al obtener los géneros musicales de Spotify:", error);
@@ -47,11 +47,12 @@ export const getGenreArtists = async (genre: string) => {
 
     const limit = 100;
     let offset = 0;
+    let hasNextPage = true;
 
     const uniqueArtistsSet = new Set();
     const allArtists = [];
 
-    while (true) {
+    while (hasNextPage) {
       const genreArtistsURL = `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=${limit}&offset=${offset}`;
 
       const response = await axios.get(genreArtistsURL, {
@@ -96,10 +97,10 @@ export const getGenreArtists = async (genre: string) => {
 
       allArtists.push(...resolvedArtists);
 
-      if (response.data.next) {
+      // Ahora se verifica si hay más resultados
+      hasNextPage = response.data.next ? true : false;
+      if (hasNextPage) {
         offset += limit;
-      } else {
-        break;
       }
     }
 

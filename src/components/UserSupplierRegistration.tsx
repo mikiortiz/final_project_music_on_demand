@@ -23,6 +23,7 @@ import { addSupplier } from "../redux/reducers/RegisteredFormSlice";
 import logomusic from "/images/Logomusic.png";
 import UserRegistrationForm from "./UserRegistrationForm";
 import LoginForm from "./LoginForm";
+import NotificationBanner from "./NotificationsBanner";
 
 const UserSupplierRegistration = () => {
   const [showUserForm, setShowUserForm] = useState(false);
@@ -150,6 +151,7 @@ const UserSupplierRegistration = () => {
         position: "relative",
       }}
     >
+      <NotificationBanner />
       <img
         src={logomusic}
         alt="Logomusic"

@@ -151,7 +151,7 @@ const UserSupplierRegistration = () => {
         position: "relative",
       }}
     >
-      <NotificationBanner />
+      <NotificationBanner/>
       <img
         src={logomusic}
         alt="Logomusic"
